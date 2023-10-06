@@ -31,8 +31,7 @@ MetaPath::MetaPath(string metaPathStr) {
         ss >> value;
         if (i % 2 == 0) {
             vertex[i / 2] = value;
-        }
-        else {
+        } else {
             edge[i / 2] = value;
         }
     }
@@ -54,14 +53,6 @@ string MetaPath::toString() {
 
     str += to_string(vertex[pathLen]);
     return str;
-}
-
-vector<int> MetaPath::getVertex() {
-    return this->vertex;
-}
-
-vector<int> MetaPath::getEdge() {
-    return this->edge;
 }
 
 void MetaPath::symmetricPath(int halfLength, unordered_map<int, int> edgeTypeMap) {

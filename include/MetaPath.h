@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -21,10 +22,6 @@ public:
     MetaPath(const MetaPath& mp);
 
     string toString();
-
-    vector<int> getVertex();
-
-    vector<int> getEdge();
 
     // get symmetric meta path by given half meta path
     void symmetricPath(int halfLength, unordered_map<int, int> edgeTypeMap);

@@ -1,6 +1,8 @@
+#pragma once
 #include "MetaPath.h"
 #include <map>
 #include <set>
+#include <iostream>
 
 using namespace std;
 
