@@ -19,7 +19,7 @@ public:
 
     vector<vector<int>> readGraph(); // return the graph edge information
 
-    int* readVertexType(); // return the type of each vertex
+    vector<int> readVertexType(); // return the type of each vertex
 
-    int* readEdgeType(); // return the type of each edge
+    vector<int> readEdgeType(); // return the type of each edge
 };

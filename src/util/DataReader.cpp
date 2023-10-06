@@ -52,7 +52,7 @@ vector<vector<int>> DataReader::readGraph() {
     return graph;
 }
 
-int* DataReader::readVertexType() {
+vector<int> DataReader::readVertexType() {
     ifstream fileStream(vertexFile);
 
     if (!fileStream.is_open()) {
@@ -60,7 +60,7 @@ int* DataReader::readVertexType() {
         exit(EXIT_FAILURE);
     }
 
-    int* vertexType = new int[vertexNum];
+    vector<int> vertexType(vertexNum);
     string line;
 
     while (getline(fileStream, line)) {
@@ -76,7 +76,7 @@ int* DataReader::readVertexType() {
     return vertexType;
 }
 
-int* DataReader::readEdgeType() {
+vector<int> DataReader::readEdgeType() {
     ifstream fileStream(edgeFile);
 
     if (!fileStream.is_open()) {
@@ -84,7 +84,7 @@ int* DataReader::readEdgeType() {
         exit(EXIT_FAILURE);
     }
 
-    int* edgeType = new int[edgeNum];
+    vector<int> edgeType(edgeNum);
     string line;
 
     while (getline(fileStream, line)) {
