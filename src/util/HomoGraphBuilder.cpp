@@ -1,6 +1,7 @@
 #include "HomoGraphBuilder.h"
 
-HomoGraphBuilder::HomoGraphBuilder(vector<vector<int>> graph, vector<int> vertexType, vector<int> edgeType, MetaPath queryMPath) {
+HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
+    const vector<int>& edgeType, const MetaPath& queryMPath) {
     this->graph = graph;
     this->vertexType = vertexType;
     this->edgeType = edgeType;
@@ -40,7 +41,7 @@ map<int, vector<int>> HomoGraphBuilder::build() {
     return pnbMap;
 }
 
-void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vector<set<int>> visitList, set<int> pnbSet) {
+void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet) {
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 

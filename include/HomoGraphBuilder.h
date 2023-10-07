@@ -14,9 +14,10 @@ private:
     MetaPath queryMPath; // the query meta-path
 
 public:
-    HomoGraphBuilder(vector<vector<int>> graph, vector<int> vertexType, vector<int> edgeType, MetaPath queryMPath);
+    HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
+        const vector<int>& edgeType, const MetaPath& queryMPath);
 
     map<int, vector<int>> build();
 
-    void findAllNeighbors(int startID, int curID, int index, vector<set<int>> visitList, set<int> pnbSet);
+    void findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet);
 };

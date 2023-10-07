@@ -1,15 +1,32 @@
 #include "DataReader.h"
+#include "MetaPath.h"
+#include "HomoGraphBuilder.h"
+using namespace std;
 
 int main() {
-    string graphFile = "data\\smallimdb\\graph.txt";
-    string vertexFile = "data\\smallimdb\\vertex.txt";
-    string edgeFile = "data\\smallimdb\\edge.txt";
+    string graphFile = "data\\expHIN\\graph.txt";
+    string vertexFile = "data\\expHIN\\vertex.txt";
+    string edgeFile = "data\\expHIN\\edge.txt";
 
-    // DataReader dr(graphFile, vertexFile, edgeFile);
-    // vector<vector<int>> graph = dr.readGraph();
-    // int* vertexType = dr.readVertexType();
-    // int* edgeType = dr.readEdgeType();
+    DataReader dr(graphFile, vertexFile, edgeFile);
+    vector<vector<int>> graph = dr.readGraph();
+    vector<int> vertexType = dr.readVertexType();
+    vector<int> edgeType = dr.readEdgeType();
 
-    // delete[] vertexType;
-    // delete[] edgeType;
+    string metaPathStr = "0 0 1 1 0";
+    MetaPath metaPath(metaPathStr);
+    // cout << metaPath.toString() << endl;
+
+    HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
+    map<int, vector<int>> pnbMap = homoGraph.build();
+
+    for (int i : pnbMap[0]) {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    for (int i : pnbMap[4]) {
+        cout << i << " ";
+    }
+    cout << endl;
 }

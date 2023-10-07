@@ -35,6 +35,9 @@ MetaPath::MetaPath(string metaPathStr) {
             edge[i / 2] = value;
         }
     }
+
+    this->vertex = vertex;
+    this->edge = edge;
 }
 
 MetaPath::MetaPath(const MetaPath& mp) {
