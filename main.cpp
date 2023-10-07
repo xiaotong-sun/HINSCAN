@@ -20,13 +20,11 @@ int main() {
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
     map<int, vector<int>> pnbMap = homoGraph.build();
 
-    for (int i : pnbMap[0]) {
-        cout << i << " ";
+    for (int i = 0; i < 10; i++) {
+        cout << i + 1 << ": ";
+        for (int j : pnbMap[i]) {
+            cout << j + 1 << " ";
+        }
+        cout << endl;
     }
-    cout << endl;
-
-    for (int i : pnbMap[4]) {
-        cout << i << " ";
-    }
-    cout << endl;
 }

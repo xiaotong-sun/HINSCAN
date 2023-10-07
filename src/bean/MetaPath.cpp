@@ -28,7 +28,7 @@ MetaPath::MetaPath(string metaPathStr) {
         stringstream ss;
         int value;
         ss << sArray[i];
-        ss >> value;
+        ss >> value;  // change string to int
         if (i % 2 == 0) {
             vertex[i / 2] = value;
         } else {
@@ -58,24 +58,10 @@ string MetaPath::toString() {
     return str;
 }
 
-void MetaPath::symmetricPath(int halfLength, unordered_map<int, int> edgeTypeMap) {
+void MetaPath::symmetricPath(int halfLength, const unordered_map<int, int>& edgeTypeMap) {
     for (int i = 0; i < halfLength; i++) {
-        this->edge[halfLength + i] = edgeTypeMap[this->edge[halfLength - i - 1]];
-        this->vertex[halfLength + i + 1] = this->vertex[halfLength - i - 1];
+        this->edge.push_back(edgeTypeMap.at(this->edge[halfLength - i - 1]));
+        this->vertex.push_back(this->vertex[halfLength - i - 1]);
     }
-
-    vector<int> edge_(halfLength * 2);
-    vector<int> vertex_(halfLength * 2 + 1);
-
-    for (int i = 0; i < halfLength * 2; i++) {
-        edge_[i] = this->edge[i];
-    }
-
-    for (int i = 0; i < halfLength * 2 + 1; i++) {
-        vertex_[i] = this->vertex[i];
-    }
-
-    this->edge = edge_;
-    this->vertex = vertex_;
     this->pathLen = this->edge.size();
 }
