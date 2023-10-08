@@ -17,7 +17,7 @@ public:
     HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
         const vector<int>& edgeType, const MetaPath& queryMPath);
 
-    map<int, vector<int>> build();
+    map<int, set<int>> build();
 
     void findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet);
 };

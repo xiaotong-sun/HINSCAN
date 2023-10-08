@@ -8,7 +8,7 @@ HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vecto
     this->queryMPath = queryMPath;
 }
 
-map<int, vector<int>> HomoGraphBuilder::build() {
+map<int, set<int>> HomoGraphBuilder::build() {
     // step1: collect vertices of the same type;
     int StarType = queryMPath.vertex[0];
     set<int> keepSet;
@@ -21,18 +21,12 @@ map<int, vector<int>> HomoGraphBuilder::build() {
     long count = 0; // count the total nb of vertices in keepSet.
 
     // step2: find neighbors
-    map<int, vector<int>> pnbMap;
+    map<int, set<int>> pnbMap;
     for (int startID : keepSet) {
         vector<set<int>> visitList(queryMPath.pathLen + 1);
         set<int> nbSet;
         findAllNeighbors(startID, startID, 0, visitList, nbSet);
-        vector<int> nbArr(nbSet.size());
-        int i = 0;
-        for (int nbId : nbSet) {
-            nbArr[i] = nbId;
-            i++;
-        }
-        pnbMap[startID] = nbArr;
+        pnbMap[startID] = nbSet;
         count += nbSet.size();
     }
 
@@ -55,10 +49,12 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
                 findAllNeighbors(startID, nbVertexID, index + 1, visitList, pnbSet);
                 visitSet.insert(nbVertexID);
             } else {
-                if (nbVertexID != startID) {
-                    pnbSet.insert(nbVertexID);
-                    visitSet.insert(nbVertexID);
-                }
+                // if (nbVertexID != startID) {
+                //     pnbSet.insert(nbVertexID);
+                //     visitSet.insert(nbVertexID);
+                // }
+                pnbSet.insert(nbVertexID);
+                visitSet.insert(nbVertexID);
             }
         }
     }

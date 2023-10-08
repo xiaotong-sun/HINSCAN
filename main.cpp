@@ -18,9 +18,9 @@ int main() {
     // cout << metaPath.toString() << endl;
 
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
-    map<int, vector<int>> pnbMap = homoGraph.build();
+    map<int, set<int>> pnbMap = homoGraph.build();
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < pnbMap.size(); i++) {
         cout << i + 1 << ": ";
         for (int j : pnbMap[i]) {
             cout << j + 1 << " ";
