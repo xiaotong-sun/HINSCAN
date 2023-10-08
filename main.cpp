@@ -1,6 +1,8 @@
 #include "DataReader.h"
 #include "MetaPath.h"
 #include "HomoGraphBuilder.h"
+#include "SCAN.h"
+
 using namespace std;
 
 int main() {
@@ -26,5 +28,12 @@ int main() {
             cout << j + 1 << " ";
         }
         cout << endl;
+    }
+
+    SCAN myScan(pnbMap);
+    myScan.getCluster(0.7, 2);
+
+    for (int i = 0; i < myScan.cluster.size(); i++) {
+        cout << i << ":" << myScan.cluster[i] << endl;
     }
 }
