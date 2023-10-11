@@ -1,3 +1,10 @@
+/**
+ * @file DataReader.cpp
+ * @author Xiaotong Sun
+ * @date 2023-10-07
+ *
+ */
+
 #include "DataReader.h"
 
 DataReader::DataReader(string graphFile, string vertexFile, string edgeFile) {

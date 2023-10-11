@@ -1,3 +1,10 @@
+/**
+ * @file SCAN.h
+ * @author Xiaotong Sun
+ * @date 2023-10-07
+ *
+ */
+
 #pragma once
 #include <iostream>
 #include <vector>
@@ -10,14 +17,14 @@
 
 using namespace std;
 
-struct Tuple {
-    int vertex1;
-    int vertex2;
-    MetaPath metaPath;
-};
-
 class SCAN {
 public:
+    struct MyTuple {
+        int vertex1;
+        int vertex2;
+        MetaPath metaPath;
+    };
+
     // store the homogeneous graph.
     map<int, set<int>> homoGraph;
 
@@ -58,7 +65,7 @@ private:
     set<int> disjoinNb(const set<int>& commonNB, int vertexV, int vertexW);
 
     // verify if there exist three instances of P connecting three P-pairs.
-    bool verifyExistence(vector<Tuple> lambda);
+    bool verifyExistence(vector<MyTuple> lambda);
 
     // check whether this vertex is a core or not.
     bool isCore(double eps, int mu, int vertex);

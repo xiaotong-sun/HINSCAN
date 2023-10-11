@@ -1,3 +1,11 @@
+/**
+ * @file HomoGraphBuilder.cpp
+ * @author Xiaotong Sun
+ * @brief
+ * @date 2023-10-07
+ *
+ */
+
 #include "HomoGraphBuilder.h"
 
 HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,

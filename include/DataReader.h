@@ -1,3 +1,10 @@
+/**
+ * @file MetaPath.h
+ * @author Xiaotong Sun
+ * @date 2023-10-07
+ *
+ */
+
 #pragma once
 #include <iostream>
 #include <fstream>

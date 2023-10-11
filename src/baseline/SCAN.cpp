@@ -1,3 +1,10 @@
+/**
+ * @file SCAN.cpp
+ * @author Xiaotong Sun
+ * @date 2023-10-07
+ *
+ */
+
 #include "SCAN.h"
 
 SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const MetaPath& metaPath) {
@@ -81,10 +88,10 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
         if (vertexU == vertexV || vertexU == vertexW) {
             continue;
         }
-        Tuple tuple1 = { vertexV, vertexW, metaPath };
-        Tuple tuple2 = { vertexV, vertexU, metaPath };
-        Tuple tuple3 = { vertexW, vertexU, metaPath };
-        vector<Tuple> lambda = { tuple1, tuple2, tuple3 };
+        MyTuple tuple1 = { vertexV, vertexW, metaPath };
+        MyTuple tuple2 = { vertexV, vertexU, metaPath };
+        MyTuple tuple3 = { vertexW, vertexU, metaPath };
+        vector<MyTuple> lambda = { tuple1, tuple2, tuple3 };
         if (verifyExistence(lambda)) {
             disjoinNB.insert(vertexU);
         }
@@ -98,8 +105,35 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
 }
 
 // TODO
-bool SCAN::verifyExistence(vector<Tuple> lambda) {
+bool SCAN::verifyExistence(vector<MyTuple> lambda) {
+    for (MyTuple tup : lambda) {
+        int midIndex = (tup.metaPath.vertex.size() - 1) >> 1;
 
+        // get M(x_i)
+        set<int> Mx_i = { tup.vertex1 };
+        set<int> temp2;
+        for (int i = 1; i <= midIndex; i++) {
+            for (int vex : Mx_i) {
+                int targetVType = tup.metaPath.vertex.at(i);
+                int targetEType = tup.metaPath.edge.at(i - 1);
+                vector<int> nbArr = hinGraph.at(tup.vertex1);
+
+                for (int j = 0; j < nbArr.size(); j += 2) {
+                    int nbVertexID = nbArr[i];
+                    int nbEdgeID = nbArr[i + 1];
+                    if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
+                        temp2.insert(nbVertexID);
+                    }
+                }
+            }
+
+            Mx_i = temp2;
+            temp2.clear();
+        }
+
+        // get M(y_i)
+        set<int> My_i;
+    }
 }
 
 bool SCAN::isCore(double eps, int mu, int vertex) {

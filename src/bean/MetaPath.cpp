@@ -1,3 +1,10 @@
+/**
+ * @file MetaPath.cpp
+ * @author Xiaotong Sun
+ * @date 2023-10-07
+ *
+ */
+
 #include "MetaPath.h"
 
 MetaPath::MetaPath() {}
