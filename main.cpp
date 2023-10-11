@@ -30,7 +30,7 @@ int main() {
         cout << endl;
     }
 
-    SCAN myScan(pnbMap);
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, metaPath);
     myScan.getCluster(0.7, 2);
 
     for (int i = 0; i < myScan.cluster.size(); i++) {

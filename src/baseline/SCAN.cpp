@@ -1,12 +1,17 @@
 #include "SCAN.h"
 
-SCAN::SCAN(const map<int, set<int>>& homoGraph) {
+SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const MetaPath& metaPath) {
+    // HACK: whether this data can be changed to const? or create another class?
     this->homoGraph = homoGraph;
+    this->hinGraph = hinGraph;
+    this->vertexType = vertexType;
+    this->edgeType = edgeType;
+    this->metaPath = metaPath;
     vector<int> cluster(homoGraph.size(), 0); // set all vertex unclassified at the beginning.
     this->cluster = cluster;
 }
 
-void SCAN::getEpsNb(double eps) {
+void SCAN::getCommonEpsNb(double eps) {
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
@@ -21,12 +26,12 @@ void SCAN::getEpsNb(double eps) {
             set<int> neighbor_w = homoGraph.at(nb);
 
             // get the intersection
-            vector<int> result;
+            set<int> commonNB;
             set_intersection(neighbor_v.begin(), neighbor_v.end(), neighbor_w.begin(),
-                neighbor_w.end(), back_inserter(result));
+                neighbor_w.end(), back_inserter(commonNB));
 
             // calculate the basic p-structural similarity
-            double similarity = result.size() / sqrt(neighbor_v.size() * neighbor_w.size());
+            double similarity = commonNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
             if (similarity >= eps) {
                 epsNb.insert(nb);
             }
@@ -34,6 +39,67 @@ void SCAN::getEpsNb(double eps) {
 
         this->epsNbs[vertex] = epsNb;
     }
+}
+
+// HACK: this code can be simplified.
+void SCAN::getDisjointEpsNb(double eps) {
+    for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+        int vertex = iter->first;
+        set<int> neighbor_v = iter->second;
+        set<int> epsNb;
+
+        for (int nb : neighbor_v) {
+            if (nb == vertex) {
+                epsNb.insert(nb);
+                continue;
+            }
+
+            set<int> neighbor_w = homoGraph.at(nb);
+
+            // get the intersection.
+            set<int> commonNB;
+            set_intersection(neighbor_v.begin(), neighbor_v.end(), neighbor_w.begin(),
+                neighbor_w.end(), back_inserter(commonNB));
+
+            // get disjoint common p-neighbor.
+            set<int> disjoinNB = disjoinNb(commonNB, vertex, nb);
+
+            // calculate the basic p-structural similarity.
+            double similarity = disjoinNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
+            if (similarity >= eps) {
+                epsNb.insert(nb);
+            }
+        }
+
+        this->epsNbs[vertex] = epsNb;
+    }
+}
+
+set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
+    set<int> disjoinNB;
+    for (int vertexU : commonNB) {
+        if (vertexU == vertexV || vertexU == vertexW) {
+            continue;
+        }
+        Tuple tuple1 = { vertexV, vertexW, metaPath };
+        Tuple tuple2 = { vertexV, vertexU, metaPath };
+        Tuple tuple3 = { vertexW, vertexU, metaPath };
+        vector<Tuple> lambda = { tuple1, tuple2, tuple3 };
+        if (verifyExistence(lambda)) {
+            disjoinNB.insert(vertexU);
+        }
+    }
+
+    // union {v, w}.
+    disjoinNB.insert(vertexV);
+    disjoinNB.insert(vertexW);
+
+    return disjoinNB;
+}
+
+// TODO
+bool SCAN::verifyExistence(vector<Tuple> lambda) {
+
 }
 
 bool SCAN::isCore(double eps, int mu, int vertex) {
@@ -46,7 +112,7 @@ bool SCAN::isCore(double eps, int mu, int vertex) {
 }
 
 void SCAN::getCluster(double eps, int mu) {
-    getEpsNb(eps);
+    getCommonEpsNb(eps);
     int clusterID = 0;
     set<int> non_member;
 
