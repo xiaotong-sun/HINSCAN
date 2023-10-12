@@ -35,7 +35,7 @@ void SCAN::getCommonEpsNb(double eps) {
             // get the intersection
             set<int> commonNB;
             set_intersection(neighbor_v.begin(), neighbor_v.end(), neighbor_w.begin(),
-                neighbor_w.end(), back_inserter(commonNB));
+                neighbor_w.end(), inserter(commonNB, commonNB.begin()));
 
             // calculate the basic p-structural similarity
             double similarity = commonNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
@@ -66,7 +66,7 @@ void SCAN::getDisjointEpsNb(double eps) {
             // get the intersection.
             set<int> commonNB;
             set_intersection(neighbor_v.begin(), neighbor_v.end(), neighbor_w.begin(),
-                neighbor_w.end(), back_inserter(commonNB));
+                neighbor_w.end(), inserter(commonNB, commonNB.begin()));
 
             // get disjoint common p-neighbor.
             set<int> disjoinNB = disjoinNb(commonNB, vertex, nb);
@@ -133,12 +133,12 @@ bool SCAN::verifyExistence(vector<MyTuple> lambda) {
 
         // get intersection
         set<int> intersection;
-        set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), intersection);
+        set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
         listOfComNb.push_back(intersection);
     }
 
     // sort the vector<set<int>> in ascending order according to the size of each set.
-    bool compareSetSize = [](const set<int>& set1, const set<int>& set2) {
+    auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
         return set1.size() < set2.size();
         };
     sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
@@ -245,8 +245,12 @@ bool SCAN::isCore(double eps, int mu, int vertex) {
     return false;
 }
 
-void SCAN::getCluster(double eps, int mu) {
-    getCommonEpsNb(eps);
+void SCAN::getCluster(double eps, int mu, int mode) {
+    if (mode == 0) {
+        getCommonEpsNb(eps);
+    } else if (mode == 1) {
+        getDisjointEpsNb(eps);
+    }
     int clusterID = 0;
     set<int> non_member;
 

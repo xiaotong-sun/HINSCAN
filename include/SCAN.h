@@ -48,8 +48,8 @@ public:
 
     SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const MetaPath& metaPath);
 
-    // get cluster, hub, outlier.
-    void getCluster(double eps, int mu);
+    // get cluster, hub, outlier. CommonNb: mode=0; DisjointNb: mode=1;
+    void getCluster(double eps, int mu, int mode);
 
 private:
     // check whether all vertices in Neighbor(v) belong to the same cluster or not.
