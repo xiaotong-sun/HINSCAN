@@ -67,6 +67,15 @@ private:
     // verify if there exist three instances of P connecting three P-pairs.
     bool verifyExistence(vector<MyTuple> lambda);
 
+    // get the common neighbor (Mx_i / My_i).
+    void getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight);
+
+    // check whether the vertex is repeat.
+    bool hasSameValue(const vector<int>& arr, int vertex);
+
+    // enumerate, to get different instance.
+    bool enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda);
+
     // check whether this vertex is a core or not.
     bool isCore(double eps, int mu, int vertex);
 };

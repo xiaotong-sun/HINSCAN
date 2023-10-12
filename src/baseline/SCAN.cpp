@@ -104,35 +104,135 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
     return disjoinNB;
 }
 
-// TODO
+// FIXME
 bool SCAN::verifyExistence(vector<MyTuple> lambda) {
+    // vector<int> midIndexArr; // record the index where we split the meta path.
+    vector<set<int>> listOfComNb;
+
     for (MyTuple tup : lambda) {
-        int midIndex = (tup.metaPath.vertex.size() - 1) >> 1;
+        int pathVLen = tup.metaPath.vertex.size();
+        int midIndex = (pathVLen - 1) >> 1;
+        // midIndexArr.push_back(midIndex);
 
         // get M(x_i)
         set<int> Mx_i = { tup.vertex1 };
         set<int> temp2;
         for (int i = 1; i <= midIndex; i++) {
-            for (int vex : Mx_i) {
-                int targetVType = tup.metaPath.vertex.at(i);
-                int targetEType = tup.metaPath.edge.at(i - 1);
-                vector<int> nbArr = hinGraph.at(tup.vertex1);
-
-                for (int j = 0; j < nbArr.size(); j += 2) {
-                    int nbVertexID = nbArr[i];
-                    int nbEdgeID = nbArr[i + 1];
-                    if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
-                        temp2.insert(nbVertexID);
-                    }
-                }
-            }
-
+            getNB(Mx_i, temp2, tup, i, false);
             Mx_i = temp2;
             temp2.clear();
         }
 
         // get M(y_i)
-        set<int> My_i;
+        set<int> My_i = { tup.vertex2 };
+        for (int i = pathVLen - 2; i >= midIndex; i--) {
+            getNB(My_i, temp2, tup, i, true);
+            My_i = temp2;
+            temp2.clear();
+        }
+
+        // get intersection
+        set<int> intersection;
+        set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), intersection);
+        listOfComNb.push_back(intersection);
+    }
+
+    // sort the vector<set<int>> in ascending order according to the size of each set.
+    bool compareSetSize = [](const set<int>& set1, const set<int>& set2) {
+        return set1.size() < set2.size();
+        };
+    sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
+
+    vector<int> LArr; // record the different vertex. i.e. different instance.
+
+    // enumeration and verify.
+    return enumeration(listOfComNb, 0, LArr, lambda);
+}
+
+bool SCAN::hasSameValue(const vector<int>& arr, int vertex) {
+    for (int val : arr) {
+        if (val == vertex) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// FIXME
+bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda) {
+    set<int> ComNb = listOfComNb.at(index);
+    for (int vex : ComNb) {
+        if (hasSameValue(LArr, vex)) {
+            continue;
+        }
+        LArr.push_back(vex);
+        if (index < listOfComNb.size() - 1) {
+            enumeration(listOfComNb, index++, LArr, lambda);
+        } else {
+            vector<MyTuple> lambda2;
+            for (int i = 0; i < lambda.size(); i++) {
+                MyTuple element = lambda.at(i);
+                int pathVLen = element.metaPath.vertex.size();
+                int midIndex = (pathVLen - 1) >> 1;
+
+                // generate l(Pj).
+                vector<int> LVertex = { element.metaPath.vertex.at(0) };
+                vector<int> LEdge;
+                for (int i = 1; i <= midIndex; i++) {
+                    LVertex.push_back(element.metaPath.vertex.at(i));
+                    LEdge.push_back(element.metaPath.edge.at(i - 1));
+                }
+                MetaPath LMetaPath(LVertex, LEdge);
+                if (LMetaPath.pathLen > 1) {
+                    MyTuple LTup = { element.vertex1, LArr[i], LMetaPath };
+                    lambda2.push_back(LTup);
+                }
+
+                // generate r(Pj).
+                vector<int> RVertex = { element.metaPath.vertex.at(pathVLen - 1) };
+                vector<int> REdge;
+                for (int i = pathVLen - 2; i >= midIndex; i--) {
+                    RVertex.push_back(element.metaPath.vertex.at(i));
+                    REdge.push_back(element.metaPath.edge.at(i + 1));
+                }
+                MetaPath RMetaPath(RVertex, REdge);
+                if (RMetaPath.pathLen > 1) {
+                    MyTuple RTup = { element.vertex2, LArr[i], RMetaPath };
+                    lambda2.push_back(RTup);
+                }
+            }
+            if (lambda2.empty()) {
+                return true;
+            } else {
+                if (verifyExistence(lambda2)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+
+void SCAN::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight) {
+    for (int vex : M_i) {
+        int targetVType = tup.metaPath.vertex.at(index);
+        int targetEType;
+        if (fromRight) {
+            targetEType = tup.metaPath.edge.at(index + 1);
+        } else {
+            targetEType = tup.metaPath.edge.at(index - 1);
+        }
+        vector<int> nbArr = hinGraph.at(tup.vertex2);
+
+        for (int j = 0; j < nbArr.size(); j += 2) {
+            int nbVertexID = nbArr[j];
+            int nbEdgeID = nbArr[j + 1];
+            if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
+                temp.insert(nbVertexID);
+            }
+        }
     }
 }
 
