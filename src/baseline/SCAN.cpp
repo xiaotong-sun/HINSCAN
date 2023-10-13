@@ -93,6 +93,7 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
         MyTuple tuple3 = { vertexW, vertexU, metaPath };
         vector<MyTuple> lambda = { tuple1, tuple2, tuple3 };
         if (verifyExistence(lambda)) {
+            cout << "yesssss!" << endl;
             disjoinNB.insert(vertexU);
         }
     }
@@ -105,14 +106,12 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
 }
 
 // FIXME
-bool SCAN::verifyExistence(vector<MyTuple> lambda) {
-    // vector<int> midIndexArr; // record the index where we split the meta path.
+bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
     vector<set<int>> listOfComNb;
 
     for (MyTuple tup : lambda) {
         int pathVLen = tup.metaPath.vertex.size();
         int midIndex = (pathVLen - 1) >> 1;
-        // midIndexArr.push_back(midIndex);
 
         // get M(x_i)
         set<int> Mx_i = { tup.vertex1 };
@@ -160,6 +159,7 @@ bool SCAN::hasSameValue(const vector<int>& arr, int vertex) {
 
 // FIXME
 bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda) {
+    cout << "index = " << index << endl;
     set<int> ComNb = listOfComNb.at(index);
     for (int vex : ComNb) {
         if (hasSameValue(LArr, vex)) {
@@ -167,8 +167,11 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
         }
         LArr.push_back(vex);
         if (index < listOfComNb.size() - 1) {
-            enumeration(listOfComNb, index++, LArr, lambda);
+            if (enumeration(listOfComNb, index + 1, LArr, lambda)) {
+                return true;
+            }
         } else {
+            cout << "++" << vex << "++" << endl;
             vector<MyTuple> lambda2;
             for (int i = 0; i < lambda.size(); i++) {
                 MyTuple element = lambda.at(i);
@@ -185,6 +188,7 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 MetaPath LMetaPath(LVertex, LEdge);
                 if (LMetaPath.pathLen > 1) {
                     MyTuple LTup = { element.vertex1, LArr[i], LMetaPath };
+                    cout << element.vertex2 << "+" << LArr[i] << "+" << LMetaPath.toString() << endl;
                     lambda2.push_back(LTup);
                 }
 
@@ -193,22 +197,23 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 vector<int> REdge;
                 for (int i = pathVLen - 2; i >= midIndex; i--) {
                     RVertex.push_back(element.metaPath.vertex.at(i));
-                    REdge.push_back(element.metaPath.edge.at(i + 1));
+                    REdge.push_back(element.metaPath.edge.at(i));
                 }
                 MetaPath RMetaPath(RVertex, REdge);
                 if (RMetaPath.pathLen > 1) {
                     MyTuple RTup = { element.vertex2, LArr[i], RMetaPath };
+                    cout << element.vertex2 << "+" << LArr[i] << "+" << RMetaPath.toString() << endl;
                     lambda2.push_back(RTup);
                 }
             }
             if (lambda2.empty()) {
+                cout << "find one" << endl;
                 return true;
             } else {
-                if (verifyExistence(lambda2)) {
-                    return true;
-                }
+                return verifyExistence(lambda2);
             }
         }
+        LArr.pop_back();
     }
     return false;
 }
@@ -219,11 +224,12 @@ void SCAN::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fr
     for (int vex : M_i) {
         int targetVType = tup.metaPath.vertex.at(index);
         int targetEType;
-        if (fromRight) {
-            targetEType = tup.metaPath.edge.at(index + 1);
-        } else {
-            targetEType = tup.metaPath.edge.at(index - 1);
-        }
+        // if (fromRight) {
+        //     targetEType = tup.metaPath.edge.at(index);
+        // } else {
+        //     targetEType = tup.metaPath.edge.at(index - 1);
+        // }
+        targetEType = tup.metaPath.edge.at(index - 1);
         vector<int> nbArr = hinGraph.at(tup.vertex2);
 
         for (int j = 0; j < nbArr.size(); j += 2) {

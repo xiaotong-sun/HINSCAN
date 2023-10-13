@@ -65,7 +65,7 @@ private:
     set<int> disjoinNb(const set<int>& commonNB, int vertexV, int vertexW);
 
     // verify if there exist three instances of P connecting three P-pairs.
-    bool verifyExistence(vector<MyTuple> lambda);
+    bool verifyExistence(vector<MyTuple>& lambda);
 
     // get the common neighbor (Mx_i / My_i).
     void getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight);
