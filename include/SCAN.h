@@ -61,19 +61,19 @@ private:
     // get eps-Neighborhood (disjoint common p-neighbor).
     void getDisjointEpsNb(double eps);
 
-    // get disjoint common p-enighbor.
+    // get disjoint common p-enighbor (used for disjoint common p-neighbor).
     set<int> disjoinNb(const set<int>& commonNB, int vertexV, int vertexW);
 
-    // verify if there exist three instances of P connecting three P-pairs.
+    // verify if there exist three instances of P connecting three P-pairs (used for disjoint common p-neighbor).
     bool verifyExistence(vector<MyTuple>& lambda);
 
-    // get the common neighbor (Mx_i / My_i).
+    // get the common neighbor (Mx_i / My_i; used for disjoint common p-neighbor).
     void getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight);
 
-    // check whether the vertex is repeat.
+    // check whether the vertex is repeat (used for disjoint common p-neighbor).
     bool hasSameValue(const vector<int>& arr, int vertex);
 
-    // enumerate, to get different instance.
+    // enumerate, to get different instance (used for disjoint common p-neighbor).
     bool enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda);
 
     // check whether this vertex is a core or not.

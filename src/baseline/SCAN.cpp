@@ -39,6 +39,7 @@ void SCAN::getCommonEpsNb(double eps) {
 
             // calculate the basic p-structural similarity
             double similarity = commonNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
+            cout << vertex + 1 << "-" << nb + 1 << " : " << similarity << endl;
             if (similarity >= eps) {
                 epsNb.insert(nb);
             }
@@ -73,6 +74,7 @@ void SCAN::getDisjointEpsNb(double eps) {
 
             // calculate the basic p-structural similarity.
             double similarity = disjoinNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
+            cout << vertex + 1 << "-" << nb + 1 << " : " << similarity << endl;
             if (similarity >= eps) {
                 epsNb.insert(nb);
             }
@@ -93,7 +95,6 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
         MyTuple tuple3 = { vertexW, vertexU, metaPath };
         vector<MyTuple> lambda = { tuple1, tuple2, tuple3 };
         if (verifyExistence(lambda)) {
-            cout << "yesssss!" << endl;
             disjoinNB.insert(vertexU);
         }
     }
@@ -105,7 +106,6 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
     return disjoinNB;
 }
 
-// FIXME
 bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
     vector<set<int>> listOfComNb;
 
@@ -157,9 +157,7 @@ bool SCAN::hasSameValue(const vector<int>& arr, int vertex) {
     return false;
 }
 
-// FIXME
 bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda) {
-    cout << "index = " << index << endl;
     set<int> ComNb = listOfComNb.at(index);
     for (int vex : ComNb) {
         if (hasSameValue(LArr, vex)) {
@@ -171,7 +169,6 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 return true;
             }
         } else {
-            cout << "++" << vex << "++" << endl;
             vector<MyTuple> lambda2;
             for (int i = 0; i < lambda.size(); i++) {
                 MyTuple element = lambda.at(i);
@@ -207,7 +204,6 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 }
             }
             if (lambda2.empty()) {
-                cout << "find one" << endl;
                 return true;
             } else {
                 return verifyExistence(lambda2);
@@ -218,19 +214,14 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
     return false;
 }
 
-
-
 void SCAN::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight) {
     for (int vex : M_i) {
         int targetVType = tup.metaPath.vertex.at(index);
         int targetEType;
-        // if (fromRight) {
-        //     targetEType = tup.metaPath.edge.at(index);
-        // } else {
-        //     targetEType = tup.metaPath.edge.at(index - 1);
-        // }
+
         targetEType = tup.metaPath.edge.at(index - 1);
-        vector<int> nbArr = hinGraph.at(tup.vertex2);
+        // vector<int> nbArr = hinGraph.at(tup.vertex2);
+        vector<int> nbArr = hinGraph.at(vex);
 
         for (int j = 0; j < nbArr.size(); j += 2) {
             int nbVertexID = nbArr[j];
@@ -257,6 +248,17 @@ void SCAN::getCluster(double eps, int mu, int mode) {
     } else if (mode == 1) {
         getDisjointEpsNb(eps);
     }
+
+    cout << "=================" << endl;
+    for (map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
+        cout << iter->first + 1 << ": " << ends;
+        for (int val : iter->second) {
+            cout << val + 1 << " " << ends;
+        }
+        cout << endl;
+    }
+    cout << "=================" << endl;
+
     int clusterID = 0;
     set<int> non_member;
 
