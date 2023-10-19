@@ -15,13 +15,16 @@ int main() {
     vector<int> vertexType = dr.readVertexType();
     vector<int> edgeType = dr.readEdgeType();
 
-    string metaPathStr = "0 0 1 1 0";
+    // string metaPathStr = "0 0 1 1 0";
+    string metaPathStr = "0 0 1 4 3 5 1 1 0";
     MetaPath metaPath(metaPathStr);
     // cout << metaPath.toString() << endl;
 
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
     map<int, set<int>> pnbMap = homoGraph.build();
 
+    cout << "=================" << endl;
+    cout << "neighbor of each vertex" << endl;
     for (int i = 0; i < pnbMap.size(); i++) {
         cout << i + 1 << ": ";
         for (int j : pnbMap[i]) {
@@ -29,10 +32,12 @@ int main() {
         }
         cout << endl;
     }
+    cout << "=================" << endl;
 
     SCAN myScan(pnbMap, graph, vertexType, edgeType, metaPath);
-    myScan.getCluster(0.68, 3, 0);
+    myScan.getCluster(0.68, 3, 1);
 
+    cout << "cluster result" << endl;
     for (int i = 0; i < myScan.cluster.size(); i++) {
         cout << i << ":" << myScan.cluster[i] << endl;
     }

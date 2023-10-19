@@ -51,6 +51,7 @@ void SCAN::getCommonEpsNb(double eps) {
 
 // HACK: this code can be simplified.
 void SCAN::getDisjointEpsNb(double eps) {
+    cout << "similarity of vertex" << endl;
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
@@ -250,6 +251,7 @@ void SCAN::getCluster(double eps, int mu, int mode) {
     }
 
     cout << "=================" << endl;
+    cout << "eps neighbor of each vertex" << endl;
     for (map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
         cout << iter->first + 1 << ": " << ends;
         for (int val : iter->second) {
