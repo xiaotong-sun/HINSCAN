@@ -37,6 +37,9 @@ public:
     // store the type of each edge.
     vector<int> edgeType;
 
+    // store the edge reverse map;
+    unordered_map<int, int> edgeReverseMap;
+
     // store the meta-path.
     MetaPath metaPath;
 
@@ -46,7 +49,7 @@ public:
     // record the eps-Neighborhood for each vertex.
     map<int, set<int>> epsNbs;
 
-    SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const MetaPath& metaPath);
+    SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
 
     // get cluster, hub, outlier. CommonNb: mode=0; DisjointNb: mode=1;
     void getCluster(double eps, int mu, int mode);

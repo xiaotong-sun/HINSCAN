@@ -7,10 +7,11 @@
 
 #include "DataReader.h"
 
-DataReader::DataReader(string graphFile, string vertexFile, string edgeFile) {
+DataReader::DataReader(string graphFile, string vertexFile, string edgeFile, string reverseMapFile) {
     this->graphFile = graphFile;
     this->vertexFile = vertexFile;
     this->edgeFile = edgeFile;
+    this->reverseMapFile = reverseMapFile;
 
     ifstream fileStream(graphFile);
     if (!fileStream.is_open()) {
@@ -105,4 +106,29 @@ vector<int> DataReader::readEdgeType() {
     fileStream.close();
 
     return edgeType;
+}
+
+
+unordered_map<int, int> DataReader::readReverseMap() {
+    ifstream fileStream(reverseMapFile);
+
+    if (!fileStream.is_open()) {
+        cerr << "Error: could not read file " << reverseMapFile << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    unordered_map<int, int> edgeReverseMap;
+    string line;
+
+    while (getline(fileStream, line)) {
+        istringstream iss(line);
+        int key, value;
+        iss >> key;
+        iss >> value;
+        edgeReverseMap[key] = value;
+    }
+
+    fileStream.close();
+
+    return edgeReverseMap;
 }

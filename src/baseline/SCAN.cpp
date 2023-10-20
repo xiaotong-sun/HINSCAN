@@ -7,12 +7,13 @@
 
 #include "SCAN.h"
 
-SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const MetaPath& metaPath) {
+SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath) {
     // HACK: whether this data can be changed to const? or create another class?
     this->homoGraph = homoGraph;
     this->hinGraph = hinGraph;
     this->vertexType = vertexType;
     this->edgeType = edgeType;
+    this->edgeReverseMap = edgeReverseMap;
     this->metaPath = metaPath;
     vector<int> cluster(homoGraph.size(), 0); // set all vertex unclassified at the beginning.
     this->cluster = cluster;
@@ -186,7 +187,7 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 MetaPath LMetaPath(LVertex, LEdge);
                 if (LMetaPath.pathLen > 1) {
                     MyTuple LTup = { element.vertex1, LArr[i], LMetaPath };
-                    cout << element.vertex2 << "+" << LArr[i] << "+" << LMetaPath.toString() << endl;
+                    cout << element.vertex2 << "," << LArr[i] << " : " << LMetaPath.toString() << endl;
                     lambda2.push_back(LTup);
                 }
 
@@ -200,7 +201,7 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 MetaPath RMetaPath(RVertex, REdge);
                 if (RMetaPath.pathLen > 1) {
                     MyTuple RTup = { element.vertex2, LArr[i], RMetaPath };
-                    cout << element.vertex2 << "+" << LArr[i] << "+" << RMetaPath.toString() << endl;
+                    cout << element.vertex2 << "," << LArr[i] << " : " << RMetaPath.toString() << endl;
                     lambda2.push_back(RTup);
                 }
             }
@@ -220,7 +221,12 @@ void SCAN::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fr
         int targetVType = tup.metaPath.vertex.at(index);
         int targetEType;
 
-        targetEType = tup.metaPath.edge.at(index - 1);
+        if (!fromRight) {
+            targetEType = tup.metaPath.edge.at(index - 1);
+        } else {
+            targetEType = tup.metaPath.edge.at(index);
+            targetEType = this->edgeReverseMap[targetEType];
+        }
         // vector<int> nbArr = hinGraph.at(tup.vertex2);
         vector<int> nbArr = hinGraph.at(vex);
 
