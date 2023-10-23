@@ -6,15 +6,15 @@
 using namespace std;
 
 int main() {
-    string graphFile = "data\\expHIN\\graph.txt";
-    string vertexFile = "data\\expHIN\\vertex.txt";
-    string edgeFile = "data\\expHIN\\edge.txt";
-    string reverseMapFile = "data\\expHIN\\edgeReverseMap.txt";
+    // string graphFile = "data\\expHIN\\graph.txt";
+    // string vertexFile = "data\\expHIN\\vertex.txt";
+    // string edgeFile = "data\\expHIN\\edge.txt";
+    // string reverseMapFile = "data\\expHIN\\edgeReverseMap.txt";
 
-    // string graphFile = "data\\expHIN_origin\\graph.txt";
-    // string vertexFile = "data\\expHIN_origin\\vertex.txt";
-    // string edgeFile = "data\\expHIN_origin\\edge.txt";
-    // string reverseMapFile = "data\\expHIN_origin\\edgeReverseMap.txt";
+    string graphFile = "data\\expHIN_origin\\graph.txt";
+    string vertexFile = "data\\expHIN_origin\\vertex.txt";
+    string edgeFile = "data\\expHIN_origin\\edge.txt";
+    string reverseMapFile = "data\\expHIN_origin\\edgeReverseMap.txt";
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
     vector<vector<int>> graph = dr.readGraph();
@@ -22,8 +22,8 @@ int main() {
     vector<int> edgeType = dr.readEdgeType();
     unordered_map<int, int> edgeReverseMap = dr.readReverseMap();
 
-    // string metaPathStr = "0 0 1 1 0";
-    string metaPathStr = "0 0 1 4 3 5 1 1 0";
+    string metaPathStr = "0 0 1 1 0";
+    // string metaPathStr = "0 0 1 4 3 5 1 1 0";
     MetaPath metaPath(metaPathStr);
     // cout << metaPath.toString() << endl;
 

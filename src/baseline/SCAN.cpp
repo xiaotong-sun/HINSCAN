@@ -163,12 +163,19 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
     set<int> ComNb = listOfComNb.at(index);
     for (int vex : ComNb) {
         if (hasSameValue(LArr, vex)) {
+            cout << vex << " : ";
+            for (auto i : LArr) {
+                cout << i << " ";
+            }
+            cout << endl;
             continue;
         }
         LArr.push_back(vex);
         if (index < listOfComNb.size() - 1) {
             if (enumeration(listOfComNb, index + 1, LArr, lambda)) {
                 return true;
+            } else {
+                LArr.pop_back();
             }
         } else {
             vector<MyTuple> lambda2;
@@ -187,7 +194,7 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 MetaPath LMetaPath(LVertex, LEdge);
                 if (LMetaPath.pathLen > 1) {
                     MyTuple LTup = { element.vertex1, LArr[i], LMetaPath };
-                    cout << element.vertex2 << "," << LArr[i] << " : " << LMetaPath.toString() << endl;
+                    cout << element.vertex1 << "," << LArr[i] << " : " << LMetaPath.toString() << endl;
                     lambda2.push_back(LTup);
                 }
 
@@ -206,12 +213,13 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 }
             }
             if (lambda2.empty()) {
+                cout << "find one" << endl;
                 return true;
             } else {
                 return verifyExistence(lambda2);
             }
         }
-        LArr.pop_back();
+        // LArr.pop_back();
     }
     return false;
 }
@@ -220,20 +228,20 @@ void SCAN::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fr
     for (int vex : M_i) {
         int targetVType = tup.metaPath.vertex.at(index);
         int targetEType;
+        int targetEType2; // for the reverse edge.
 
         if (!fromRight) {
             targetEType = tup.metaPath.edge.at(index - 1);
         } else {
             targetEType = tup.metaPath.edge.at(index);
-            targetEType = this->edgeReverseMap[targetEType];
         }
-        // vector<int> nbArr = hinGraph.at(tup.vertex2);
+        targetEType2 = this->edgeReverseMap[targetEType];
         vector<int> nbArr = hinGraph.at(vex);
 
         for (int j = 0; j < nbArr.size(); j += 2) {
             int nbVertexID = nbArr[j];
             int nbEdgeID = nbArr[j + 1];
-            if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
+            if (targetVType == vertexType[nbVertexID] && (targetEType == edgeType[nbEdgeID] || targetEType2 == edgeType[nbEdgeID])) {
                 temp.insert(nbVertexID);
             }
         }
