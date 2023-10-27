@@ -163,11 +163,11 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
     set<int> ComNb = listOfComNb.at(index);
     for (int vex : ComNb) {
         if (hasSameValue(LArr, vex)) {
-            cout << vex << " : ";
-            for (auto i : LArr) {
-                cout << i << " ";
-            }
-            cout << endl;
+            // cout << vex << " : ";
+            // for (auto i : LArr) {
+            //     cout << i << " ";
+            // }
+            // cout << endl;
             continue;
         }
         LArr.push_back(vex);
@@ -194,7 +194,7 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 MetaPath LMetaPath(LVertex, LEdge);
                 if (LMetaPath.pathLen > 1) {
                     MyTuple LTup = { element.vertex1, LArr[i], LMetaPath };
-                    cout << element.vertex1 << "," << LArr[i] << " : " << LMetaPath.toString() << endl;
+                    // cout << element.vertex1 << "," << LArr[i] << " : " << LMetaPath.toString() << endl;
                     lambda2.push_back(LTup);
                 }
 
@@ -208,12 +208,12 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 MetaPath RMetaPath(RVertex, REdge);
                 if (RMetaPath.pathLen > 1) {
                     MyTuple RTup = { element.vertex2, LArr[i], RMetaPath };
-                    cout << element.vertex2 << "," << LArr[i] << " : " << RMetaPath.toString() << endl;
+                    // cout << element.vertex2 << "," << LArr[i] << " : " << RMetaPath.toString() << endl;
                     lambda2.push_back(RTup);
                 }
             }
             if (lambda2.empty()) {
-                cout << "find one" << endl;
+                // cout << "find one" << endl;
                 return true;
             } else {
                 return verifyExistence(lambda2);

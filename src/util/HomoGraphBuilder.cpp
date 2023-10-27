@@ -30,7 +30,13 @@ map<int, set<int>> HomoGraphBuilder::build() {
 
     // step2: find neighbors
     map<int, set<int>> pnbMap;
+
+    cout << "keesSet.size = " << keepSet.size() << endl;
+    int fl = 0;
+
     for (int startID : keepSet) {
+        cout << ++fl << endl;
+
         vector<set<int>> visitList(queryMPath.pathLen + 1);
         set<int> nbSet;
         findAllNeighbors(startID, startID, 0, visitList, nbSet);
@@ -57,10 +63,6 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
                 findAllNeighbors(startID, nbVertexID, index + 1, visitList, pnbSet);
                 visitSet.insert(nbVertexID);
             } else {
-                // if (nbVertexID != startID) {
-                //     pnbSet.insert(nbVertexID);
-                //     visitSet.insert(nbVertexID);
-                // }
                 pnbSet.insert(nbVertexID);
                 visitSet.insert(nbVertexID);
             }
