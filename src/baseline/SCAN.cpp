@@ -40,7 +40,7 @@ void SCAN::getCommonEpsNb(double eps) {
 
             // calculate the basic p-structural similarity
             double similarity = commonNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
-            cout << vertex + 1 << "-" << nb + 1 << " : " << similarity << endl;
+            cout << vertex << "-" << nb << " : " << similarity << endl;
             if (similarity >= eps) {
                 epsNb.insert(nb);
             }
@@ -267,9 +267,9 @@ void SCAN::getCluster(double eps, int mu, int mode) {
     cout << "=================" << endl;
     cout << "eps neighbor of each vertex" << endl;
     for (map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
-        cout << iter->first + 1 << ": " << ends;
+        cout << iter->first << ": " << ends;
         for (int val : iter->second) {
-            cout << val + 1 << " " << ends;
+            cout << val << " " << ends;
         }
         cout << endl;
     }
@@ -338,7 +338,9 @@ bool SCAN::isSameCluster(int vertex) {
         if (nb == vertex) {
             continue;
         }
-        temp.insert(cluster[nb]);
+        if (cluster[nb] > 0) { // Only consider the true clusters
+            temp.insert(cluster[nb]);
+        }
         if (temp.size() > 1) {
             return false;
         }
