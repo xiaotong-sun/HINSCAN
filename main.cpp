@@ -54,11 +54,11 @@ int main(int argc, char* argv[]) {
     struct timeval start, end1, end2;
     gettimeofday(&start, NULL);
 
-    string graphFile = Path + "\\graph.txt";
-    string vertexFile = Path + "\\vertex.txt";
-    string edgeFile = Path + "\\edge.txt";
-    string reverseMapFile = Path + "\\edgeReverseMap.txt";
-    string homoGraphFile = Path + "\\homeGraph.txt";
+    string graphFile = Path + "/graph.txt";
+    string vertexFile = Path + "/vertex.txt";
+    string edgeFile = Path + "/edge.txt";
+    string reverseMapFile = Path + "/edgeReverseMap.txt";
+    string homoGraphFile = Path + "/homeGraph.txt";
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
     vector<vector<int>> graph = dr.readGraph();
