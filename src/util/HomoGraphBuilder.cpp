@@ -36,7 +36,7 @@ map<int, set<int>> HomoGraphBuilder::build() {
 
     for (int startID : keepSet) {
         ++fl;
-        if (fl % 100 == 0) {
+        if (fl % 500 == 0) {
             cout << fl << endl;
         }
 
@@ -47,7 +47,7 @@ map<int, set<int>> HomoGraphBuilder::build() {
         count += nbSet.size();
     }
 
-    cout << "Meta-Path : " << queryMPath.toString() << " nb : " << count << endl;
+    // cout << "Meta-Path : " << queryMPath.toString() << " nb : " << count << endl;
 
     return pnbMap;
 }

@@ -3,6 +3,7 @@
 #include "HomoGraphBuilder.h"
 #include "SCAN.h"
 #include <fstream>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -50,27 +51,8 @@ int main(int argc, char* argv[]) {
     int mu = atoi(argv[3]);
     int mode = atoi(argv[4]);
 
-    // string graphFile = "data\\expHIN\\graph.txt";
-    // string vertexFile = "data\\expHIN\\vertex.txt";
-    // string edgeFile = "data\\expHIN\\edge.txt";
-    // string reverseMapFile = "data\\expHIN\\edgeReverseMap.txt";
-    // string homoGraphFile = "data\\expHIN\\homeGraph.txt";
-
-    // string graphFile = "data\\expHIN_origin\\graph.txt";
-    // string vertexFile = "data\\expHIN_origin\\vertex.txt";
-    // string edgeFile = "data\\expHIN_origin\\edge.txt";
-    // string reverseMapFile = "data\\expHIN_origin\\edgeReverseMap.txt";
-
-    // string graphFile = "data\\smallimdb\\graph.txt";
-    // string vertexFile = "data\\smallimdb\\vertex.txt";
-    // string edgeFile = "data\\smallimdb\\edge.txt";
-    // string reverseMapFile = "data\\smallimdb\\edgeReverseMap.txt";
-
-    // string graphFile = "data\\CaseStudy2\\graph.txt";
-    // string vertexFile = "data\\CaseStudy2\\vertex.txt";
-    // string edgeFile = "data\\CaseStudy2\\edge.txt";
-    // string reverseMapFile = "data\\CaseStudy2\\edgeReverseMap.txt";
-    // string homoGraphFile = "data\\CaseStudy2\\homeGraph.txt";
+    struct timeval start, end1, end2;
+    gettimeofday(&start, NULL);
 
     string graphFile = Path + "\\graph.txt";
     string vertexFile = Path + "\\vertex.txt";
@@ -85,37 +67,50 @@ int main(int argc, char* argv[]) {
     unordered_map<int, int> edgeReverseMap = dr.readReverseMap();
 
     string metaPathStr = argv[5];
-    cout << metaPathStr << endl;
     // string metaPathStr = "0 0 1 1 0"; // for expHIN_origin & expHIN & CaseStudy
     // string metaPathStr = "0 0 1 4 3 5 1 1 0"; // for expHIN_origin & expHIN
     // string metaPathStr = "3 5 0 0 1 1 0 4 3"; // for smallimdb
     MetaPath metaPath(metaPathStr);
     // cout << metaPath.toString() << endl;
 
+    gettimeofday(&end1, NULL);
+    long long mtime1, seconds1, useconds1;
+    seconds1 = end1.tv_sec - start.tv_sec;
+    useconds1 = end1.tv_usec - start.tv_usec;
+    mtime1 = seconds1 * 1000000 + useconds1;
+
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
     map<int, set<int>> pnbMap = homoGraph.build();
+
+    gettimeofday(&end2, NULL);
+    long long mtime2, seconds2, useconds2;
+    seconds2 = end2.tv_sec - start.tv_sec;
+    useconds2 = end2.tv_usec - start.tv_usec;
+    mtime2 = seconds2 * 1000000 + useconds2;
+
+    cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
+
     writeToFile(homoGraphFile, pnbMap);
     // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
-    cout << "=================" << endl;
-    cout << "neighbor of each vertex (HomoGraph)" << endl;
-    for (int i = 0; i < pnbMap.size(); i++) {
-        cout << i << ": ";
-        for (int j : pnbMap[i]) {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-    cout << "=================" << endl;
+    // cout << "=================" << endl;
+    // cout << "neighbor of each vertex (HomoGraph)" << endl;
+    // for (int i = 0; i < pnbMap.size(); i++) {
+    //     cout << i << ": ";
+    //     for (int j : pnbMap[i]) {
+    //         cout << j << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "=================" << endl;
 
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
-    // myScan.getCluster(0.64, 3, 0); // for case study
-    myScan.getCluster(eps, mu, mode);
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
+    // // myScan.getCluster(0.64, 3, 0); // for case study
+    // myScan.getCluster(eps, mu, mode);
 
-    cout << "cluster result" << endl;
-    for (int i = 0; i < myScan.cluster.size(); i++) {
-        cout << i << ":" << myScan.cluster[i] << endl;
-    }
+    // cout << "cluster result" << endl;
+    // for (int i = 0; i < myScan.cluster.size(); i++) {
+    //     cout << i << ":" << myScan.cluster[i] << endl;
+    // }
 }
-
