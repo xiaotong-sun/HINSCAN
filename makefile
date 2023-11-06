@@ -19,5 +19,6 @@ hinscan: .obj/main.o .obj/SCAN.o .obj/MetaPath.o .obj/DataReader.o .obj/HomoGrap
 	g++ -c -O3 -std=c++20 -I ./include -o .obj/HomoGraphBuilder.o ./src/util/HomoGraphBuilder.cpp
 
 clean:
-	rd /s /q .obj
+	#rd /s /q .obj
+	rm -rf *o .obj
 	mkdir .obj
