@@ -40,7 +40,16 @@ map<int, set<int>> readFromFile(string filePath) {
     return myMap;
 }
 
-int main() {
+/*
+    [0]:exe, [1]:data-dir, [2]:similarity-threshold, [3]:density-threshold
+    [4]:cluster-mode, [5]:meta-path
+*/
+int main(int argc, char* argv[]) {
+    string Path = argv[1];
+    double eps = atof(argv[2]);
+    int mu = atoi(argv[3]);
+    int mode = atoi(argv[4]);
+
     // string graphFile = "data\\expHIN\\graph.txt";
     // string vertexFile = "data\\expHIN\\vertex.txt";
     // string edgeFile = "data\\expHIN\\edge.txt";
@@ -57,11 +66,17 @@ int main() {
     // string edgeFile = "data\\smallimdb\\edge.txt";
     // string reverseMapFile = "data\\smallimdb\\edgeReverseMap.txt";
 
-    string graphFile = "data\\CaseStudy2\\graph.txt";
-    string vertexFile = "data\\CaseStudy2\\vertex.txt";
-    string edgeFile = "data\\CaseStudy2\\edge.txt";
-    string reverseMapFile = "data\\CaseStudy2\\edgeReverseMap.txt";
-    string homoGraphFile = "data\\CaseStudy2\\homeGraph.txt";
+    // string graphFile = "data\\CaseStudy2\\graph.txt";
+    // string vertexFile = "data\\CaseStudy2\\vertex.txt";
+    // string edgeFile = "data\\CaseStudy2\\edge.txt";
+    // string reverseMapFile = "data\\CaseStudy2\\edgeReverseMap.txt";
+    // string homoGraphFile = "data\\CaseStudy2\\homeGraph.txt";
+
+    string graphFile = Path + "\\graph.txt";
+    string vertexFile = Path + "\\vertex.txt";
+    string edgeFile = Path + "\\edge.txt";
+    string reverseMapFile = Path + "\\edgeReverseMap.txt";
+    string homoGraphFile = Path + "\\homeGraph.txt";
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
     vector<vector<int>> graph = dr.readGraph();
@@ -69,7 +84,9 @@ int main() {
     vector<int> edgeType = dr.readEdgeType();
     unordered_map<int, int> edgeReverseMap = dr.readReverseMap();
 
-    string metaPathStr = "0 0 1 1 0"; // for expHIN_origin & expHIN & CaseStudy
+    string metaPathStr = argv[5];
+    cout << metaPathStr << endl;
+    // string metaPathStr = "0 0 1 1 0"; // for expHIN_origin & expHIN & CaseStudy
     // string metaPathStr = "0 0 1 4 3 5 1 1 0"; // for expHIN_origin & expHIN
     // string metaPathStr = "3 5 0 0 1 1 0 4 3"; // for smallimdb
     MetaPath metaPath(metaPathStr);
@@ -93,7 +110,8 @@ int main() {
 
     SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
-    myScan.getCluster(0.64, 3, 0); // for case study
+    // myScan.getCluster(0.64, 3, 0); // for case study
+    myScan.getCluster(eps, mu, mode);
 
     cout << "cluster result" << endl;
     for (int i = 0; i < myScan.cluster.size(); i++) {
