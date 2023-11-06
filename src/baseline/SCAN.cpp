@@ -76,7 +76,7 @@ void SCAN::getDisjointEpsNb(double eps) {
 
             // calculate the basic p-structural similarity.
             double similarity = disjoinNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
-            cout << vertex + 1 << "-" << nb + 1 << " : " << similarity << endl;
+            cout << vertex << "-" << nb << " : " << similarity << endl;
             if (similarity >= eps) {
                 epsNb.insert(nb);
             }

@@ -35,7 +35,10 @@ map<int, set<int>> HomoGraphBuilder::build() {
     int fl = 0;
 
     for (int startID : keepSet) {
-        cout << ++fl << endl;
+        ++fl;
+        if (fl % 100 == 0) {
+            cout << fl << endl;
+        }
 
         vector<set<int>> visitList(queryMPath.pathLen + 1);
         set<int> nbSet;

@@ -16,6 +16,7 @@ void writeToFile(string filePath, map<int, set<int>>& pnbMap) {
         }
         of << endl;
     }
+    cout << "Finish writing to file!" << endl;
 }
 
 // read the homoGraph from file.
@@ -60,6 +61,7 @@ int main() {
     string vertexFile = "data\\CaseStudy2\\vertex.txt";
     string edgeFile = "data\\CaseStudy2\\edge.txt";
     string reverseMapFile = "data\\CaseStudy2\\edgeReverseMap.txt";
+    string homoGraphFile = "data\\CaseStudy2\\homeGraph.txt";
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
     vector<vector<int>> graph = dr.readGraph();
@@ -75,11 +77,11 @@ int main() {
 
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
     map<int, set<int>> pnbMap = homoGraph.build();
-    // writeToFile(homoGraphFile, pnbMap);
+    writeToFile(homoGraphFile, pnbMap);
     // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
     cout << "=================" << endl;
-    cout << "neighbor of each vertex" << endl;
+    cout << "neighbor of each vertex (HomoGraph)" << endl;
     for (int i = 0; i < pnbMap.size(); i++) {
         cout << i << ": ";
         for (int j : pnbMap[i]) {
@@ -91,7 +93,7 @@ int main() {
 
     SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
-    myScan.getCluster(0.64, 3, 1); // for case study
+    myScan.getCluster(0.64, 3, 0); // for case study
 
     cout << "cluster result" << endl;
     for (int i = 0; i < myScan.cluster.size(); i++) {
