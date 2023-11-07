@@ -50,6 +50,12 @@ int main(int argc, char* argv[]) {
     double eps = atof(argv[2]);
     int mu = atoi(argv[3]);
     int mode = atoi(argv[4]);
+    string outputFile;
+    if (argc >= 7) {
+        outputFile = argv[6];
+    } else {
+        outputFile = "/homeGraph.txt";
+    }
 
     struct timeval start, end1, end2;
     gettimeofday(&start, NULL);
@@ -58,7 +64,7 @@ int main(int argc, char* argv[]) {
     string vertexFile = Path + "/vertex.txt";
     string edgeFile = Path + "/edge.txt";
     string reverseMapFile = Path + "/edgeReverseMap.txt";
-    string homoGraphFile = Path + "/homeGraph.txt";
+    string homoGraphFile = Path + outputFile;
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
     vector<vector<int>> graph = dr.readGraph();
