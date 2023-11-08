@@ -41,7 +41,7 @@ map<int, set<int>> HomoGraphBuilder::build() {
         }
 
         vector<set<int>> visitList(queryMPath.pathLen + 1);
-        set<int> nbSet;
+        set<int> nbSet = { startID };
         findAllNeighbors(startID, startID, 0, visitList, nbSet);
         pnbMap[startID] = nbSet;
         count += nbSet.size();

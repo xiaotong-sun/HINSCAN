@@ -70,6 +70,7 @@ Pscan::~Pscan() {
 }
 
 void Pscan::get_graph() {
+    n = homoGraph.size();
 
 }
 
