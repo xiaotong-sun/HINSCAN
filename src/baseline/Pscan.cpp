@@ -118,27 +118,27 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
     }
 }
 
-// void Pscan::output(const char* eps_s, const char* miu) {
-//     printf("\t*** Start write result into disk!\n");
+void Pscan::output(const char* eps_s, const char* miu, string dir) {
+    printf("\t*** Start write result into disk!\n");
 
-//     string out_name = dir + "/result-" + string(eps_s) + "-" + string(miu) + ".txt";
-//     FILE* fout = open_file(out_name.c_str(), "w");
+    string out_name = dir + "/result-" + string(eps_s) + "-" + string(miu) + ".txt";
+    FILE* fout = open_file(out_name.c_str(), "w");
 
-//     fprintf(fout, "c/n vertex_id cluster_id\n");
+    fprintf(fout, "c/n vertex_id cluster_id\n");
 
-//     int mu = atoi(miu);
-//     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
-//         fprintf(fout, "c %d %d\n", i, cid[pa[i]]);
-//     }
+    int mu = atoi(miu);
+    for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
+        fprintf(fout, "c %d %d\n", i, cid[pa[i]]);
+    }
 
-//     sort(noncore_cluster.begin(), noncore_cluster.end());
-//     noncore_cluster.erase(unique(noncore_cluster.begin(), noncore_cluster.end()), noncore_cluster.end());
-//     for (ui i = 0;i < noncore_cluster.size();i++) {
-//         fprintf(fout, "n %d %d\n", noncore_cluster[i].second, noncore_cluster[i].first);
-//     }
+    sort(noncore_cluster.begin(), noncore_cluster.end());
+    noncore_cluster.erase(unique(noncore_cluster.begin(), noncore_cluster.end()), noncore_cluster.end());
+    for (ui i = 0;i < noncore_cluster.size();i++) {
+        fprintf(fout, "n %d %d\n", noncore_cluster[i].second, noncore_cluster[i].first);
+    }
 
-//     fclose(fout);
-// }
+    fclose(fout);
+}
 
 void Pscan::pSCAN(const char* eps_s, int _miu) {
     get_eps(eps_s);
@@ -473,4 +473,14 @@ void Pscan::get_eps(const char* eps_s) {
 
     eps_a2 = eps_a * eps_a;
     eps_b2 = eps_b * eps_b;
+}
+
+FILE* Pscan::open_file(const char* file_name, const char* mode) {
+    FILE* f = fopen(file_name, mode);
+    if (f == NULL) {
+        printf("Can not open file:%s\n", file_name);
+        exit(1);
+    }
+
+    return f;
 }

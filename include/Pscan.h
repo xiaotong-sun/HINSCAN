@@ -66,9 +66,10 @@ public:
     void pSCAN(const char* eps_s, int miu);
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
-    void output(const char* eps_s, const char* miu);
+    void output(const char* eps_s, const char* miu, string dir);
 
 private:
+    FILE* open_file(const char* file_name, const char* mode);
     ui binary_search(const int* array, ui b, ui e, int val);
     //return the first pos, s.t. array[pos] >= val (may return e)
     // int naive_similar_check(int u, int v, int eps_a2, int eps_b2);
