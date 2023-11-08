@@ -99,16 +99,16 @@ int main(int argc, char* argv[]) {
     writeToFile(homoGraphFile, pnbMap);
     // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
-    // cout << "=================" << endl;
-    // cout << "neighbor of each vertex (HomoGraph)" << endl;
-    // for (int i = 0; i < pnbMap.size(); i++) {
-    //     cout << i << ": ";
-    //     for (int j : pnbMap[i]) {
-    //         cout << j << " ";
-    //     }
-    //     cout << endl;
-    // }
-    // cout << "=================" << endl;
+    cout << "=================" << endl;
+    cout << "neighbor of each vertex (HomoGraph)" << endl;
+    for (const auto& iter : pnbMap) {
+        cout << iter.first << ": ";
+        for (auto& j : iter.second) {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+    cout << "=================" << endl;
 
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
