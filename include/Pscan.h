@@ -28,7 +28,6 @@
 typedef unsigned int ui;
 
 #define _LINUX_
-//#define _DEBUG_
 
 #ifdef _LINUX_
 #include <sys/time.h>

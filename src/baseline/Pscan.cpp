@@ -70,8 +70,65 @@ Pscan::~Pscan() {
 }
 
 void Pscan::get_graph() {
-    n = homoGraph.size();
+    n = homoGraph.size(); // number of vertices
+    degree = new int[n];
+    int i = 0;
+    for (auto& item : homoGraph) {
+        degree[i] = item.second.size() - 1;
+        m += degree[i];
+        i++;
+    }
 
+    if (pstart == NULL) {
+        pstart = new ui[n + 1];
+    }
+    if (edges == NULL) {
+        edges = new int[m];
+    }
+    if (reverse == NULL) {
+        reverse = new ui[m];
+    }
+    if (min_cn == NULL) {
+        min_cn = new int[m];
+    }
+    memset(min_cn, 0, sizeof(int) * m);
+
+    int* buf = new int[n];
+
+    pstart[0] = 0;
+    i = 0;
+    for (auto& item : homoGraph) {
+        //printf("%d %d\n", i, degree[i]);
+        ui k = 0;
+        for (auto& elem : item.second) {
+            if (item.first == elem) {
+                continue;
+            }
+            buf[k] = elem;
+            ++k;
+        }
+
+        for (ui j = 0; j < degree[i]; j++) edges[pstart[i] + j] = buf[j];
+
+        pstart[i + 1] = pstart[i] + degree[i];
+
+        ++degree[i];
+        ++i;
+    }
+
+    delete[] buf;
+
+    for (ui i = 0; i < n; i++) {
+        for (ui j = pstart[i]; j < pstart[i + 1]; j++) {
+            if (edges[j] == i) {
+                cout << "Self Loop" << endl;
+            }
+            if (j > pstart[i] && edges[j] <= edges[j - 1]) {
+                cout << "Edges not sorted in increasing order!" << endl;
+                cout << "The program may not run properly!" << endl;
+            }
+        }
+    }
 }
 
 ui Pscan::binary_search(const int* array, ui b, ui e, int val) {
@@ -85,9 +142,6 @@ ui Pscan::binary_search(const int* array, ui b, ui e, int val) {
         if (array[mid] >= val) e = mid;
         else b = mid + 1;
     }
-#ifdef _DEBUG_
-    if (array[e] < val) printf("??? WA2 in binary_search\n");
-#endif
     return e;
 }
 
@@ -233,9 +287,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
         while (similar_degree[u] < miu && effective_degree[u] >= miu && i < edge_buf_n) {
             ui idx = edge_buf[i];
             if (min_cn[idx] != -1) {
-#ifdef _DEBUG_
-                if (min_cn[idx] == 0) printf("WA min_cn!\n");
-#endif
                 int v = edges[idx];
 
                 min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
@@ -304,7 +355,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     useconds = end.tv_usec - end1.tv_usec;
     mtime = seconds * 1000000 + useconds;
 
-    //printf("Prune time: %lld\nRefine time: %lld\n", mtime1, mtime);
 #else
     int end = clock();
 
@@ -342,17 +392,9 @@ int Pscan::check_common_neighbor(int u, int v, int c) {
 int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2) {
     int v = edges[idx];
 
-#ifdef _DEBUG_
-    if (min_cn[idx] == -1 || min_cn[idx] == -2) printf("??? WA in similar_check\n");
-#endif
-
     if (min_cn[idx] == 0) {
         int du = degree[u], dv = degree[v];
         int c = compute_common_neighbor_lowerbound(du, dv, eps_a2, eps_b2);
-
-#ifdef _DEBUG_
-        if (du < c || dv < c) return -2;
-#endif
 
         if (c <= 2) return -1;
 
@@ -365,15 +407,8 @@ int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2) {
 int Pscan::compute_common_neighbor_lowerbound(int du, int dv, int eps_a2, int eps_b2) {
     int c = (int)(sqrtl((((long double)du) * ((long double)dv) * eps_a2) / eps_b2));
 
-#ifdef _DEBUG_
-    if (((long long)du) * dv * eps_a2 < 0 || ((long long)c) * c * eps_b2 < 0) printf("??? Overflow in similar_check\n");
-#endif
-
     if (((long long)c) * ((long long)c) * eps_b2 < ((long long)du) * ((long long)dv) * eps_a2) ++c;
 
-#ifdef _DEBUG_
-    if (((long long)c) * ((long long)c) * eps_b2 < ((long long)du) * ((long long)dv) * eps_a2) printf("??? Wrong common neigbor computation in similar_check\n");
-#endif
     return c;
 }
 
@@ -396,10 +431,6 @@ void Pscan::prune_and_cross_link(int eps_a2, int eps_b2, int miu, int* cores, in
                 --effective_degree[v];
             } else {
                 int c = compute_common_neighbor_lowerbound(a, b, eps_a2, eps_b2);
-
-#ifdef _DEBUG_
-                if (a < c || b < c) printf("!!! HHH\n");
-#endif
 
                 if (c <= 2) {
                     min_cn[j] = -1;
