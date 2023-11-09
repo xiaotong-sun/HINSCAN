@@ -3,6 +3,7 @@
 #include "HomoGraphBuilder.h"
 #include "SCAN.h"
 #include "Utility.h"
+#include "Pscan.h"
 #include <sys/time.h>
 
 using namespace std;
@@ -76,13 +77,18 @@ int main(int argc, char* argv[]) {
     }
     cout << "=================" << endl;
 
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    // // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
-    // // myScan.getCluster(0.64, 3, 0); // for case study
-    // myScan.getCluster(eps, mu, mode);
+    // Pscan myPscan(pnbMap);
+    // myPscan.get_graph();
+    // myPscan.pSCAN(argv[2], mu);
+    // myPscan.output(argv[2], argv[3], argv[1]);
 
-    // cout << "cluster result" << endl;
-    // for (int i = 0; i < myScan.cluster.size(); i++) {
-    //     cout << i << ":" << myScan.cluster[i] << endl;
-    // }
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
+    // myScan.getCluster(0.64, 3, 0); // for case study
+    myScan.getCluster(eps, mu, mode);
+
+    cout << "cluster result" << endl;
+    for (int i = 0; i < myScan.cluster.size(); i++) {
+        cout << i << ":" << myScan.cluster[i] << endl;
+    }
 }
