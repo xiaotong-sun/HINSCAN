@@ -53,7 +53,8 @@ int main(int argc, char* argv[]) {
     mtime1 = seconds1 * 1000000 + useconds1;
 
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath);
-    map<int, set<int>> pnbMap = homoGraph.build();
+    // map<int, set<int>> pnbMap = homoGraph.build();
+    map<int, set<int>> pnbMap = homoGraph.build_optim1();
 
     gettimeofday(&end2, NULL);
     long long mtime2, seconds2, useconds2;

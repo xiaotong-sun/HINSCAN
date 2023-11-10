@@ -27,6 +27,7 @@ public:
     map<int, set<int>> build(); // Common build without optimize. Just do search for each vertex.
     map<int, set<int>> build_optim1(); // Search from the mid vertex (type) of metaPath
 
+private:
     void findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet);
-    void findNeighborsFromMidType();
+    void findTargetFromMidType(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& targetSet);
 };
