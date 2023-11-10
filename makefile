@@ -1,24 +1,37 @@
+CC = g++
+CFLAGS = -c -O3 -std=c++20 -I include
+
+SRC_BASELINE = src/baseline
+SRC_BEAN = src/bean
+SRC_UTIL = src/util
+TARGET_DIR = .obj
+
+SRCS := $(wildcard $(SRC_BASELINE)/*.cpp $(SRC_BEAN)/*.cpp $(SRC_UTIL)/*.cpp)
+OBJS := $(patsubst $(SRC_BASELINE)/%.cpp, $(TARGET_DIR)/%.o, $(filter $(SRC_BASELINE)/%.cpp, $(SRCS)))
+OBJS += $(patsubst $(SRC_BEAN)/%.cpp, $(TARGET_DIR)/%.o, $(filter $(SRC_BEAN)/%.cpp, $(SRCS)))
+OBJS += $(patsubst $(SRC_UTIL)/%.cpp, $(TARGET_DIR)/%.o, $(filter $(SRC_UTIL)/%.cpp, $(SRCS)))
+OBJS += $(TARGET_DIR)/main.o
+
 all: hinscan
 
-hinscan: .obj/main.o .obj/SCAN.o .obj/MetaPath.o .obj/DataReader.o .obj/HomoGraphBuilder.o
-	g++ .obj/main.o .obj/SCAN.o .obj/MetaPath.o .obj/DataReader.o .obj/HomoGraphBuilder.o -I ./include -o hinscan
+hinscan: $(OBJS)
+	$(CC) $(OBJS) -I ./include -o hinscan
 
-.obj/main.o: main.cpp
-	g++ -c -O3 -std=c++20 -I ./include -o .obj/main.o main.cpp
+$(TARGET_DIR)/%.o: $(SRC_BASELINE)/%.cpp | $(TARGET_DIR)
+	$(CC) $(CFLAGS) $< -o $@
 
-.obj/SCAN.o: ./src/baseline/SCAN.cpp
-	g++ -c -O3 -std=c++20 -I ./include -o .obj/SCAN.o ./src/baseline/SCAN.cpp
+$(TARGET_DIR)/%.o: $(SRC_BEAN)/%.cpp | $(TARGET_DIR)
+	$(CC) $(CFLAGS) $< -o $@
 
-.obj/MetaPath.o: ./src/bean/MetaPath.cpp
-	g++ -c -O3 -std=c++20 -I ./include -o .obj/MetaPath.o ./src/bean/MetaPath.cpp
+$(TARGET_DIR)/%.o: $(SRC_UTIL)/%.cpp | $(TARGET_DIR)
+	$(CC) $(CFLAGS) $< -o $@
 
-.obj/DataReader.o: ./src/util/DataReader.cpp
-	g++ -c -O3 -std=c++20 -I ./include -o .obj/DataReader.o ./src/util/DataReader.cpp
+$(TARGET_DIR)/main.o: main.cpp | $(TARGET_DIR)
+	$(CC) $(CFLAGS) $< -o $@
 
-.obj/HomoGraphBuilder.o: ./src/util/HomoGraphBuilder.cpp
-	g++ -c -O3 -std=c++20 -I ./include -o .obj/HomoGraphBuilder.o ./src/util/HomoGraphBuilder.cpp
+$(TARGET_DIR):
+	mkdir $(TARGET_DIR)
 
 clean:
-	#rd /s /q .obj
-	rm -rf *o .obj
-	mkdir .obj
+	rd /s /q .obj
+#	rm -rf *o .obj
