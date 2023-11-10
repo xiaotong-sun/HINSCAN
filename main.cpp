@@ -10,7 +10,7 @@ using namespace std;
 
 /*
     [0]:exe, [1]:data-dir, [2]:similarity-threshold, [3]:density-threshold
-    [4]:cluster-mode, [5]:meta-path
+    [4]:cluster-mode, [5]:meta-path, [6]:output-file
 */
 int main(int argc, char* argv[]) {
     string Path = argv[1];
