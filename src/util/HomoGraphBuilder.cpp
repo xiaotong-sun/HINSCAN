@@ -104,11 +104,11 @@ map<int, set<int>> HomoGraphBuilder::build_optim1() {
         set<int> targetSet;
         findTargetFromMidType(startID, startID, mid, visitList, targetSet);
 
-        cout << startID << ":";
-        for (const int& elem : targetSet) {
-            cout << elem << " ";
-        }
-        cout << endl;
+        // cout << startID << ":";
+        // for (const int& elem : targetSet) {
+        //     cout << elem << " ";
+        // }
+        // cout << endl;
 
         // step3: generate pnbMap by union the targetSet one by one.
         for (const int& elem : targetSet) {
