@@ -72,3 +72,13 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
         }
     }
 }
+
+map<int, set<int>> HomoGraphBuilder::build_optim1() {
+    // step1: collect vertices of the same type with mid vertex in the meta-path.
+    int mid = queryMPath.pathLen / 2;
+    int MidType = queryMPath.vertex[mid];
+}
+
+void HomoGraphBuilder::findNeighborsFromMidType() {
+
+}
