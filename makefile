@@ -33,5 +33,5 @@ $(TARGET_DIR):
 	mkdir $(TARGET_DIR)
 
 clean:
-	rd /s /q .obj
-#	rm -rf *o .obj
+#	rd /s /q .obj
+	rm -rf *o .obj
