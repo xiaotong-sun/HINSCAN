@@ -9,11 +9,12 @@
 #include "HomoGraphBuilder.h"
 
 HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
-    const vector<int>& edgeType, const MetaPath& queryMPath) {
+    const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap) {
     this->graph = graph;
     this->vertexType = vertexType;
     this->edgeType = edgeType;
     this->queryMPath = queryMPath;
+    this->edgeReverseMap = edgeReverseMap;
 }
 
 map<int, set<int>> HomoGraphBuilder::build() {
@@ -136,6 +137,135 @@ void HomoGraphBuilder::findTargetFromMidType(int startID, int curID, int index, 
                 visitSet.insert(nbVertexID);
             } else {
                 targetSet.insert(nbVertexID);
+                visitSet.insert(nbVertexID);
+            }
+        }
+    }
+}
+
+map<int, set<int>> HomoGraphBuilder::build_optim2() {
+    // step1: collect vertices of the same type with vertex in the meta-path.
+    set<int> keepSet;
+    map<int, set<int>> pnbMap;
+    int flagIndex;
+    int mid = queryMPath.pathLen / 2;
+
+    if (queryMPath.pathLen == 2) {
+        return build_optim1();
+    } else if (queryMPath.pathLen == 4) {
+        flagIndex = 1;
+        int FlagType = queryMPath.vertex[flagIndex];
+        int StartType = queryMPath.vertex[0];
+
+        for (int i = 0; i < vertexType.size(); i++) {
+            if (vertexType[i] == FlagType) {
+                keepSet.insert(i);
+            } else if (vertexType[i] == StartType) {
+                pnbMap[i].insert(i);
+            }
+        }
+    } else if (queryMPath.pathLen >= 6) {
+        int flagIndexL = 1;
+        int flagIndexR = mid - 1;
+        int FlagTypeL = queryMPath.vertex[flagIndexL];
+        int FlagTypeR = queryMPath.vertex[flagIndexR];
+        int StartType = queryMPath.vertex[0];
+        set<int> keepSetL;
+        set<int> keepSetR;
+
+        for (int i = 0; i < vertexType.size(); i++) {
+            if (vertexType[i] == FlagTypeL) {
+                keepSetL.insert(i);
+            } else if (vertexType[i] == FlagTypeR) {
+                keepSetR.insert(i);
+            } else if (vertexType[i] == StartType) {
+                pnbMap[i].insert(i);
+            }
+        }
+
+        if (keepSetL.size() <= keepSetR.size()) {
+            keepSet = keepSetL;
+            flagIndex = flagIndexL;
+        } else {
+            keepSet = keepSetR;
+            flagIndex = flagIndexR;
+        }
+    }
+
+    // step2: find target vertices that connected to the target vertex.
+    cout << "keepSet.size = " << keepSet.size() << endl;
+    int fl = 0;
+
+    map<int, set<int>> tempMap;
+    for (int startID : keepSet) {
+        ++fl;
+        if (fl % 500 == 0) {
+            cout << fl << endl;
+        }
+
+        vector<set<int>> visitListForL(flagIndex + 1);
+        vector<set<int>> visitListForR(mid - flagIndex + 1);
+        set<int> leftTargetSet;
+        set<int> rightTargetSet;
+
+        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet);
+        findRightTarget(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
+
+        // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+        for (auto& elem1 : rightTargetSet) {
+            tempMap[elem1].insert(leftTargetSet.begin(), leftTargetSet.end());
+        }
+    }
+
+    for (const auto& item : tempMap) {
+        for (const int& elem : item.second) {
+            pnbMap[elem].insert(item.second.begin(), item.second.end());
+        }
+    }
+
+    return pnbMap;
+}
+
+// A-P-T-P-A: Choose P as FlagType, left target is A, left path is A-P.
+void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet) {
+    int targetVType = queryMPath.vertex[index - 1];
+    int targetEType = queryMPath.edge[index - 1]; // note the edgetype should be reverse.
+    targetEType = edgeReverseMap[targetEType];
+
+    vector<int> nbArr = graph[curID];
+    for (int i = 0; i < nbArr.size(); i += 2) {
+        int nbVertexID = nbArr[i];
+        int nbEdgeID = nbArr[i + 1];
+        set<int>& visitSet = visitList[index - 1];
+        if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
+            if (index - 1 > 0) {
+                findLeftTarget(startID, nbVertexID, index - 1, visitList, leftTargetSet);
+                visitSet.insert(nbVertexID);
+            } else {
+                leftTargetSet.insert(nbVertexID);
+                visitSet.insert(nbVertexID);
+            }
+        }
+    }
+
+}
+
+// A-P-T-P-A: Choose P as FlagType, right target is T, right path is P-T.
+void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
+    int targetVType = queryMPath.vertex[index + 1];
+    int targetEType = queryMPath.edge[index];
+
+    vector<int> nbArr = graph[curID];
+    for (int i = 0; i < nbArr.size(); i += 2) {
+        int nbVertexID = nbArr[i];
+        int nbEdgeID = nbArr[i + 1];
+        set<int>& visitSet = visitList[index - flagIndex + 1];
+        if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
+            if (index + 1 < queryMPath.pathLen / 2) {
+                findRightTarget(startID, nbVertexID, index + 1, visitList, rightTargetSet, flagIndex);
+                visitSet.insert(nbVertexID);
+            } else {
+                rightTargetSet.insert(nbVertexID);
                 visitSet.insert(nbVertexID);
             }
         }

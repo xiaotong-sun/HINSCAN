@@ -38,7 +38,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "./data/expHIN_origin",
+                "./data/expHIN",
                 "0.68",
                 "3",
                 "0",
