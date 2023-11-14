@@ -293,7 +293,6 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
     cout << "keepSet.size = " << keepSet.size() << endl;
     int fl = 0;
 
-    map<int, set<int>> tempMap;
     for (int startID : keepSet) {
         ++fl;
         if (fl % 500 == 0) {
@@ -310,13 +309,7 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
 
         // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
         for (auto& elem1 : rightTargetSet) {
-            tempMap[elem1].insert(leftTargetSet.begin(), leftTargetSet.end());
-        }
-    }
-
-    for (const auto& item : tempMap) {
-        for (const int& elem : item.second) {
-            pnbMap[elem].insert(item.second.begin(), item.second.end());
+            pnbMap[elem1].insert(leftTargetSet.begin(), leftTargetSet.end());
         }
     }
 
