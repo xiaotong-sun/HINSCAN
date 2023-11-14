@@ -271,3 +271,76 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
         }
     }
 }
+
+map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
+    // step1: collect vertices of the same type with vertex of flagIndex.
+    set<int> keepSet;
+    map<int, set<int>> pnbMap;
+    int mid = queryMPath.pathLen / 2;
+
+    int FlagType = queryMPath.vertex[flagIndex];
+    int StartType = queryMPath.vertex[0];
+
+    for (int i = 0; i < vertexType.size(); i++) {
+        if (vertexType[i] == FlagType) {
+            keepSet.insert(i);
+        } else if (vertexType[i] == StartType) {
+            pnbMap[i].insert(i);
+        }
+    }
+
+    // step2: find target vertices that connected to the target vertex.
+    cout << "keepSet.size = " << keepSet.size() << endl;
+    int fl = 0;
+
+    map<int, set<int>> tempMap;
+    for (int startID : keepSet) {
+        ++fl;
+        if (fl % 500 == 0) {
+            cout << fl << endl;
+        }
+
+        vector<set<int>> visitListForL(flagIndex + 1);
+        vector<set<int>> visitListForR(queryMPath.pathLen - flagIndex + 1);
+        set<int> leftTargetSet;
+        set<int> rightTargetSet;
+
+        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet);
+        findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
+
+        // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+        for (auto& elem1 : rightTargetSet) {
+            tempMap[elem1].insert(leftTargetSet.begin(), leftTargetSet.end());
+        }
+    }
+
+    for (const auto& item : tempMap) {
+        for (const int& elem : item.second) {
+            pnbMap[elem].insert(item.second.begin(), item.second.end());
+        }
+    }
+
+    return pnbMap;
+}
+
+// A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.
+void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
+    int targetVType = queryMPath.vertex[index + 1];
+    int targetEType = queryMPath.edge[index];
+
+    vector<int> nbArr = graph[curID];
+    for (int i = 0; i < nbArr.size(); i += 2) {
+        int nbVertexID = nbArr[i];
+        int nbEdgeID = nbArr[i + 1];
+        set<int>& visitSet = visitList[index - flagIndex + 1];
+        if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
+            if (index + 1 < queryMPath.pathLen) {
+                findRightTarget_test(startID, nbVertexID, index + 1, visitList, rightTargetSet, flagIndex);
+                visitSet.insert(nbVertexID);
+            } else {
+                rightTargetSet.insert(nbVertexID);
+                visitSet.insert(nbVertexID);
+            }
+        }
+    }
+}

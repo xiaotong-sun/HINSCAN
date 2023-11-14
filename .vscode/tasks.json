@@ -38,12 +38,14 @@
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "./data/expHIN",
+                "./data/expHIN/",
                 "0.68",
                 "3",
                 "0",
                 // "0 0 1 1 0",
-                "0 0 1 4 3 5 1 1 0"
+                "0 0 1 4 3 5 1 1 0",
+                "homoGraph.txt",
+                "2"
             ],
             "group": "test",
             "dependsOn": "C/C++: g++.exe build active file",

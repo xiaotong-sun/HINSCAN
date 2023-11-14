@@ -26,8 +26,9 @@ public:
         const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap);
 
     map<int, set<int>> build(); // Common build without optimize. Just do search for each vertex.
-    map<int, set<int>> build_optim1(); // A-P-T-P-A, Search from T for the metaPath.
+    map<int, set<int>> build_optim1(); // A-P-T-P-A, Search from T(mid type) for half of the metaPath.
     map<int, set<int>> build_optim2(); // A-P-T-P-A, Search from P for half of the metaPath.
+    map<int, set<int>> build_forTest(int flagIndex); // A-P & P-T-P-A || A-P-T & T-P-A.
 
 private:
     void findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet);
@@ -35,4 +36,5 @@ private:
 
     void findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet);
     void findRightTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
+    void findRightTarget_test(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
 };
