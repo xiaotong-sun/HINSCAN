@@ -132,9 +132,6 @@ void Pscan::get_graph() {
 }
 
 ui Pscan::binary_search(const int* array, ui b, ui e, int val) {
-#ifdef _DEBUG_
-    if (e < b) printf("??? WA1 in binary_search\n");
-#endif
     --e;
     if (array[e] < val) return e + 1;
     while (b < e) {
