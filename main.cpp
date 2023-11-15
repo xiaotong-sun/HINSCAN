@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
 
-    writeToFile(homoGraphFile, pnbMap);
+    // writeToFile(homoGraphFile, pnbMap);
     // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
     // cout << "=================" << endl;

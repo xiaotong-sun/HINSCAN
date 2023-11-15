@@ -293,6 +293,8 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
     cout << "keepSet.size = " << keepSet.size() << endl;
     int fl = 0;
 
+    int totalJoin = 0, usefulJoin = 0;
+
     for (int startID : keepSet) {
         ++fl;
         if (fl % 500 == 0) {
@@ -307,11 +309,20 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
         findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet);
         findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
 
+        totalJoin += leftTargetSet.size() * rightTargetSet.size();
         // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
-        for (auto& elem1 : rightTargetSet) {
-            pnbMap[elem1].insert(leftTargetSet.begin(), leftTargetSet.end());
+        for (auto& elem1 : leftTargetSet) {
+            int originSize = pnbMap[elem1].size();
+            pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
+            usefulJoin += pnbMap[elem1].size() - originSize;
         }
     }
+
+    cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+    cout << "total join:\t" << totalJoin << endl;
+    cout << "useful join:\t" << usefulJoin << endl;
+    cout << "useless join:\t" << totalJoin - usefulJoin << endl;
+    cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
 
     return pnbMap;
 }
