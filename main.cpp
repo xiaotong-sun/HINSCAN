@@ -85,13 +85,13 @@ int main(int argc, char* argv[]) {
     // myPscan.pSCAN(argv[2], mu);
     // myPscan.output(argv[2], argv[3], argv[1]);
 
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
     // myScan.getCluster(0.64, 3, 0); // for case study
-    // myScan.getCluster(eps, mu, mode);
+    myScan.getCluster(eps, mu, mode);
 
-    // cout << "cluster result" << endl;
-    // for (int i = 0; i < myScan.cluster.size(); i++) {
-    //     cout << i << ":" << myScan.cluster[i] << endl;
-    // }
+    cout << "cluster result" << endl;
+    for (int i = 0; i < myScan.cluster.size(); i++) {
+        cout << i << ":" << myScan.cluster[i] << endl;
+    }
 }
