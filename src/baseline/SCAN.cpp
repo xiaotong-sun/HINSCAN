@@ -23,11 +23,12 @@ void SCAN::getCommonEpsNb(double eps) {
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
-        set<int> epsNb;
 
         for (int nb : neighbor_v) {
-            if (nb == vertex) {
-                epsNb.insert(nb);
+            if (nb < vertex) {
+                continue;
+            } else if (nb == vertex) {
+                this->epsNbs[vertex].insert(nb);
                 continue;
             }
 
@@ -42,11 +43,10 @@ void SCAN::getCommonEpsNb(double eps) {
             double similarity = commonNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
             cout << vertex << "-" << nb << " : " << similarity << endl;
             if (similarity >= eps) {
-                epsNb.insert(nb);
+                this->epsNbs[vertex].insert(nb);
+                this->epsNbs[nb].insert(vertex);
             }
         }
-
-        this->epsNbs[vertex] = epsNb;
     }
 }
 
@@ -56,11 +56,12 @@ void SCAN::getDisjointEpsNb(double eps) {
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
-        set<int> epsNb;
 
         for (int nb : neighbor_v) {
-            if (nb == vertex) {
-                epsNb.insert(nb);
+            if (nb < vertex) { // because these vertices have been considered in Line 83.
+                continue;
+            } else if (nb == vertex) {
+                this->epsNbs[vertex].insert(nb);
                 continue;
             }
 
@@ -78,11 +79,10 @@ void SCAN::getDisjointEpsNb(double eps) {
             double similarity = disjoinNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
             cout << vertex << "-" << nb << " : " << similarity << endl;
             if (similarity >= eps) {
-                epsNb.insert(nb);
+                this->epsNbs[vertex].insert(nb);
+                this->epsNbs[nb].insert(vertex);
             }
         }
-
-        this->epsNbs[vertex] = epsNb;
     }
 }
 

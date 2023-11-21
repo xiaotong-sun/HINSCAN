@@ -52,11 +52,14 @@ int main(int argc, char* argv[]) {
     useconds1 = end1.tv_usec - start.tv_usec;
     mtime1 = seconds1 * 1000000 + useconds1;
 
-    HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
+    int count = estimate(graph, vertexType, metaPath, atoi(argv[7]));
+    cout << "count = " << count << endl;
+
+    // HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
     // map<int, set<int>> pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
+    // map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
 
     gettimeofday(&end2, NULL);
     long long mtime2, seconds2, useconds2;
@@ -85,13 +88,13 @@ int main(int argc, char* argv[]) {
     // myPscan.pSCAN(argv[2], mu);
     // myPscan.output(argv[2], argv[3], argv[1]);
 
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
     // myScan.getCluster(0.64, 3, 0); // for case study
-    myScan.getCluster(eps, mu, mode);
+    // myScan.getCluster(eps, mu, mode);
 
-    cout << "cluster result" << endl;
-    for (int i = 0; i < myScan.cluster.size(); i++) {
-        cout << i << ":" << myScan.cluster[i] << endl;
-    }
+    // cout << "cluster result" << endl;
+    // for (int i = 0; i < myScan.cluster.size(); i++) {
+    //     cout << i << ":" << myScan.cluster[i] << endl;
+    // }
 }
