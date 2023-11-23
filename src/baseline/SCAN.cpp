@@ -8,7 +8,7 @@
 #include "SCAN.h"
 
 SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath) {
-    // HACK: whether this data can be changed to const? or create another class?
+    // XXX: whether this data can be changed to const? or create another class?
     this->homoGraph = homoGraph;
     this->hinGraph = hinGraph;
     this->vertexType = vertexType;
@@ -50,7 +50,7 @@ void SCAN::getCommonEpsNb(double eps) {
     }
 }
 
-// HACK: this code can be simplified.
+// XXX: this code can be simplified.
 void SCAN::getDisjointEpsNb(double eps) {
     cout << "similarity of vertex" << endl;
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {

@@ -272,6 +272,9 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
     }
 }
 
+/*
+    HACK: This code will count the num of join, so if you don't want the count (maybe run faster) please comment out corresponding lines.
+*/
 map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
     // step1: collect vertices of the same type with vertex of flagIndex.
     set<int> keepSet;
