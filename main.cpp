@@ -52,14 +52,14 @@ int main(int argc, char* argv[]) {
     useconds1 = end1.tv_usec - start.tv_usec;
     mtime1 = seconds1 * 1000000 + useconds1;
 
-    int count = estimate(graph, vertexType, metaPath, atoi(argv[7]));
-    cout << "count = " << count << endl;
+    // int count = estimate(graph, vertexType, metaPath, atoi(argv[7]));
+    // cout << "count = " << count << endl;
 
-    // HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
+    HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
     // map<int, set<int>> pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    // map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
+    map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
 
     gettimeofday(&end2, NULL);
     long long mtime2, seconds2, useconds2;
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
 
-    // writeToFile(homoGraphFile, pnbMap);
+    writeToFile(homoGraphFile, pnbMap);
     // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
     // cout << "=================" << endl;

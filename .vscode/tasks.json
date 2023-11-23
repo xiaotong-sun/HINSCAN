@@ -38,14 +38,14 @@
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "./data/expHIN_origin",
+                "./data/expHIN_origin/",
                 "0.68",
                 "3",
                 "0",
                 // "0 0 1 1 0",
                 "0 0 1 4 3 5 1 1 0",
-                "homoGraph.txt",
-                "2"
+                "test0.txt",
+                "0"
                 // "./data/expHIN/",
                 // "0.68",
                 // "3",

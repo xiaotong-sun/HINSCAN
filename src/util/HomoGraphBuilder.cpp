@@ -208,7 +208,7 @@ map<int, set<int>> HomoGraphBuilder::build_optim2() {
         set<int> leftTargetSet;
         set<int> rightTargetSet;
 
-        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet);
+        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet, flagIndex);
         findRightTarget(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
 
         // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
@@ -227,7 +227,12 @@ map<int, set<int>> HomoGraphBuilder::build_optim2() {
 }
 
 // A-P-T-P-A: Choose P as FlagType, left target is A, left path is A-P.
-void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet) {
+void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet, int flagIndex) {
+    if (flagIndex == 0) {
+        leftTargetSet.insert(startID);
+        return;
+    }
+
     int targetVType = queryMPath.vertex[index - 1];
     int targetEType = queryMPath.edge[index - 1]; // note the edgetype should be reverse.
     targetEType = edgeReverseMap[targetEType];
@@ -239,7 +244,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
         set<int>& visitSet = visitList[index - 1];
         if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
             if (index - 1 > 0) {
-                findLeftTarget(startID, nbVertexID, index - 1, visitList, leftTargetSet);
+                findLeftTarget(startID, nbVertexID, index - 1, visitList, leftTargetSet, flagIndex);
                 visitSet.insert(nbVertexID);
             } else {
                 leftTargetSet.insert(nbVertexID);
@@ -309,7 +314,7 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
         set<int> leftTargetSet;
         set<int> rightTargetSet;
 
-        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet);
+        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet, flagIndex);
         findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
 
         totalJoin += leftTargetSet.size() * rightTargetSet.size();
@@ -332,6 +337,11 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
 
 // A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.
 void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
+    if (flagIndex == queryMPath.pathLen) {
+        rightTargetSet.insert(startID);
+        return;
+    }
+
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 

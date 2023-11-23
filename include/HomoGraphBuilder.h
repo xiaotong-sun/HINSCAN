@@ -34,7 +34,7 @@ private:
     void findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet);
     void findTargetFromMidType(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& targetSet);
 
-    void findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet);
+    void findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet, int flagIndex);
     void findRightTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
     void findRightTarget_test(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
 };
