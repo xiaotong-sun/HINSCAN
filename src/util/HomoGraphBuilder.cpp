@@ -44,7 +44,7 @@ map<int, set<int>> HomoGraphBuilder::build() {
         vector<set<int>> visitList(queryMPath.pathLen + 1);
         set<int> nbSet = { startID };
         findAllNeighbors(startID, startID, 0, visitList, nbSet);
-        pnbMap[startID] = nbSet;
+        // pnbMap[startID] = nbSet;
         count += nbSet.size();
     }
 
@@ -62,12 +62,15 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
         set<int>& visitSet = visitList[index + 1];
+        // if (visitSet.contains(nbVertexID)) {
+        //     cout << "true" << endl;
+        // }
         if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
             if (index + 1 < queryMPath.pathLen) {
                 findAllNeighbors(startID, nbVertexID, index + 1, visitList, pnbSet);
                 visitSet.insert(nbVertexID);
             } else {
-                pnbSet.insert(nbVertexID);
+                // pnbSet.insert(nbVertexID);
                 visitSet.insert(nbVertexID);
             }
         }
@@ -318,7 +321,7 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
         findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
 
         totalJoin += leftTargetSet.size() * rightTargetSet.size();
-        // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+        // FIXMEstep3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
         for (auto& elem1 : leftTargetSet) {
             int originSize = pnbMap[elem1].size();
             pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
