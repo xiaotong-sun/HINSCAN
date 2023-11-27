@@ -10,6 +10,7 @@
 #include <map>
 #include <set>
 #include <iostream>
+#include <unordered_set>
 
 using namespace std;
 
@@ -31,10 +32,10 @@ public:
     map<int, set<int>> build_forTest(int flagIndex); // A-P & P-T-P-A || A-P-T & T-P-A.
 
 private:
-    void findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet);
-    void findTargetFromMidType(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& targetSet);
+    void findAllNeighbors(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& pnbSet);
+    void findTargetFromMidType(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& targetSet);
 
-    void findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet, int flagIndex);
-    void findRightTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
-    void findRightTarget_test(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
+    void findLeftTarget(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& leftTargetSet, int flagIndex);
+    void findRightTarget(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
+    void findRightTarget_test(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& rightTargetSet, int flagIndex);
 };

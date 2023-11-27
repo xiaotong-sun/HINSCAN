@@ -41,10 +41,10 @@ map<int, set<int>> HomoGraphBuilder::build() {
             cout << fl << endl;
         }
 
-        vector<set<int>> visitList(queryMPath.pathLen + 1);
+        vector<unordered_set<int>> visitList(queryMPath.pathLen + 1);
         set<int> nbSet = { startID };
         findAllNeighbors(startID, startID, 0, visitList, nbSet);
-        // pnbMap[startID] = nbSet;
+        pnbMap[startID] = nbSet;
         count += nbSet.size();
     }
 
@@ -53,7 +53,7 @@ map<int, set<int>> HomoGraphBuilder::build() {
     return pnbMap;
 }
 
-void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& pnbSet) {
+void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& pnbSet) {
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 
@@ -61,7 +61,7 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
-        set<int>& visitSet = visitList[index + 1];
+        unordered_set<int>& visitSet = visitList[index + 1];
         // if (visitSet.contains(nbVertexID)) {
         //     cout << "true" << endl;
         // }
@@ -70,7 +70,7 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
                 findAllNeighbors(startID, nbVertexID, index + 1, visitList, pnbSet);
                 visitSet.insert(nbVertexID);
             } else {
-                // pnbSet.insert(nbVertexID);
+                pnbSet.insert(nbVertexID);
                 visitSet.insert(nbVertexID);
             }
         }
@@ -104,7 +104,7 @@ map<int, set<int>> HomoGraphBuilder::build_optim1() {
             cout << fl << endl;
         }
 
-        vector<set<int>> visitList(queryMPath.pathLen / 2 + 1);
+        vector<unordered_set<int>> visitList(queryMPath.pathLen / 2 + 1);
         set<int> targetSet;
         findTargetFromMidType(startID, startID, mid, visitList, targetSet);
 
@@ -124,7 +124,7 @@ map<int, set<int>> HomoGraphBuilder::build_optim1() {
 }
 
 // I think this is the same to findAllNeighbors, the only difference is that it only search half of the path.
-void HomoGraphBuilder::findTargetFromMidType(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& targetSet) {
+void HomoGraphBuilder::findTargetFromMidType(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& targetSet) {
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
     int mid = queryMPath.pathLen / 2;
@@ -133,7 +133,7 @@ void HomoGraphBuilder::findTargetFromMidType(int startID, int curID, int index, 
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
-        set<int>& visitSet = visitList[index + 1 - mid];
+        unordered_set<int>& visitSet = visitList[index + 1 - mid];
         if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
             if (index + 1 < queryMPath.pathLen) {
                 findTargetFromMidType(startID, nbVertexID, index + 1, visitList, targetSet);
@@ -206,8 +206,8 @@ map<int, set<int>> HomoGraphBuilder::build_optim2() {
             cout << fl << endl;
         }
 
-        vector<set<int>> visitListForL(flagIndex + 1);
-        vector<set<int>> visitListForR(mid - flagIndex + 1);
+        vector<unordered_set<int>> visitListForL(flagIndex + 1);
+        vector<unordered_set<int>> visitListForR(mid - flagIndex + 1);
         set<int> leftTargetSet;
         set<int> rightTargetSet;
 
@@ -230,7 +230,7 @@ map<int, set<int>> HomoGraphBuilder::build_optim2() {
 }
 
 // A-P-T-P-A: Choose P as FlagType, left target is A, left path is A-P.
-void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& leftTargetSet, int flagIndex) {
+void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& leftTargetSet, int flagIndex) {
     if (flagIndex == 0) {
         leftTargetSet.insert(startID);
         return;
@@ -244,7 +244,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
-        set<int>& visitSet = visitList[index - 1];
+        unordered_set<int>& visitSet = visitList[index - 1];
         if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
             if (index - 1 > 0) {
                 findLeftTarget(startID, nbVertexID, index - 1, visitList, leftTargetSet, flagIndex);
@@ -259,7 +259,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
 }
 
 // A-P-T-P-A: Choose P as FlagType, right target is T, right path is P-T.
-void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
+void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 
@@ -267,7 +267,7 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
-        set<int>& visitSet = visitList[index - flagIndex + 1];
+        unordered_set<int>& visitSet = visitList[index - flagIndex + 1];
         if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
             if (index + 1 < queryMPath.pathLen / 2) {
                 findRightTarget(startID, nbVertexID, index + 1, visitList, rightTargetSet, flagIndex);
@@ -312,8 +312,8 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
             cout << fl << endl;
         }
 
-        vector<set<int>> visitListForL(flagIndex + 1);
-        vector<set<int>> visitListForR(queryMPath.pathLen - flagIndex + 1);
+        vector<unordered_set<int>> visitListForL(flagIndex + 1);
+        vector<unordered_set<int>> visitListForR(queryMPath.pathLen - flagIndex + 1);
         set<int> leftTargetSet;
         set<int> rightTargetSet;
 
@@ -339,7 +339,7 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
 }
 
 // A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.
-void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, vector<set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
+void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
     if (flagIndex == queryMPath.pathLen) {
         rightTargetSet.insert(startID);
         return;
@@ -352,7 +352,7 @@ void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, v
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
-        set<int>& visitSet = visitList[index - flagIndex + 1];
+        unordered_set<int>& visitSet = visitList[index - flagIndex + 1];
         if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
             if (index + 1 < queryMPath.pathLen) {
                 findRightTarget_test(startID, nbVertexID, index + 1, visitList, rightTargetSet, flagIndex);

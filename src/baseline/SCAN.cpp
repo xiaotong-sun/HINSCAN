@@ -25,7 +25,7 @@ void SCAN::getCommonEpsNb(double eps) {
         set<int> neighbor_v = iter->second;
 
         for (int nb : neighbor_v) {
-            if (nb < vertex) {
+            if (nb < vertex) { // because these vertices have been considered in Line 83.
                 continue;
             } else if (nb == vertex) {
                 this->epsNbs[vertex].insert(nb);
