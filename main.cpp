@@ -56,10 +56,10 @@ int main(int argc, char* argv[]) {
     // cout << "count = " << count << endl;
 
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
-    map<int, set<int>> pnbMap = homoGraph.build();
+    // map<int, set<int>> pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    // map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
+    map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
 
     gettimeofday(&end2, NULL);
     long long mtime2, seconds2, useconds2;
