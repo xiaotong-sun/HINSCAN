@@ -323,65 +323,67 @@ map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
 
         totalJoin += leftTargetSet.size() * rightTargetSet.size();
 
-        // FIXMEstep3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
-        // for (auto& elem1 : leftTargetSet) {
-        //     int originSize = pnbMap[elem1].size();
-        //     pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
-        //     usefulJoin += pnbMap[elem1].size() - originSize;
+        // FIXME step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+        for (auto& elem1 : leftTargetSet) {
+            int originSize = pnbMap[elem1].size();
+            pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
+            usefulJoin += pnbMap[elem1].size() - originSize;
+        }
+
+        // 下面这种方式反而会使速度变慢，而且join的结果好像不大对，未细究原因。
+        // vector<int> joinedTempL, joinedTempR, unJoinedTempL, unJoinedTempR;
+        // for (auto& elem : leftTargetSet) {
+        //     if (LJoinedSet.contains(elem)) {
+        //         joinedTempL.push_back(elem);
+        //     } else {
+        //         unJoinedTempL.push_back(elem);
+        //     }
         // }
-        vector<int> joinedTempL, joinedTempR, unJoinedTempL, unJoinedTempR;
-        for (auto& elem : leftTargetSet) {
-            if (LJoinedSet.contains(elem)) {
-                joinedTempL.push_back(elem);
-            } else {
-                unJoinedTempL.push_back(elem);
-            }
-        }
-        for (auto& elem : rightTargetSet) {
-            if (RJoinedSet.contains(elem)) {
-                joinedTempR.push_back(elem);
-            } else {
-                unJoinedTempR.push_back(elem);
-            }
-        }
-        if (unJoinedTempL.size() != 0) {
-            for (auto& elem : unJoinedTempL) {
-                int originSize = pnbMap[elem].size();
-                pnbMap[elem].insert(joinedTempR.begin(), joinedTempR.end());
-                usefulJoin += pnbMap[elem].size() - originSize;
-            }
-            for (auto& elem : joinedTempR) {
-                int originSize = pnbMap[elem].size();
-                pnbMap[elem].insert(unJoinedTempL.begin(), unJoinedTempL.end());
-                usefulJoin += pnbMap[elem].size() - originSize;
-            }
-        }
-        if (unJoinedTempR.size() != 0) {
-            for (auto& elem : unJoinedTempR) {
-                int originSize = pnbMap[elem].size();
-                pnbMap[elem].insert(joinedTempL.begin(), joinedTempL.end());
-                usefulJoin += pnbMap[elem].size() - originSize;
-            }
-            for (auto& elem : joinedTempL) {
-                int originSize = pnbMap[elem].size();
-                pnbMap[elem].insert(unJoinedTempR.begin(), unJoinedTempR.end());
-                usefulJoin += pnbMap[elem].size() - originSize;
-            }
-        }
-        if (unJoinedTempL.size() != 0 && unJoinedTempR.size() != 0) {
-            for (auto& elem : unJoinedTempL) {
-                int originSize = pnbMap[elem].size();
-                pnbMap[elem].insert(unJoinedTempR.begin(), unJoinedTempR.end());
-                LJoinedSet.insert(elem);
-                usefulJoin += pnbMap[elem].size() - originSize;
-            }
-            for (auto& elem : unJoinedTempR) {
-                int originSize = pnbMap[elem].size();
-                pnbMap[elem].insert(unJoinedTempL.begin(), unJoinedTempL.end());
-                RJoinedSet.insert(elem);
-                usefulJoin += pnbMap[elem].size() - originSize;
-            }
-        }
+        // for (auto& elem : rightTargetSet) {
+        //     if (RJoinedSet.contains(elem)) {
+        //         joinedTempR.push_back(elem);
+        //     } else {
+        //         unJoinedTempR.push_back(elem);
+        //     }
+        // }
+        // if (unJoinedTempL.size() != 0) {
+        //     for (auto& elem : unJoinedTempL) {
+        //         int originSize = pnbMap[elem].size();
+        //         pnbMap[elem].insert(joinedTempR.begin(), joinedTempR.end());
+        //         usefulJoin += pnbMap[elem].size() - originSize;
+        //     }
+        //     for (auto& elem : joinedTempR) {
+        //         int originSize = pnbMap[elem].size();
+        //         pnbMap[elem].insert(unJoinedTempL.begin(), unJoinedTempL.end());
+        //         usefulJoin += pnbMap[elem].size() - originSize;
+        //     }
+        // }
+        // if (unJoinedTempR.size() != 0) {
+        //     for (auto& elem : unJoinedTempR) {
+        //         int originSize = pnbMap[elem].size();
+        //         pnbMap[elem].insert(joinedTempL.begin(), joinedTempL.end());
+        //         usefulJoin += pnbMap[elem].size() - originSize;
+        //     }
+        //     for (auto& elem : joinedTempL) {
+        //         int originSize = pnbMap[elem].size();
+        //         pnbMap[elem].insert(unJoinedTempR.begin(), unJoinedTempR.end());
+        //         usefulJoin += pnbMap[elem].size() - originSize;
+        //     }
+        // }
+        // if (unJoinedTempL.size() != 0 && unJoinedTempR.size() != 0) {
+        //     for (auto& elem : unJoinedTempL) {
+        //         int originSize = pnbMap[elem].size();
+        //         pnbMap[elem].insert(unJoinedTempR.begin(), unJoinedTempR.end());
+        //         LJoinedSet.insert(elem);
+        //         usefulJoin += pnbMap[elem].size() - originSize;
+        //     }
+        //     for (auto& elem : unJoinedTempR) {
+        //         int originSize = pnbMap[elem].size();
+        //         pnbMap[elem].insert(unJoinedTempL.begin(), unJoinedTempL.end());
+        //         RJoinedSet.insert(elem);
+        //         usefulJoin += pnbMap[elem].size() - originSize;
+        //     }
+        // }
     }
 
     cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
