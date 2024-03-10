@@ -10,7 +10,7 @@ using namespace std;
 
 /*
     [0]:exe, [1]:data-dir, [2]:similarity-threshold, [3]:density-threshold
-    [4]:cluster-mode, [5]:meta-path, [6]:output-file
+    [4]:cluster-mode, [5]:meta-path, [6]:output-file, [7]:flag-index
 */
 int main(int argc, char* argv[]) {
     string Path = argv[1];
@@ -83,18 +83,18 @@ int main(int argc, char* argv[]) {
     }
     cout << "=================" << endl;
 
-    // Pscan myPscan(pnbMap);
-    // myPscan.get_graph();
-    // myPscan.pSCAN(argv[2], mu);
-    // myPscan.output(argv[2], argv[3], argv[1]);
+    Pscan myPscan(pnbMap);
+    myPscan.get_graph();
+    myPscan.pSCAN(argv[2], mu);
+    myPscan.output(argv[2], argv[3], argv[1]);
 
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
     // myScan.getCluster(0.64, 3, 0); // for case study
-    myScan.getCluster(eps, mu, mode);
+    // myScan.getCluster(eps, mu, mode);
 
-    cout << "cluster result" << endl;
-    for (int i = 0; i < myScan.cluster.size(); i++) {
-        cout << i << ":" << myScan.cluster[i] << endl;
-    }
+    // cout << "cluster result" << endl;
+    // for (int i = 0; i < myScan.cluster.size(); i++) {
+    //     cout << i << ":" << myScan.cluster[i] << endl;
+    // }
 }
