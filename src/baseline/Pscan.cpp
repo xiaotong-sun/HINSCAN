@@ -209,31 +209,12 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
         rank[i] = 0;
     }
 
-#ifdef _LINUX_
-    struct timeval start;
-    gettimeofday(&start, NULL);
-#else
-    int start = clock();
-#endif
-
     ui* edge_buf = new ui[n];
     int* cores = new int[n];
     int cores_n = 0;
 
     prune_and_cross_link(eps_a2, eps_b2, miu, cores, cores_n);
     //printf("\t*** Finished prune and cross link!\n");
-
-#ifdef _LINUX_
-    struct timeval end1;
-    gettimeofday(&end1, NULL);
-
-    long long mtime1, seconds1, useconds1;
-    seconds1 = end1.tv_sec - start.tv_sec;
-    useconds1 = end1.tv_usec - start.tv_usec;
-    mtime1 = seconds1 * 1000000 + useconds1;
-#else
-    int end1 = clock();
-#endif
 
     int* bin_head = new int[n];
     int* bin_next = new int[n];
@@ -342,21 +323,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     delete[] cores; cores = NULL;
     delete[] bin_head; bin_head = NULL;
     delete[] bin_next; bin_next = NULL;
-
-#ifdef _LINUX_
-    struct timeval end;
-    gettimeofday(&end, NULL);
-
-    long long mtime, seconds, useconds;
-    seconds = end.tv_sec - end1.tv_sec;
-    useconds = end.tv_usec - end1.tv_usec;
-    mtime = seconds * 1000000 + useconds;
-
-#else
-    int end = clock();
-
-    printf("Prune time: %d\nSort time: %d\nRefine time: %d\n", end1 - start, end2 - end1, end - end2);
-#endif
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
 }

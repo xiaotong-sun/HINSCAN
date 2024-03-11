@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
         outputFile = "/homeGraph.txt";
     }
 
-    struct timeval start, end1, end2;
+    struct timeval start, end1, end2, end3, end4, end5, end6;
     gettimeofday(&start, NULL);
 
     string graphFile = Path + "/graph.txt";
@@ -83,18 +83,46 @@ int main(int argc, char* argv[]) {
     }
     cout << "=================" << endl;
 
+    gettimeofday(&end3, NULL);
+    long long mtime3, seconds3, useconds3;
+    seconds3 = end3.tv_sec - start.tv_sec;
+    useconds3 = end3.tv_usec - start.tv_usec;
+    mtime3 = seconds3 * 1000000 + useconds3;
+
     Pscan myPscan(pnbMap);
     myPscan.get_graph();
     myPscan.pSCAN(argv[2], mu);
-    myPscan.output(argv[2], argv[3], argv[1]);
+    // myPscan.output(argv[2], argv[3], argv[1]);
 
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    gettimeofday(&end4, NULL);
+    long long mtime4, seconds4, useconds4;
+    seconds4 = end4.tv_sec - start.tv_sec;
+    useconds4 = end4.tv_usec - start.tv_usec;
+    mtime4 = seconds4 * 1000000 + useconds4;
+
+    cout << "Time of pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
+
+    gettimeofday(&end5, NULL);
+    long long mtime5, seconds5, useconds5;
+    seconds5 = end5.tv_sec - start.tv_sec;
+    useconds5 = end5.tv_usec - start.tv_usec;
+    mtime5 = seconds5 * 1000000 + useconds5;
+
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // myScan.getCluster(0.68, 3, 1); // for expHIN_origin & expHIN
     // myScan.getCluster(0.64, 3, 0); // for case study
-    // myScan.getCluster(eps, mu, mode);
+    myScan.getCluster(eps, mu, mode);
 
-    // cout << "cluster result" << endl;
-    // for (int i = 0; i < myScan.cluster.size(); i++) {
-    //     cout << i << ":" << myScan.cluster[i] << endl;
-    // }
+    gettimeofday(&end6, NULL);
+    long long mtime6, seconds6, useconds6;
+    seconds6 = end6.tv_sec - start.tv_sec;
+    useconds6 = end6.tv_usec - start.tv_usec;
+    mtime6 = seconds6 * 1000000 + useconds6;
+
+    cout << "Time of Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+
+    cout << "cluster result" << endl;
+    for (int i = 0; i < myScan.cluster.size(); i++) {
+        cout << i << ":" << myScan.cluster[i] << endl;
+    }
 }

@@ -20,12 +20,13 @@ SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGr
 }
 
 void SCAN::getCommonEpsNb(double eps) {
+    // cout << "similarity of vertex" << endl;
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
 
         for (int nb : neighbor_v) {
-            if (nb < vertex) { // because these vertices have been considered in Line 83.
+            if (nb < vertex) { // because these vertices have been considered in Line 47.
                 continue;
             } else if (nb == vertex) {
                 this->epsNbs[vertex].insert(nb);
@@ -41,7 +42,7 @@ void SCAN::getCommonEpsNb(double eps) {
 
             // calculate the basic p-structural similarity
             double similarity = commonNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
-            cout << vertex << "-" << nb << " : " << similarity << endl;
+            // cout << vertex << "-" << nb << " : " << similarity << endl;
             if (similarity >= eps) {
                 this->epsNbs[vertex].insert(nb);
                 this->epsNbs[nb].insert(vertex);
@@ -52,7 +53,7 @@ void SCAN::getCommonEpsNb(double eps) {
 
 // XXX: this code can be simplified.
 void SCAN::getDisjointEpsNb(double eps) {
-    cout << "similarity of vertex" << endl;
+    // cout << "similarity of vertex" << endl;
     for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
@@ -77,7 +78,7 @@ void SCAN::getDisjointEpsNb(double eps) {
 
             // calculate the basic p-structural similarity.
             double similarity = disjoinNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
-            cout << vertex << "-" << nb << " : " << similarity << endl;
+            // cout << vertex << "-" << nb << " : " << similarity << endl;
             if (similarity >= eps) {
                 this->epsNbs[vertex].insert(nb);
                 this->epsNbs[nb].insert(vertex);
@@ -264,16 +265,16 @@ void SCAN::getCluster(double eps, int mu, int mode) {
         getDisjointEpsNb(eps);
     }
 
-    cout << "=================" << endl;
-    cout << "eps neighbor of each vertex" << endl;
-    for (map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
-        cout << iter->first << ": " << ends;
-        for (int val : iter->second) {
-            cout << val << " " << ends;
-        }
-        cout << endl;
-    }
-    cout << "=================" << endl;
+    // cout << "=================" << endl;
+    // cout << "eps neighbor of each vertex" << endl;
+    // for (map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
+    //     cout << iter->first << ": " << ends;
+    //     for (int val : iter->second) {
+    //         cout << val << " " << ends;
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "=================" << endl;
 
     int clusterID = 0;
     set<int> non_member;
