@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -c -O3 -std=c++20 -I include
+CFLAGS = -c -O3 -std=c++20 -g -I include
 
 SRC_BASELINE = src/baseline
 SRC_BEAN = src/bean

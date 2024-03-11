@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     if (argc >= 7) {
         outputFile = argv[6];
     } else {
-        outputFile = "/homeGraph.txt";
+        outputFile = "/homoGraph.txt";
     }
 
     struct timeval start, end1, end2, end3, end4, end5, end6;
@@ -72,16 +72,16 @@ int main(int argc, char* argv[]) {
     // writeToFile(homoGraphFile, pnbMap);
     // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
-    cout << "=================" << endl;
-    cout << "neighbor of each vertex (HomoGraph)" << endl;
-    for (const auto& iter : pnbMap) {
-        cout << iter.first << ": ";
-        for (auto& j : iter.second) {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-    cout << "=================" << endl;
+    // cout << "=================" << endl;
+    // cout << "neighbor of each vertex (HomoGraph)" << endl;
+    // for (const auto& iter : pnbMap) {
+    //     cout << iter.first << ": ";
+    //     for (auto& j : iter.second) {
+    //         cout << j << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "=================" << endl;
 
     gettimeofday(&end3, NULL);
     long long mtime3, seconds3, useconds3;
@@ -89,9 +89,9 @@ int main(int argc, char* argv[]) {
     useconds3 = end3.tv_usec - start.tv_usec;
     mtime3 = seconds3 * 1000000 + useconds3;
 
-    Pscan myPscan(pnbMap);
-    myPscan.get_graph();
-    myPscan.pSCAN(argv[2], mu);
+    // Pscan myPscan(pnbMap);
+    // myPscan.get_graph();
+    // myPscan.pSCAN(argv[2], mu);
     // myPscan.output(argv[2], argv[3], argv[1]);
 
     gettimeofday(&end4, NULL);
@@ -119,10 +119,15 @@ int main(int argc, char* argv[]) {
     useconds6 = end6.tv_usec - start.tv_usec;
     mtime6 = seconds6 * 1000000 + useconds6;
 
-    cout << "Time of Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-
-    cout << "cluster result" << endl;
-    for (int i = 0; i < myScan.cluster.size(); i++) {
-        cout << i << ":" << myScan.cluster[i] << endl;
+    if (mode == 0) {
+        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    } else if (mode == 1){
+        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
     }
+
+    // cout << "=================" << endl;
+    // cout << "cluster result" << endl;
+    // for (int i = 0; i < myScan.cluster.size(); i++) {
+    //     cout << i << ":" << myScan.cluster[i] << endl;
+    // }
 }
