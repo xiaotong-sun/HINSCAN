@@ -15,8 +15,11 @@ SCAN::SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<in
     this->edgeType = edgeType;
     this->edgeReverseMap = edgeReverseMap;
     this->metaPath = metaPath;
-    vector<int> cluster(homoGraph.size(), 0); // set all vertex unclassified at the beginning.
-    this->cluster = cluster;
+    unordered_map<int, int> clusterMap; // set all vertex unclassified at the beginning.
+    for (const auto& it : homoGraph) {
+        clusterMap[it.first] = 0;
+    }
+    this->clusterMap = clusterMap;
 }
 
 void SCAN::getCommonEpsNb(double eps) {
@@ -267,7 +270,7 @@ void SCAN::getCluster(double eps, int mu, int mode) {
 
     // cout << "=================" << endl;
     // cout << "eps neighbor of each vertex" << endl;
-    // for (map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
+    // for (unordered_map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
     //     cout << iter->first << ": " << ends;
     //     for (int val : iter->second) {
     //         cout << val << " " << ends;
@@ -281,7 +284,7 @@ void SCAN::getCluster(double eps, int mu, int mode) {
 
     for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
-        if (cluster[vertex] != 0) {
+        if (clusterMap[vertex] != 0) {
             continue;
         }
 
@@ -303,11 +306,11 @@ void SCAN::getCluster(double eps, int mu, int mode) {
                 }
 
                 for (int x : DirReach) {
-                    if (cluster[x] == 0) {
-                        cluster[x] = clusterID;
+                    if (clusterMap[x] == 0) {
+                        clusterMap[x] = clusterID;
                         Q.push(x);
-                    } else if (cluster[x] == -1) {
-                        cluster[x] = clusterID;
+                    } else if (clusterMap[x] == -1) {
+                        clusterMap[x] = clusterID;
                         non_member.erase(x);
                     }
                 }
@@ -317,7 +320,7 @@ void SCAN::getCluster(double eps, int mu, int mode) {
 
         } else {
             // Step2.2: if vertex is not a core, it is labeled as non-member.
-            cluster[vertex] = -1;
+            clusterMap[vertex] = -1;
             non_member.insert(vertex);
         }
     }
@@ -325,9 +328,9 @@ void SCAN::getCluster(double eps, int mu, int mode) {
     // Step3: further classifies non-members
     for (int v : non_member) {
         if (!isSameCluster(v)) {
-            cluster[v] = -2;
+            clusterMap[v] = -2;
         } else {
-            cluster[v] = -3;
+            clusterMap[v] = -3;
         }
     }
 
@@ -339,8 +342,8 @@ bool SCAN::isSameCluster(int vertex) {
         if (nb == vertex) {
             continue;
         }
-        if (cluster[nb] > 0) { // Only consider the true clusters
-            temp.insert(cluster[nb]);
+        if (clusterMap[nb] > 0) { // Only consider the true clusters
+            temp.insert(clusterMap[nb]);
         }
         if (temp.size() > 1) {
             return false;

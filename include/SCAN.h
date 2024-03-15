@@ -44,7 +44,7 @@ public:
     MetaPath metaPath;
 
     // record the clusterID of each vertex. unclassified=0, non-memeber=-1, cluster>=1, hub=-2, outlier=-3.
-    vector<int> cluster;
+    unordered_map<int, int> clusterMap;
 
     // record the eps-Neighborhood for each vertex.
     unordered_map<int, set<int>> epsNbs;

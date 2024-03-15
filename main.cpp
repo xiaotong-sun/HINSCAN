@@ -69,8 +69,8 @@ int main(int argc, char* argv[]) {
 
     cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
 
-    writeToFile(homoGraphFile, pnbMap);
-    // map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
+    // writeToFile(homoGraphFile, pnbMap);
+    // unordered_map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
     // cout << "=================" << endl;
     // cout << "neighbor of each vertex (HomoGraph)" << endl;
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
 
     cout << "=================" << endl;
     cout << "cluster result" << endl;
-    for (int i = 0; i < myScan.cluster.size(); i++) {
-        cout << i << ":" << myScan.cluster[i] << endl;
+    for (const auto& it : myScan.clusterMap) {
+        cout << it.first << ":" << it.second << endl;
     }
 }
