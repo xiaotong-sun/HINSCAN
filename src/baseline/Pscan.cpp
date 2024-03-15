@@ -7,7 +7,7 @@
 
 #include "Pscan.h"
 
-Pscan::Pscan(map<int, set<int>>& homoGraph) : homoGraph(homoGraph) {
+Pscan::Pscan(unordered_map<int, set<int>>& homoGraph) : homoGraph(homoGraph) {
     n = m = 0;
     eps_a2 = eps_b2 = miu = 0;
 

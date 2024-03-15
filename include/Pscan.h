@@ -22,7 +22,7 @@
 #include <iostream>
 #include <queue>
 #include <set>
-#include <map>
+#include <unordered_map>
  // #include <unordered_set>
 
 typedef unsigned int ui;
@@ -37,7 +37,7 @@ using namespace std;
 
 class Pscan {
 private:
-    map<int, set<int>>& homoGraph;
+    unordered_map<int, set<int>>& homoGraph;
     ui n, m; //number of nodes and edges of the graph
     int eps_a2, eps_b2, miu; // eps_a2/eps_b2 = eps^2
 
@@ -58,7 +58,7 @@ private:
     vector<pair<int, int> > noncore_cluster;
 
 public:
-    Pscan(map<int, set<int>>& homoGraph);
+    Pscan(unordered_map<int, set<int>>& homoGraph);
     ~Pscan();
 
     void get_graph();

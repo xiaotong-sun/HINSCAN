@@ -7,7 +7,7 @@
 
 #include "SCAN.h"
 
-SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath) {
+SCAN::SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath) {
     // XXX: whether this data can be changed to const? or create another class?
     this->homoGraph = homoGraph;
     this->hinGraph = hinGraph;
@@ -21,7 +21,7 @@ SCAN::SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGr
 
 void SCAN::getCommonEpsNb(double eps) {
     // cout << "similarity of vertex" << endl;
-    for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+    for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
 
@@ -54,7 +54,7 @@ void SCAN::getCommonEpsNb(double eps) {
 // XXX: this code can be simplified.
 void SCAN::getDisjointEpsNb(double eps) {
     // cout << "similarity of vertex" << endl;
-    for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+    for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
 
@@ -279,7 +279,7 @@ void SCAN::getCluster(double eps, int mu, int mode) {
     int clusterID = 0;
     set<int> non_member;
 
-    for (map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+    for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         if (cluster[vertex] != 0) {
             continue;

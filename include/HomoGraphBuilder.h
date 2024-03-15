@@ -7,7 +7,7 @@
 
 #pragma once
 #include "MetaPath.h"
-#include <map>
+#include <unordered_map>
 #include <set>
 #include <iostream>
 #include <unordered_set>
@@ -26,10 +26,10 @@ public:
     HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
         const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap);
 
-    map<int, set<int>> build(); // Common build without optimize. Just do search for each vertex.
-    map<int, set<int>> build_optim1(); // A-P-T-P-A, Search from T(mid type) for half of the metaPath.
-    map<int, set<int>> build_optim2(); // A-P-T-P-A, Search from P for half of the metaPath.
-    map<int, set<int>> build_forTest(int flagIndex); // A-P & P-T-P-A || A-P-T & T-P-A.
+    unordered_map<int, set<int>> build(); // Common build without optimize. Just do search for each vertex.
+    unordered_map<int, set<int>> build_optim1(); // A-P-T-P-A, Search from T(mid type) for half of the metaPath.
+    unordered_map<int, set<int>> build_optim2(); // A-P-T-P-A, Search from P for half of the metaPath.
+    unordered_map<int, set<int>> build_forTest(int flagIndex); // A-P & P-T-P-A || A-P-T & T-P-A.
 
 private:
     void findAllNeighbors(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& pnbSet);

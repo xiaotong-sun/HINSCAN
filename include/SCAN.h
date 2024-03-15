@@ -8,7 +8,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <cmath>
 #include <set>
@@ -26,7 +26,7 @@ public:
     };
 
     // store the homogeneous graph.
-    map<int, set<int>> homoGraph;
+    unordered_map<int, set<int>> homoGraph;
 
     // store the HIN graph.
     vector<vector<int>> hinGraph;
@@ -47,9 +47,9 @@ public:
     vector<int> cluster;
 
     // record the eps-Neighborhood for each vertex.
-    map<int, set<int>> epsNbs;
+    unordered_map<int, set<int>> epsNbs;
 
-    SCAN(const map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
+    SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
 
     // get cluster, hub, outlier. CommonNb: mode=0; DisjointNb: mode=1;
     void getCluster(double eps, int mu, int mode);

@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     // map<int, set<int>> pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
+    unordered_map<int, set<int>> pnbMap = homoGraph.build_forTest(atoi(argv[7]));
 
     gettimeofday(&end2, NULL);
     long long mtime2, seconds2, useconds2;
@@ -121,13 +121,13 @@ int main(int argc, char* argv[]) {
 
     if (mode == 0) {
         cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    } else if (mode == 1){
+    } else if (mode == 1) {
         cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
     }
 
-    // cout << "=================" << endl;
-    // cout << "cluster result" << endl;
-    // for (int i = 0; i < myScan.cluster.size(); i++) {
-    //     cout << i << ":" << myScan.cluster[i] << endl;
-    // }
+    cout << "=================" << endl;
+    cout << "cluster result" << endl;
+    for (int i = 0; i < myScan.cluster.size(); i++) {
+        cout << i << ":" << myScan.cluster[i] << endl;
+    }
 }

@@ -1,7 +1,7 @@
 #include "Utility.h"
 
 // write the homoGraph to file.
-void writeToFile(string filePath, map<int, set<int>>& pnbMap) {
+void writeToFile(string filePath, unordered_map<int, set<int>>& pnbMap) {
     ofstream of(filePath);
     for (const auto& iter : pnbMap) {
         of << iter.first;
@@ -14,8 +14,8 @@ void writeToFile(string filePath, map<int, set<int>>& pnbMap) {
 }
 
 // read the homoGraph from file.
-map<int, set<int>> readFromFile(string filePath) {
-    map<int, set<int>> myMap;
+unordered_map<int, set<int>> readFromFile(string filePath) {
+    unordered_map<int, set<int>> myMap;
 
     ifstream fs(filePath);
     string line;
@@ -36,18 +36,18 @@ map<int, set<int>> readFromFile(string filePath) {
 
 // roughly evaluation the number of total join.
 int estimate(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, int flagIndex) {
-    map<int, set<int>> vertexTypeMap = obtainVertexOfType(vertexType);
-    map<int, int> vertexCountMap;
+    unordered_map<int, set<int>> vertexTypeMap = obtainVertexOfType(vertexType);
+    unordered_map<int, int> vertexCountMap;
     for (auto& elem : vertexTypeMap.at(metaPath.vertex[0])) {
         vertexCountMap[elem] = 1;
     }
 
     // estimate from left: A->P->T.
-    map<int, int> leftMap = estimateLeft(graph, vertexType, metaPath, vertexTypeMap, vertexCountMap, flagIndex);
+    unordered_map<int, int> leftMap = estimateLeft(graph, vertexType, metaPath, vertexTypeMap, vertexCountMap, flagIndex);
 
 
     // estimate from right: T<-P<-A.
-    map<int, int> rightMap = estimateRight(graph, vertexType, metaPath, vertexTypeMap, vertexCountMap, flagIndex);
+    unordered_map<int, int> rightMap = estimateRight(graph, vertexType, metaPath, vertexTypeMap, vertexCountMap, flagIndex);
 
     // count total join
     int count = 0;
@@ -59,17 +59,17 @@ int estimate(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& meta
 }
 
 // Obtain vertices of each type.
-map<int, set<int>> obtainVertexOfType(vector<int>& vertexType) {
-    map<int, set<int>> vertexTypeMap;
+unordered_map<int, set<int>> obtainVertexOfType(vector<int>& vertexType) {
+    unordered_map<int, set<int>> vertexTypeMap;
     for (int i = 0; i < vertexType.size(); i++) {
         vertexTypeMap[vertexType[i]].insert(i);
     }
     return vertexTypeMap;
 }
 
-map<int, int> estimateLeft(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, map<int, set<int>>& vertexTypeMap, map<int, int> vertexCountMap, int flagIndex) {
+unordered_map<int, int> estimateLeft(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, unordered_map<int, set<int>>& vertexTypeMap, unordered_map<int, int> vertexCountMap, int flagIndex) {
     for (int i = 1; i <= flagIndex; i++) {
-        map<int, int> tempMap;
+        unordered_map<int, int> tempMap;
         int firstVertexType = metaPath.vertex[i - 1];
         int secondVertexType = metaPath.vertex[i];
         for (int elem : vertexTypeMap.at(secondVertexType)) {
@@ -89,9 +89,9 @@ map<int, int> estimateLeft(vector<vector<int>>& graph, vector<int>& vertexType, 
 }
 
 
-map<int, int> estimateRight(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, map<int, set<int>>& vertexTypeMap, map<int, int> vertexCountMap, int flagIndex) {
+unordered_map<int, int> estimateRight(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, unordered_map<int, set<int>>& vertexTypeMap, unordered_map<int, int> vertexCountMap, int flagIndex) {
     for (int i = metaPath.pathLen - 1; i >= flagIndex; i--) {
-        map<int, int> tempMap;
+        unordered_map<int, int> tempMap;
         int firstVertexType = metaPath.vertex[i + 1];
         int secondVertexType = metaPath.vertex[i];
         for (int elem : vertexTypeMap.at(secondVertexType)) {

@@ -17,7 +17,7 @@ HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vecto
     this->edgeReverseMap = edgeReverseMap;
 }
 
-map<int, set<int>> HomoGraphBuilder::build() {
+unordered_map<int, set<int>> HomoGraphBuilder::build() {
     // step1: collect vertices of the same type;
     int StartType = queryMPath.vertex[0];
     set<int> keepSet;
@@ -30,7 +30,7 @@ map<int, set<int>> HomoGraphBuilder::build() {
     long count = 0; // count the total nb of vertices in keepSet.
 
     // step2: find neighbors
-    map<int, set<int>> pnbMap;
+    unordered_map<int, set<int>> pnbMap;
 
     cout << "keepSet.size = " << keepSet.size() << endl;
     int fl = 0;
@@ -77,14 +77,14 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
     }
 }
 
-map<int, set<int>> HomoGraphBuilder::build_optim1() {
+unordered_map<int, set<int>> HomoGraphBuilder::build_optim1() {
     // step1: collect vertices of the same type with mid vertex in the meta-path.
     int mid = queryMPath.pathLen / 2;
     int MidType = queryMPath.vertex[mid];
     int StartType = queryMPath.vertex[0];
 
     set<int> keepSet;
-    map<int, set<int>> pnbMap;
+    unordered_map<int, set<int>> pnbMap;
 
     for (int i = 0; i < vertexType.size(); i++) {
         if (vertexType[i] == MidType) {
@@ -146,10 +146,9 @@ void HomoGraphBuilder::findTargetFromMidType(int startID, int curID, int index, 
     }
 }
 
-map<int, set<int>> HomoGraphBuilder::build_optim2() {
-    // step1: collect vertices of the same type with vertex in the meta-path.
+unordered_map<int, set<int>> HomoGraphBuilder::build_optim2() { // step1: collect vertices of the same type with vertex in the meta-path.
     set<int> keepSet;
-    map<int, set<int>> pnbMap;
+    unordered_map<int, set<int>> pnbMap;
     int flagIndex;
     int mid = queryMPath.pathLen / 2;
 
@@ -199,7 +198,7 @@ map<int, set<int>> HomoGraphBuilder::build_optim2() {
     cout << "keepSet.size = " << keepSet.size() << endl;
     int fl = 0;
 
-    map<int, set<int>> tempMap;
+    unordered_map<int, set<int>> tempMap;
     for (int startID : keepSet) {
         ++fl;
         if (fl % 500 == 0) {
@@ -283,10 +282,10 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
 /*
     HACK: This code will count the num of join, so if you don't want the count (maybe run faster) please comment out corresponding lines.
 */
-map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
+unordered_map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
     // step1: collect vertices of the same type with vertex of flagIndex.
     set<int> keepSet;
-    map<int, set<int>> pnbMap;
+    unordered_map<int, set<int>> pnbMap;
     int mid = queryMPath.pathLen / 2;
 
     int FlagType = queryMPath.vertex[flagIndex];
