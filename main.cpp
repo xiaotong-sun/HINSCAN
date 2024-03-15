@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
     string edgeFile = Path + "/edge.txt";
     string reverseMapFile = Path + "/edgeReverseMap.txt";
     string homoGraphFile = Path + outputFile;
+    string clusterResultFile = Path + "/ClusterResult-" + argv[2] + "-" + argv[3] + "-" + argv[4] + ".txt";
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
     vector<vector<int>> graph = dr.readGraph();
@@ -125,9 +126,10 @@ int main(int argc, char* argv[]) {
         cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
     }
 
-    cout << "=================" << endl;
-    cout << "cluster result" << endl;
-    for (const auto& it : myScan.clusterMap) {
-        cout << it.first << ":" << it.second << endl;
-    }
+    // cout << "=================" << endl;
+    // cout << "cluster result" << endl;
+    // for (const auto& it : myScan.clusterMap) {
+    //     cout << it.first << ":" << it.second << endl;
+    // }
+    writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 }

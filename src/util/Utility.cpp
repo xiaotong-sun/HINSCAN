@@ -1,7 +1,7 @@
 #include "Utility.h"
 
 // write the homoGraph to file.
-void writeToFile(string filePath, unordered_map<int, set<int>>& pnbMap) {
+void writeToFile(string filePath, const unordered_map<int, set<int>>& pnbMap) {
     ofstream of(filePath);
     for (const auto& iter : pnbMap) {
         of << iter.first;
@@ -108,4 +108,13 @@ unordered_map<int, int> estimateRight(vector<vector<int>>& graph, vector<int>& v
         vertexCountMap = tempMap;
     }
     return vertexCountMap;
+}
+
+void writeClusterResultToFile(string filePath, const unordered_map<int, int>& clusterMap) {
+    ofstream of(filePath);
+    of << "vertexID\tclusterID" << endl;
+    for (const auto& iter : clusterMap) {
+        of << iter.first << "\t" << iter.second << endl;
+    }
+    cout << "Finish writing Cluster-Result to " + filePath << endl;
 }

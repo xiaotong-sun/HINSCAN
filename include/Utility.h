@@ -16,7 +16,7 @@
 using namespace std;
 
 // write the homoGraph to file.
-void writeToFile(string filePath, unordered_map<int, set<int>>& pnbMap);
+void writeToFile(string filePath, const unordered_map<int, set<int>>& pnbMap);
 
 // read the homoGraph from file.
 unordered_map<int, set<int>> readFromFile(string filePath);
@@ -32,3 +32,5 @@ unordered_map<int, int> estimateLeft(vector<vector<int>>& graph, vector<int>& ve
 
 // estimate from right
 unordered_map<int, int> estimateRight(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, unordered_map<int, set<int>>& vertexTypeMap, unordered_map<int, int> vertexCountMap, int flagIndex);
+
+void writeClusterResultToFile(string filePath, const unordered_map<int, int>& clusterMap);
