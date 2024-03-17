@@ -72,23 +72,20 @@ int main(int argc, char* argv[]) {
     // }
     // cout << "=================" << endl;
 
+
+    // TODO: check whether the modify is correct!!
+    Pscan myPscan(pnbMap);
+    myPscan.get_graph();
     long long mtime3 = getTime(start);
-
-    // FIXME: the transform of homoGraph to Pscan need to do some change.
-    // Pscan myPscan(pnbMap);
-    // myPscan.get_graph();
-    // myPscan.pSCAN(argv[2], mu);
-    // myPscan.output(argv[2], argv[3], argv[1]);
-
+    myPscan.pSCAN(argv[2], mu);
     long long mtime4 = getTime(start);
+    myPscan.output(argv[2], argv[3], argv[1]);
 
     cout << "Time of pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
 
-    long long mtime5 = getTime(start);
-
     SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    long long mtime5 = getTime(start);
     myScan.getCluster(eps, mu, mode);
-
     long long mtime6 = getTime(start);
 
     if (mode == 0) {

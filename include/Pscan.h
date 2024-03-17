@@ -23,7 +23,6 @@
 #include <queue>
 #include <set>
 #include <unordered_map>
- // #include <unordered_set>
 
 typedef unsigned int ui;
 
@@ -38,6 +37,8 @@ using namespace std;
 class Pscan {
 private:
     unordered_map<int, set<int>>& homoGraph;
+    unordered_map<int, int> index2id; // get the true id of the vertex
+    unordered_map<int, int> id2index;
     ui n, m; //number of nodes and edges of the graph
     int eps_a2, eps_b2, miu; // eps_a2/eps_b2 = eps^2
 
