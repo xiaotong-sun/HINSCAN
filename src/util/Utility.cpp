@@ -118,3 +118,13 @@ void writeClusterResultToFile(string filePath, const unordered_map<int, int>& cl
     }
     cout << "Finish writing Cluster-Result to " + filePath << endl;
 }
+
+long long getTime(struct timeval &start) {
+    struct timeval curtime;
+    gettimeofday(&curtime, NULL);
+    long long mtime, seconds, useconds;
+    seconds = curtime.tv_sec - start.tv_sec;
+    useconds = curtime.tv_usec - start.tv_usec;
+    mtime = seconds * 1000000 + useconds;
+    return mtime;
+}
