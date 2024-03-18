@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
     
     myPscan.output(argv[2], argv[3], argv[1]);
 
-
+    // TODO: The disjoint situation needs to make improvement.
     SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     long long mtime5 = getTime(start);
     myScan.getCluster(eps, mu, mode);
