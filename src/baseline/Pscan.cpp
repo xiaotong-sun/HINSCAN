@@ -75,6 +75,8 @@ void Pscan::get_graph() {
     int i = 0;
     for (auto& item : homoGraph) {
         degree[i] = item.second.size() - 1;
+        index2id[i] = item.first;
+        id2index[item.first] = i;
         m += degree[i];
         i++;
     }
@@ -98,17 +100,25 @@ void Pscan::get_graph() {
     pstart[0] = 0;
     i = 0;
     for (auto& item : homoGraph) {
-        //printf("%d %d\n", i, degree[i]);
-        ui k = 0;
+        // printf("index = %d \t degree = %d\n", i, degree[i]);
+        set<int> neighborTemp; // this set is used to make edge in increasing order.
+
         for (auto& elem : item.second) {
             if (item.first == elem) {
                 continue;
             }
-            buf[k] = elem;
-            ++k;
+            neighborTemp.insert(id2index[elem]);
         }
 
-        for (ui j = 0; j < degree[i]; j++) edges[pstart[i] + j] = buf[j];
+        ui k = 0;
+        for (int elem : neighborTemp) {
+            buf[k] = elem;
+            k ++;
+        }
+
+        for (ui j = 0; j < degree[i]; j++) {
+            edges[pstart[i] + j] = buf[j];
+        }
 
         pstart[i + 1] = pstart[i] + degree[i];
 
@@ -171,25 +181,29 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
 }
 
 void Pscan::output(const char* eps_s, const char* miu, string dir) {
-    printf("\t*** Start write result into disk!\n");
-
-    string out_name = dir + "/result-" + string(eps_s) + "-" + string(miu) + ".txt";
+    string out_name = dir + "/PscanResult-" + string(eps_s) + "-" + string(miu) + ".txt";
     FILE* fout = open_file(out_name.c_str(), "w");
 
     fprintf(fout, "c/n vertex_id cluster_id\n");
 
+    // for (ui i = 0; i < n; i ++) {
+    //     fprintf(fout, "%d %d\n", index2id.at(i), cid[pa[i]]);
+    // }
+    // fprintf(fout, "--------------------\n");
+
     int mu = atoi(miu);
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
-        fprintf(fout, "c %d %d\n", i, cid[pa[i]]);
+        fprintf(fout, "c %d %d\n", index2id.at(i), cid[pa[i]]);
     }
 
     sort(noncore_cluster.begin(), noncore_cluster.end());
     noncore_cluster.erase(unique(noncore_cluster.begin(), noncore_cluster.end()), noncore_cluster.end());
     for (ui i = 0;i < noncore_cluster.size();i++) {
-        fprintf(fout, "n %d %d\n", noncore_cluster[i].second, noncore_cluster[i].first);
+        fprintf(fout, "n %d %d\n", index2id[noncore_cluster[i].second], noncore_cluster[i].first);
     }
 
     fclose(fout);
+    cout << "Finish writing Pscan-Result to " << out_name << endl;
 }
 
 void Pscan::pSCAN(const char* eps_s, int _miu) {

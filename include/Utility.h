@@ -12,6 +12,7 @@
 #include <sstream>
 #include <vector>
 #include "MetaPath.h"
+#include <sys/time.h>
 
 using namespace std;
 
@@ -34,3 +35,5 @@ unordered_map<int, int> estimateLeft(vector<vector<int>>& graph, vector<int>& ve
 unordered_map<int, int> estimateRight(vector<vector<int>>& graph, vector<int>& vertexType, MetaPath& metaPath, unordered_map<int, set<int>>& vertexTypeMap, unordered_map<int, int> vertexCountMap, int flagIndex);
 
 void writeClusterResultToFile(string filePath, const unordered_map<int, int>& clusterMap);
+
+long long getTime(struct timeval &start);
