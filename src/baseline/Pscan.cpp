@@ -181,12 +181,15 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
 }
 
 void Pscan::output(const char* eps_s, const char* miu, string dir) {
-    printf("\t*** Start write result into disk!\n");
-
     string out_name = dir + "/PscanResult-" + string(eps_s) + "-" + string(miu) + ".txt";
     FILE* fout = open_file(out_name.c_str(), "w");
 
     fprintf(fout, "c/n vertex_id cluster_id\n");
+
+    // for (ui i = 0; i < n; i ++) {
+    //     fprintf(fout, "%d %d\n", index2id.at(i), cid[pa[i]]);
+    // }
+    // fprintf(fout, "--------------------\n");
 
     int mu = atoi(miu);
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
@@ -196,10 +199,11 @@ void Pscan::output(const char* eps_s, const char* miu, string dir) {
     sort(noncore_cluster.begin(), noncore_cluster.end());
     noncore_cluster.erase(unique(noncore_cluster.begin(), noncore_cluster.end()), noncore_cluster.end());
     for (ui i = 0;i < noncore_cluster.size();i++) {
-        fprintf(fout, "n %d %d\n", noncore_cluster[i].second, noncore_cluster[i].first);
+        fprintf(fout, "n %d %d\n", index2id[noncore_cluster[i].second], noncore_cluster[i].first);
     }
 
     fclose(fout);
+    cout << "Finish writing Pscan-Result to " << out_name << endl;
 }
 
 void Pscan::pSCAN(const char* eps_s, int _miu) {
