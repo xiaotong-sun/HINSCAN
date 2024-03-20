@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     }
 
     struct timeval start;
-    gettimeofday(&start, NULL);
+    gettimeofday(&start, nullptr);
 
     string graphFile = Path + "/graph.txt";
     string vertexFile = Path + "/vertex.txt";
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
 
-    // writeToFile(homoGraphFile, pnbMap);
+    writeToFile(homoGraphFile, pnbMap);
     // unordered_map<int, set<int>> pnbMap = readFromFile(homoGraphFile);
 
     // cout << "=================" << endl;
@@ -80,7 +80,6 @@ int main(int argc, char* argv[]) {
     myPscan.pSCAN(argv[2], mu);
     long long mtime4 = getTime(start);
     cout << "Time of pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
-    
     myPscan.output(argv[2], argv[3], argv[1]);
 
     // TODO: The disjoint situation needs to make improvement.

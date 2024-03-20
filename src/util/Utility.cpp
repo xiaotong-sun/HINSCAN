@@ -121,7 +121,7 @@ void writeClusterResultToFile(string filePath, const unordered_map<int, int>& cl
 
 long long getTime(struct timeval &start) {
     struct timeval curtime;
-    gettimeofday(&curtime, NULL);
+    gettimeofday(&curtime, nullptr);
     long long mtime, seconds, useconds;
     seconds = curtime.tv_sec - start.tv_sec;
     useconds = curtime.tv_usec - start.tv_usec;
