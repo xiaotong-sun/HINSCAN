@@ -286,7 +286,6 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
     // step1: collect vertices of the same type with vertex of flagIndex.
     set<int> keepSet;
     unordered_map<int, set<int>> pnbMap;
-    int mid = queryMPath.pathLen / 2;
 
     int FlagType = queryMPath.vertex[flagIndex];
     int StartType = queryMPath.vertex[0];
