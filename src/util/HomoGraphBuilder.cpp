@@ -89,7 +89,8 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_optim1() {
     for (int i = 0; i < vertexType.size(); i++) {
         if (vertexType[i] == MidType) {
             keepSet.insert(i);
-        } else if (vertexType[i] == StartType) {
+        }
+        if (vertexType[i] == StartType) {
             pnbMap[i].insert(i);
         }
     }
@@ -162,7 +163,8 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_optim2() { // step1: collec
         for (int i = 0; i < vertexType.size(); i++) {
             if (vertexType[i] == FlagType) {
                 keepSet.insert(i);
-            } else if (vertexType[i] == StartType) {
+            }
+            if (vertexType[i] == StartType) {
                 pnbMap[i].insert(i);
             }
         }
@@ -293,7 +295,8 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
     for (int i = 0; i < vertexType.size(); i++) {
         if (vertexType[i] == FlagType) {
             keepSet.insert(i);
-        } else if (vertexType[i] == StartType) {
+        }
+        if (vertexType[i] == StartType) {
             pnbMap[i].insert(i);
         }
     }

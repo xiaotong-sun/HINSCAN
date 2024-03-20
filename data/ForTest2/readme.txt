@@ -2,7 +2,7 @@ The graph in the folder is used for testing if the program can run correctly, wh
 does not connect to T. (A-P-T-P-A)
  
 This can also test when the index of the type of edge/vertex is not begin with 0, whether the program
-can run correctly.
+can run correctly. YES
 ---
 vertex type
 1
