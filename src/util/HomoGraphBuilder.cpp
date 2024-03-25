@@ -246,7 +246,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
         unordered_set<int>& visitSet = visitList[index - 1];
-        if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
+        if (!visitSet.contains(nbVertexID) && targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
             if (index - 1 > 0) {
                 findLeftTarget(startID, nbVertexID, index - 1, visitList, leftTargetSet, flagIndex);
                 visitSet.insert(nbVertexID);
@@ -284,14 +284,21 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
 /*
     HACK: This code will count the num of join, so if you don't want the count (maybe run faster) please comment out corresponding lines.
 */
-unordered_map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
+void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>& pnbMap) {
+    // DELETE: To evaluate the time.
+    struct timeval start;
+    gettimeofday(&start, nullptr);
+    long long timeStart = getTime(start);
+    long long getKeepsetTime = 0, totalJionTime = 0, totalSearchTime = 0;
+
     // step1: collect vertices of the same type with vertex of flagIndex.
     set<int> keepSet;
-    unordered_map<int, set<int>> pnbMap;
+    // unordered_map<int, set<int>> pnbMap;
 
     int FlagType = queryMPath.vertex[flagIndex];
     int StartType = queryMPath.vertex[0];
 
+    long long time1 = getTime(start);
     for (int i = 0; i < vertexType.size(); i++) {
         if (vertexType[i] == FlagType) {
             keepSet.insert(i);
@@ -300,13 +307,14 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
             pnbMap[i].insert(i);
         }
     }
+    long long time2 = getTime(start);
+    getKeepsetTime = time2 - time1;
 
     // step2: find target vertices that connected to the target vertex.
     cout << "keepSet.size = " << keepSet.size() << endl;
     int fl = 0;
 
     int totalJoin = 0, usefulJoin = 0;
-    unordered_set<int> LJoinedSet, RJoinedSet;
 
     for (int startID : keepSet) {
         ++fl;
@@ -319,81 +327,37 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_forTest(int flagIndex) {
         set<int> leftTargetSet;
         set<int> rightTargetSet;
 
+        long long time3 = getTime(start);
         findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet, flagIndex);
         findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
+        long long time4 = getTime(start);
+        totalSearchTime += time4 - time3;
 
         totalJoin += leftTargetSet.size() * rightTargetSet.size();
 
         // FIXME step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+
+        long long time5 = getTime(start);
         for (auto& elem1 : leftTargetSet) {
             int originSize = pnbMap[elem1].size();
             pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
             usefulJoin += pnbMap[elem1].size() - originSize;
         }
-
-        // 下面这种方式反而会使速度变慢，而且join的结果好像不大对，未细究原因。
-        // vector<int> joinedTempL, joinedTempR, unJoinedTempL, unJoinedTempR;
-        // for (auto& elem : leftTargetSet) {
-        //     if (LJoinedSet.contains(elem)) {
-        //         joinedTempL.push_back(elem);
-        //     } else {
-        //         unJoinedTempL.push_back(elem);
-        //     }
-        // }
-        // for (auto& elem : rightTargetSet) {
-        //     if (RJoinedSet.contains(elem)) {
-        //         joinedTempR.push_back(elem);
-        //     } else {
-        //         unJoinedTempR.push_back(elem);
-        //     }
-        // }
-        // if (unJoinedTempL.size() != 0) {
-        //     for (auto& elem : unJoinedTempL) {
-        //         int originSize = pnbMap[elem].size();
-        //         pnbMap[elem].insert(joinedTempR.begin(), joinedTempR.end());
-        //         usefulJoin += pnbMap[elem].size() - originSize;
-        //     }
-        //     for (auto& elem : joinedTempR) {
-        //         int originSize = pnbMap[elem].size();
-        //         pnbMap[elem].insert(unJoinedTempL.begin(), unJoinedTempL.end());
-        //         usefulJoin += pnbMap[elem].size() - originSize;
-        //     }
-        // }
-        // if (unJoinedTempR.size() != 0) {
-        //     for (auto& elem : unJoinedTempR) {
-        //         int originSize = pnbMap[elem].size();
-        //         pnbMap[elem].insert(joinedTempL.begin(), joinedTempL.end());
-        //         usefulJoin += pnbMap[elem].size() - originSize;
-        //     }
-        //     for (auto& elem : joinedTempL) {
-        //         int originSize = pnbMap[elem].size();
-        //         pnbMap[elem].insert(unJoinedTempR.begin(), unJoinedTempR.end());
-        //         usefulJoin += pnbMap[elem].size() - originSize;
-        //     }
-        // }
-        // if (unJoinedTempL.size() != 0 && unJoinedTempR.size() != 0) {
-        //     for (auto& elem : unJoinedTempL) {
-        //         int originSize = pnbMap[elem].size();
-        //         pnbMap[elem].insert(unJoinedTempR.begin(), unJoinedTempR.end());
-        //         LJoinedSet.insert(elem);
-        //         usefulJoin += pnbMap[elem].size() - originSize;
-        //     }
-        //     for (auto& elem : unJoinedTempR) {
-        //         int originSize = pnbMap[elem].size();
-        //         pnbMap[elem].insert(unJoinedTempL.begin(), unJoinedTempL.end());
-        //         RJoinedSet.insert(elem);
-        //         usefulJoin += pnbMap[elem].size() - originSize;
-        //     }
-        // }
+        long long time6 = getTime(start);
+        totalJionTime += time6 - time5;
     }
+
+    long long timeEnd = getTime(start);
 
     cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
     cout << "total join:\t" << totalJoin << endl;
     cout << "useful join:\t" << usefulJoin << endl;
     cout << "useless join:\t" << totalJoin - usefulJoin << endl;
+    cout << "getKeepset time:\t" << getKeepsetTime << "(us)" << endl;
+    cout << "total search time:\t" << totalSearchTime << "(us)" << endl;
+    cout << "total join time:\t" << totalJionTime << "(us)" << endl;
+    cout << "total build time:\t" << timeEnd - timeStart << "(us)" << endl;
     cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-
-    return pnbMap;
 }
 
 // A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.
@@ -411,7 +375,8 @@ void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, v
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
         unordered_set<int>& visitSet = visitList[index - flagIndex + 1];
-        if (targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID] && !visitSet.contains(nbVertexID)) {
+
+        if (!visitSet.contains(nbVertexID) && targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
             if (index + 1 < queryMPath.pathLen) {
                 findRightTarget_test(startID, nbVertexID, index + 1, visitList, rightTargetSet, flagIndex);
                 visitSet.insert(nbVertexID);

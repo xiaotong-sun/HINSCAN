@@ -11,6 +11,7 @@
 #include <set>
 #include <iostream>
 #include <unordered_set>
+#include <Utility.h>
 
 using namespace std;
 
@@ -29,7 +30,7 @@ public:
     unordered_map<int, set<int>> build(); // Common build without optimize. Just do search for each vertex.
     unordered_map<int, set<int>> build_optim1(); // A-P-T-P-A, Search from T(mid type) for half of the metaPath.
     unordered_map<int, set<int>> build_optim2(); // A-P-T-P-A, Search from P for half of the metaPath.
-    unordered_map<int, set<int>> build_forTest(int flagIndex); // A-P & P-T-P-A || A-P-T & T-P-A.
+    void build_forTest(int flagIndex, unordered_map<int, set<int>>& pnbMap); // A-P & P-T-P-A || A-P-T & T-P-A.
 
 private:
     void findAllNeighbors(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& pnbSet);
