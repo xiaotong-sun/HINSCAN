@@ -15,6 +15,8 @@ HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vecto
     this->edgeType = edgeType;
     this->queryMPath = queryMPath;
     this->edgeReverseMap = edgeReverseMap;
+
+    this->totalVisitNodeNum = 0;
 }
 
 unordered_map<int, set<int>> HomoGraphBuilder::build() {
@@ -247,6 +249,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
         int nbEdgeID = nbArr[i + 1];
         unordered_set<int>& visitSet = visitList[index - 1];
         if (!visitSet.contains(nbVertexID) && targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
+            totalVisitNodeNum++;
             if (index - 1 > 0) {
                 findLeftTarget(startID, nbVertexID, index - 1, visitList, leftTargetSet, flagIndex);
                 visitSet.insert(nbVertexID);
@@ -315,6 +318,7 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
     int fl = 0;
 
     int totalJoin = 0, usefulJoin = 0;
+    // totalVisitNodeNum += keepSet.size();
 
     for (int startID : keepSet) {
         ++fl;
@@ -357,6 +361,7 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
     cout << "total search time:\t" << totalSearchTime << "(us)" << endl;
     cout << "total join time:\t" << totalJionTime << "(us)" << endl;
     cout << "total build time:\t" << timeEnd - timeStart << "(us)" << endl;
+    cout << "total visit node num:\t" << totalVisitNodeNum << endl;
     cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
 }
 
@@ -377,6 +382,7 @@ void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, v
         unordered_set<int>& visitSet = visitList[index - flagIndex + 1];
 
         if (!visitSet.contains(nbVertexID) && targetVType == vertexType[nbVertexID] && targetEType == edgeType[nbEdgeID]) {
+            totalVisitNodeNum++;
             if (index + 1 < queryMPath.pathLen) {
                 findRightTarget_test(startID, nbVertexID, index + 1, visitList, rightTargetSet, flagIndex);
                 visitSet.insert(nbVertexID);

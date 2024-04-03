@@ -22,6 +22,7 @@ private:
     vector<int> edgeType; // edge -> type
     MetaPath queryMPath; // the query meta-path
     unordered_map<int, int> edgeReverseMap; // edge <-> edge
+    int totalVisitNodeNum; // used to count the total number of visit node.
 
 public:
     HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
