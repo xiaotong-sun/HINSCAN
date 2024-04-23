@@ -49,6 +49,8 @@ public:
     // record the eps-Neighborhood for each vertex.
     unordered_map<int, set<int>> epsNbs;
 
+    int verifyTimes = 0;
+
     SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
 
     // get cluster, hub, outlier. CommonNb: mode=0; DisjointNb: mode=1;
@@ -65,7 +67,7 @@ private:
     void getDisjointEpsNb(double eps);
 
     // get disjoint common p-enighbor (used for disjoint common p-neighbor).
-    set<int> disjoinNb(const set<int>& commonNB, int vertexV, int vertexW);
+    set<int> disjoinNb(set<int>& commonNB, int vertexV, int vertexW, auto& verifyTrueSet, auto& verifyFalseSet, double lowerBound);
 
     // verify if there exist three instances of P connecting three P-pairs (used for disjoint common p-neighbor).
     bool verifyExistence(vector<MyTuple>& lambda);

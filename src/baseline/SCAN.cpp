@@ -54,15 +54,18 @@ void SCAN::getCommonEpsNb(double eps) {
     }
 }
 
-// XXX: this code can be simplified.
 void SCAN::getDisjointEpsNb(double eps) {
+    // Two sets bellow are used to record the u, v, w that has been verified.
+    set<set<int>> verifyTrueSet;
+    set<set<int>> verifyFalseSet;
+
     // cout << "similarity of vertex" << endl;
     for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
         set<int> neighbor_v = iter->second;
 
         for (int nb : neighbor_v) {
-            if (nb < vertex) { // because these vertices have been considered in Line 83.
+            if (nb < vertex) { // because these vertices have been considered in Line 85.
                 continue;
             } else if (nb == vertex) {
                 this->epsNbs[vertex].insert(nb);
@@ -77,12 +80,10 @@ void SCAN::getDisjointEpsNb(double eps) {
                 neighbor_w.end(), inserter(commonNB, commonNB.begin()));
 
             // get disjoint common p-neighbor.
-            set<int> disjoinNB = disjoinNb(commonNB, vertex, nb);
+            double lowerBound = eps * sqrt(neighbor_v.size() * neighbor_w.size());
+            set<int> disjoinNB = disjoinNb(commonNB, vertex, nb, verifyTrueSet, verifyFalseSet, lowerBound);
 
-            // calculate the basic p-structural similarity.
-            double similarity = disjoinNB.size() / sqrt(neighbor_v.size() * neighbor_w.size());
-            // cout << vertex << "-" << nb << " : " << similarity << endl;
-            if (similarity >= eps) {
+            if (disjoinNB.size() >= lowerBound) {
                 this->epsNbs[vertex].insert(nb);
                 this->epsNbs[nb].insert(vertex);
             }
@@ -90,10 +91,28 @@ void SCAN::getDisjointEpsNb(double eps) {
     }
 }
 
-set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
+set<int> SCAN::disjoinNb(set<int>& commonNB, int vertexV, int vertexW, auto& verifyTrueSet, auto& verifyFalseSet, double lowerBound) {
+    commonNB.erase(vertexV);
+    commonNB.erase(vertexW);
+
     set<int> disjoinNB;
+
+    // union {v, w}.
+    disjoinNB.insert(vertexV);
+    disjoinNB.insert(vertexW);
+
+    int count = -1;
+
     for (int vertexU : commonNB) {
-        if (vertexU == vertexV || vertexU == vertexW) {
+        count++;
+        if (disjoinNB.size() >= lowerBound || disjoinNB.size() + (commonNB.size() - count) < lowerBound) {
+            return disjoinNB;
+        }
+        if (verifyFalseSet.contains({ vertexU, vertexV, vertexW })) {
+            continue;
+        }
+        if (verifyTrueSet.contains({ vertexU, vertexV, vertexW })) {
+            disjoinNB.insert(vertexU);
             continue;
         }
         MyTuple tuple1 = { vertexV, vertexW, metaPath };
@@ -102,18 +121,18 @@ set<int> SCAN::disjoinNb(const set<int>& commonNB, int vertexV, int vertexW) {
         vector<MyTuple> lambda = { tuple1, tuple2, tuple3 };
         if (verifyExistence(lambda)) {
             disjoinNB.insert(vertexU);
+            verifyTrueSet.insert({ vertexU, vertexV, vertexW });
+        } else {
+            verifyFalseSet.insert({ vertexU, vertexV, vertexW });
         }
     }
-
-    // union {v, w}.
-    disjoinNB.insert(vertexV);
-    disjoinNB.insert(vertexW);
 
     return disjoinNB;
 }
 
 bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
     vector<set<int>> listOfComNb;
+    verifyTimes++;
 
     for (MyTuple tup : lambda) {
         int pathVLen = tup.metaPath.vertex.size();
