@@ -1,6 +1,6 @@
-CC = g++
-CFLAGS = -c -O3 -std=c++20 -g -I include
-# CFLAGS = -c -std=c++20 -g -I include
+CC = clang++
+CFLAGS = -c -O3 -std=c++23 -g -I include
+# CFLAGS = -c -std=c++23 -g -I include
 
 SRC_BASELINE = src/baseline
 SRC_BEAN = src/bean

@@ -96,10 +96,10 @@ int main(int argc, char* argv[]) {
 
     cout << "verifyTimes: " << myScan.verifyTimes << endl;
 
-    cout << "=================" << endl;
-    cout << "cluster result" << endl;
-    for (const auto& it : myScan.clusterMap) {
-        cout << it.first << ":" << it.second << endl;
-    }
+    // cout << "=================" << endl;
+    // cout << "cluster result" << endl;
+    // for (const auto& it : myScan.clusterMap) {
+    //     cout << it.first << ":" << it.second << endl;
+    // }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 }
