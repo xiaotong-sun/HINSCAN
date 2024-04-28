@@ -11,61 +11,61 @@ Pscan::Pscan(unordered_map<int, set<int>>& homoGraph) : homoGraph(homoGraph) {
     n = m = 0;
     eps_a2 = eps_b2 = miu = 0;
 
-    pstart = NULL;
-    edges = NULL;
-    reverse = NULL;
-    min_cn = NULL;
+    pstart = nullptr;
+    edges = nullptr;
+    reverse = nullptr;
+    min_cn = nullptr;
 
-    cid = NULL;
+    cid = nullptr;
 
-    degree = NULL;
-    effective_degree = NULL;
-    similar_degree = NULL;
+    degree = nullptr;
+    effective_degree = nullptr;
+    similar_degree = nullptr;
 
-    pa = NULL;
-    rank = NULL;
+    pa = nullptr;
+    rank = nullptr;
 }
 
 Pscan::~Pscan() {
-    if (pstart != NULL) {
+    if (pstart != nullptr) {
         delete[] pstart;
-        pstart = NULL;
+        pstart = nullptr;
     }
-    if (edges != NULL) {
+    if (edges != nullptr) {
         delete[] edges;
-        edges = NULL;
+        edges = nullptr;
     }
-    if (reverse != NULL) {
+    if (reverse != nullptr) {
         delete[] reverse;
-        reverse = NULL;
+        reverse = nullptr;
     }
-    if (min_cn != NULL) {
+    if (min_cn != nullptr) {
         delete[] min_cn;
-        min_cn = NULL;
+        min_cn = nullptr;
     }
-    if (cid != NULL) {
+    if (cid != nullptr) {
         delete[] cid;
-        cid = NULL;
+        cid = nullptr;
     }
-    if (degree != NULL) {
+    if (degree != nullptr) {
         delete[] degree;
-        degree = NULL;
+        degree = nullptr;
     }
-    if (effective_degree != NULL) {
+    if (effective_degree != nullptr) {
         delete[] effective_degree;
-        effective_degree = NULL;
+        effective_degree = nullptr;
     }
-    if (similar_degree != NULL) {
+    if (similar_degree != nullptr) {
         delete[] similar_degree;
-        similar_degree = NULL;
+        similar_degree = nullptr;
     }
-    if (pa != NULL) {
+    if (pa != nullptr) {
         delete[] pa;
-        pa = NULL;
+        pa = nullptr;
     }
-    if (rank != NULL) {
+    if (rank != nullptr) {
         delete[] rank;
-        rank = NULL;
+        rank = nullptr;
     }
 }
 
@@ -81,16 +81,16 @@ void Pscan::get_graph() {
         i++;
     }
 
-    if (pstart == NULL) {
+    if (pstart == nullptr) {
         pstart = new ui[n + 1];
     }
-    if (edges == NULL) {
+    if (edges == nullptr) {
         edges = new int[m];
     }
-    if (reverse == NULL) {
+    if (reverse == nullptr) {
         reverse = new ui[m];
     }
-    if (min_cn == NULL) {
+    if (min_cn == nullptr) {
         min_cn = new int[m];
     }
     memset(min_cn, 0, sizeof(int) * m);
@@ -113,7 +113,7 @@ void Pscan::get_graph() {
         ui k = 0;
         for (int elem : neighborTemp) {
             buf[k] = elem;
-            k ++;
+            k++;
         }
 
         for (ui j = 0; j < degree[i]; j++) {
@@ -153,7 +153,7 @@ ui Pscan::binary_search(const int* array, ui b, ui e, int val) {
 }
 
 void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
-    if (cid == NULL) cid = new int[n];
+    if (cid == nullptr) cid = new int[n];
     for (ui i = 0;i < n;i++) cid[i] = n;
 
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
@@ -210,14 +210,14 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     get_eps(eps_s);
     miu = _miu;
 
-    if (similar_degree == NULL) similar_degree = new int[n];
+    if (similar_degree == nullptr) similar_degree = new int[n];
     memset(similar_degree, 0, sizeof(int) * n);
 
-    if (effective_degree == NULL) effective_degree = new int[n];
+    if (effective_degree == nullptr) effective_degree = new int[n];
     for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
 
-    if (pa == NULL) pa = new int[n];
-    if (rank == NULL) rank = new int[n];
+    if (pa == nullptr) pa = new int[n];
+    if (rank == nullptr) rank = new int[n];
     for (ui i = 0;i < n;i++) {
         pa[i] = i;
         rank[i] = 0;
@@ -333,12 +333,21 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     }
     //printf("\t*** Finished clustering core vertices!\n");
 
-    delete[] edge_buf; edge_buf = NULL;
-    delete[] cores; cores = NULL;
-    delete[] bin_head; bin_head = NULL;
-    delete[] bin_next; bin_next = NULL;
+    delete[] edge_buf; edge_buf = nullptr;
+    delete[] cores; cores = nullptr;
+    delete[] bin_head; bin_head = nullptr;
+    delete[] bin_next; bin_next = nullptr;
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
+
+    // get the value of min_cn[i] for Test.
+    // cout << "####################" << endl;
+    // cout << "m = " << m << endl;
+    // for (int i = 0; i < m; i++) {
+    //     cout << min_cn[i] << " ";
+    // }
+    // cout << endl;
+    // cout << "####################" << endl;
 }
 
 int Pscan::check_common_neighbor(int u, int v, int c) {
@@ -486,7 +495,7 @@ void Pscan::get_eps(const char* eps_s) {
 
 FILE* Pscan::open_file(const char* file_name, const char* mode) {
     FILE* f = fopen(file_name, mode);
-    if (f == NULL) {
+    if (f == nullptr) {
         printf("Can not open file:%s\n", file_name);
         exit(1);
     }
