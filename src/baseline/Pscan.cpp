@@ -518,4 +518,5 @@ unordered_map<int, set<int>> Pscan::getEpsNb() {
         cout << "\n";
     }
     cout << "####################" << endl;
+    return epsNb;
 }
