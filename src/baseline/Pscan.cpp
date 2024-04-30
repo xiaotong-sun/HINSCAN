@@ -10,6 +10,7 @@
 Pscan::Pscan(unordered_map<int, set<int>>& homoGraph) : homoGraph(homoGraph) {
     n = m = 0;
     eps_a2 = eps_b2 = miu = 0;
+    index2id = nullptr;
 
     pstart = nullptr;
     edges = nullptr;
@@ -27,6 +28,10 @@ Pscan::Pscan(unordered_map<int, set<int>>& homoGraph) : homoGraph(homoGraph) {
 }
 
 Pscan::~Pscan() {
+    if (index2id != nullptr) {
+        delete[] index2id;
+        index2id = nullptr;
+    }
     if (pstart != nullptr) {
         delete[] pstart;
         pstart = nullptr;
@@ -71,7 +76,13 @@ Pscan::~Pscan() {
 
 void Pscan::get_graph() {
     n = homoGraph.size(); // number of vertices
-    degree = new int[n];
+    if (degree == nullptr) {
+        degree = new int[n];
+    }
+    if (index2id == nullptr) {
+        index2id = new ui[n];
+    }
+
     int i = 0;
     for (auto& item : homoGraph) {
         degree[i] = item.second.size() - 1;
@@ -101,7 +112,7 @@ void Pscan::get_graph() {
     i = 0;
     for (auto& item : homoGraph) {
         // printf("index = %d \t degree = %d\n", i, degree[i]);
-        set<int> neighborTemp; // this set is used to make edge in increasing order.
+        set<int> neighborTemp; // this set is used to make neighbor nodge in increasing order.
 
         for (auto& elem : item.second) {
             if (item.first == elem) {
@@ -122,7 +133,7 @@ void Pscan::get_graph() {
 
         pstart[i + 1] = pstart[i] + degree[i];
 
-        ++degree[i];
+        ++degree[i]; // add the node itself?
         ++i;
     }
 
@@ -193,7 +204,7 @@ void Pscan::output(const char* eps_s, const char* miu, string dir) {
 
     int mu = atoi(miu);
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
-        fprintf(fout, "c %d %d\n", index2id.at(i), cid[pa[i]]);
+        fprintf(fout, "c %d %d\n", index2id[i], cid[pa[i]]);
     }
 
     sort(noncore_cluster.begin(), noncore_cluster.end());
@@ -234,6 +245,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     int* bin_next = new int[n];
     for (ui i = 0;i < n;i++) bin_head[i] = -1;
 
+    // 下面这段有什么用？bin_head, bin_next是干什么的？
     int max_ed = 0;
     for (ui i = 0;i < n;i++) if (effective_degree[i] >= miu) {
         int ed = effective_degree[i];
@@ -245,7 +257,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     while (true) {
         int u = -1;
         if (cores_n) u = cores[--cores_n];
-        else {
+        else { // 这个else有什么用？
             while (max_ed >= miu && u == -1) {
                 for (int x = bin_head[max_ed];x != -1;) {
                     int tmp = bin_next[x];
@@ -281,7 +293,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
             if (min_cn[idx] != -1) {
                 int v = edges[idx];
 
-                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
+                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2); // similar_chech_OP only return -1 or -2;
 
                 if (min_cn[idx] == -1) ++similar_degree[u];
                 else --effective_degree[u];
@@ -298,7 +310,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
             ++i;
         }
 
-        effective_degree[u] = -1;
+        effective_degree[u] = -1; // u is a core.
 
         if (similar_degree[u] < miu) continue;
 
@@ -317,7 +329,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
 
             min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
 
-            if (effective_degree[v] >= 0) {
+            if (effective_degree[v] >= 0) { // if < 0 , means it is a core?
                 if (min_cn[idx] == -1) {
                     ++similar_degree[v];
 
@@ -339,15 +351,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     delete[] bin_next; bin_next = nullptr;
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
-
-    // get the value of min_cn[i] for Test.
-    // cout << "####################" << endl;
-    // cout << "m = " << m << endl;
-    // for (int i = 0; i < m; i++) {
-    //     cout << min_cn[i] << " ";
-    // }
-    // cout << endl;
-    // cout << "####################" << endl;
 }
 
 int Pscan::check_common_neighbor(int u, int v, int c) {
@@ -355,7 +358,7 @@ int Pscan::check_common_neighbor(int u, int v, int c) {
 
     if (degree[u] > degree[v]) swap(u, v);
 
-    int du = degree[u] + 1, dv = degree[v] + 1;
+    int du = degree[u] + 1, dv = degree[v] + 1; // plus 1 is used to make sure considering all common neighbors.
     ui i = pstart[u], j = pstart[v];
     while (i < pstart[u + 1] && j < pstart[v + 1] && cn < c && du >= c && dv >= c) {
         if (edges[i] < edges[j]) {
@@ -430,7 +433,6 @@ void Pscan::prune_and_cross_link(int eps_a2, int eps_b2, int miu, int* cores, in
             }
 
             if (min_cn[j] != -2) {
-                //else {
                 ui r_id = binary_search(edges, pstart[v], pstart[v + 1], i);
                 reverse[j] = r_id;
                 reverse[r_id] = j;
@@ -501,4 +503,19 @@ FILE* Pscan::open_file(const char* file_name, const char* mode) {
     }
 
     return f;
+}
+
+unordered_map<int, set<int>> Pscan::getEpsNb() {
+    cout << "####################" << endl;
+    cout << "m = " << m << endl;
+    for (ui i = 0; i < n; i++) {
+        cout << index2id[i] << ": ";
+        for (ui j = pstart[i]; j < pstart[i + 1]; j++) {
+            if (min_cn[j] != -2) {
+                cout << index2id[edges[j]] << " ";
+            }
+        }
+        cout << "\n";
+    }
+    cout << "####################" << endl;
 }

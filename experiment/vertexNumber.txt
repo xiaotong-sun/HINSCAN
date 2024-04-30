@@ -24,7 +24,9 @@ dblp0s:
 --- pruned vertex number: 878512
 
 dblp0l:
-
+--- total homoGraph num: 299643578
+--- total epsNeighbor num: 212059970
+--- pruned vertex number: 87583608d
 
 tmdb0s:
 --- total homoGraph num: 270169

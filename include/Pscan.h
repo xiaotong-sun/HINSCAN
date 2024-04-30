@@ -37,8 +37,9 @@ using namespace std;
 class Pscan {
 private:
     unordered_map<int, set<int>>& homoGraph;
-    unordered_map<int, int> index2id; // get the true id of the vertex
+    ui* index2id;
     unordered_map<int, int> id2index;
+
     ui n, m; //number of nodes and edges of the graph
     int eps_a2, eps_b2, miu; // eps_a2/eps_b2 = eps^2
 
@@ -58,6 +59,8 @@ private:
 
     vector<pair<int, int> > noncore_cluster;
 
+    unordered_map<int, set<int>> epsNb;
+
 public:
     Pscan(unordered_map<int, set<int>>& homoGraph);
     ~Pscan();
@@ -67,6 +70,7 @@ public:
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
     void output(const char* eps_s, const char* miu, string dir);
+    unordered_map<int, set<int>> getEpsNb();
 
 private:
     FILE* open_file(const char* file_name, const char* mode);
