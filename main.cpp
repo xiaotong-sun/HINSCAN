@@ -74,13 +74,13 @@ int main(int argc, char* argv[]) {
 
 
     // // TODO: check whether the modify is correct!!
-    Pscan myPscan(pnbMap);
+    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, mode);
     myPscan.get_graph();
     long long mtime3 = getTime(start);
     myPscan.pSCAN(argv[2], mu);
     long long mtime4 = getTime(start);
     cout << "Time of pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
-    // myPscan.output(argv[2], argv[3], argv[1]);
+    myPscan.output(argv[2], argv[3], argv[1]);
 
     // TODO: The disjoint situation needs to make improvement.
     SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
@@ -96,10 +96,10 @@ int main(int argc, char* argv[]) {
 
     cout << "verifyTimes: " << myScan.verifyTimes << endl;
 
-    // cout << "=================" << endl;
-    // cout << "cluster result" << endl;
-    // for (const auto& it : myScan.clusterMap) {
-    //     cout << it.first << ":" << it.second << endl;
-    // }
+    cout << "=================" << endl;
+    cout << "cluster result" << endl;
+    for (const auto& it : myScan.clusterMap) {
+        cout << it.first << ":" << it.second << endl;
+    }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 }

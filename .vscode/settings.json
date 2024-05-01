@@ -23,6 +23,7 @@
         "vector": "cpp",
         "fstream": "cpp",
         "ctime": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "string": "cpp"
     }
 }

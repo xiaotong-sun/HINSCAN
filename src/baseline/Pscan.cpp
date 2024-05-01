@@ -7,7 +7,7 @@
 
 #include "Pscan.h"
 
-Pscan::Pscan(unordered_map<int, set<int>>& homoGraph) : homoGraph(homoGraph) {
+Pscan::Pscan(unordered_map<int, set<int>>& homoGraph, vector<vector<int>>& hinGraph, vector<int>& vertexType, vector<int>& edgeType, unordered_map<int, int>& edgeReverseMap, MetaPath& metaPath, int mode) : homoGraph(homoGraph), hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), edgeReverseMap(edgeReverseMap), metaPath(metaPath), mode(mode) {
     n = m = 0;
     eps_a2 = eps_b2 = miu = 0;
     index2id = nullptr;
@@ -177,7 +177,7 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
         for (ui j = pstart[i];j < pstart[i + 1];j++) if (similar_degree[edges[j]] < mu) {
             if (min_cn[j] >= 0) {
-                min_cn[j] = similar_check_OP(i, j, eps_a2, eps_b2);
+                min_cn[j] = similar_check_OP(i, j, eps_a2, eps_b2, mode);
                 if (reverse[reverse[j]] != j) printf("WA cluster_noncore\n");
                 min_cn[reverse[j]] = min_cn[j];
                 if (min_cn[j] == -1) {
@@ -192,7 +192,7 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
 }
 
 void Pscan::output(const char* eps_s, const char* miu, string dir) {
-    string out_name = dir + "/PscanResult-" + string(eps_s) + "-" + string(miu) + ".txt";
+    string out_name = dir + "/PscanResult-" + string(eps_s) + "-" + string(miu) + "-" + to_string(mode) + ".txt";
     FILE* fout = open_file(out_name.c_str(), "w");
 
     fprintf(fout, "c/n vertex_id cluster_id\n");
@@ -222,10 +222,13 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     miu = _miu;
 
     if (similar_degree == nullptr) similar_degree = new int[n];
-    memset(similar_degree, 0, sizeof(int) * n);
+    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    // 我认为原代码这里存在一些问题，做如下改动
+    // memset(similar_degree, 0, sizeof(int) * n);
 
     if (effective_degree == nullptr) effective_degree = new int[n];
-    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
 
     if (pa == nullptr) pa = new int[n];
     if (rank == nullptr) rank = new int[n];
@@ -293,7 +296,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
             if (min_cn[idx] != -1) {
                 int v = edges[idx];
 
-                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2); // similar_chech_OP only return -1 or -2;
+                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2, mode); // similar_chech_OP only return -1 or -2;
 
                 if (min_cn[idx] == -1) ++similar_degree[u];
                 else --effective_degree[u];
@@ -327,7 +330,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
                 continue;
             }
 
-            min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
+            min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2, mode);
 
             if (effective_degree[v] >= 0) { // if < 0 , means it is a core?
                 if (min_cn[idx] == -1) {
@@ -351,6 +354,8 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     delete[] bin_next; bin_next = nullptr;
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
+
+    getEpsNb();
 }
 
 int Pscan::check_common_neighbor(int u, int v, int c) {
@@ -378,7 +383,7 @@ int Pscan::check_common_neighbor(int u, int v, int c) {
     return -2;
 }
 
-int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2) {
+int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2, int mode) {
     int v = edges[idx];
 
     if (min_cn[idx] == 0) {
@@ -390,7 +395,11 @@ int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2) {
         min_cn[idx] = min_cn[reverse[idx]] = c;
     }
 
-    return check_common_neighbor(u, v, min_cn[idx]);
+    if (mode == 0) {
+        return check_common_neighbor(u, v, min_cn[idx]);
+    }
+
+    return check_disjoint_neighbor(u, v, min_cn[idx]);
 }
 
 int Pscan::compute_common_neighbor_lowerbound(int du, int dv, int eps_a2, int eps_b2) {
@@ -506,17 +515,213 @@ FILE* Pscan::open_file(const char* file_name, const char* mode) {
 }
 
 unordered_map<int, set<int>> Pscan::getEpsNb() {
-    cout << "####################" << endl;
-    cout << "m = " << m << endl;
+    unordered_map<int, set<int>> epsNb;
     for (ui i = 0; i < n; i++) {
-        cout << index2id[i] << ": ";
+        ui id = index2id[i];
+        cout << id << ": ";
+        set<int> temp;
+
         for (ui j = pstart[i]; j < pstart[i + 1]; j++) {
             if (min_cn[j] != -2) {
+                temp.insert(index2id[edges[j]]);
                 cout << index2id[edges[j]] << " ";
             }
         }
-        cout << "\n";
+        cout << endl;
+        epsNb[id] = temp;
     }
-    cout << "####################" << endl;
     return epsNb;
+}
+
+int Pscan::check_disjoint_neighbor(int u, int v, int c) {
+    set<int> neighbor_u;
+    set<int> neighbor_v;
+
+    for (ui i = pstart[u]; i < pstart[u + 1]; i++) {
+        neighbor_u.insert(index2id[edges[i]]);
+    }
+
+    for (ui i = pstart[v]; i < pstart[v + 1]; i++) {
+        neighbor_v.insert(index2id[edges[i]]);
+    }
+
+    set<int> commonNB;
+    set_intersection(neighbor_u.begin(), neighbor_u.end(), neighbor_v.begin(), neighbor_v.end(), inserter(commonNB, commonNB.begin()));
+
+    int cn = disjoinNb(commonNB, index2id[u], index2id[v], verifyTrueSet, verifyFlaseSet, c);
+
+    if (cn >= c) return -1;
+    return -2;
+}
+
+int Pscan::disjoinNb(set<int>& commonNB, int vertexU, int vertexV, auto& verifyTrueSet, auto& verifyFalseSet, int c) {
+    int cn = 2;
+
+    int count = -1;
+
+    for (int vertexW : commonNB) {
+        count++;
+        if (cn >= c || cn + (commonNB.size() - count) < c) {
+            return cn;
+        }
+        if (verifyFalseSet.contains({ vertexW, vertexU, vertexV })) {
+            continue;
+        }
+        if (verifyTrueSet.contains({ vertexW, vertexU, vertexV })) {
+            cn++;
+            continue;
+        }
+        MyTuple tuple1 = { vertexU, vertexV, metaPath };
+        MyTuple tuple2 = { vertexU, vertexW, metaPath };
+        MyTuple tuple3 = { vertexV, vertexW, metaPath };
+        vector<MyTuple> lambda = { tuple1, tuple2, tuple3 };
+        if (verifyExistence(lambda)) {
+            cn++;
+            verifyTrueSet.insert({ vertexW, vertexU, vertexV });
+        } else {
+            verifyFalseSet.insert({ vertexW, vertexU, vertexV });
+        }
+    }
+
+    return cn;
+}
+
+bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
+    vector<set<int>> listOfComNb;
+
+    for (MyTuple tup : lambda) {
+        int pathVLen = tup.metaPath.vertex.size();
+        int midIndex = (pathVLen - 1) >> 1;
+
+        // get M(x_i)
+        set<int> Mx_i = { tup.vertex1 };
+        set<int> temp2;
+        for (int i = 1; i <= midIndex; i++) {
+            getNB(Mx_i, temp2, tup, i, false);
+            Mx_i = temp2;
+            temp2.clear();
+        }
+
+        // get M(y_i)
+        set<int> My_i = { tup.vertex2 };
+        for (int i = pathVLen - 2; i >= midIndex; i--) {
+            getNB(My_i, temp2, tup, i, true);
+            My_i = temp2;
+            temp2.clear();
+        }
+
+        // get intersection
+        set<int> intersection;
+        set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
+        listOfComNb.push_back(intersection);
+    }
+
+    // sort the vector<set<int>> in ascending order according to the size of each set.
+    auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
+        return set1.size() < set2.size();
+        };
+    sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
+
+    vector<int> LArr; // record the different vertex. i.e. different instance.
+
+    // enumeration and verify.
+    return enumeration(listOfComNb, 0, LArr, lambda);
+}
+
+bool Pscan::hasSameValue(const vector<int>& arr, int vertex) {
+    for (int val : arr) {
+        if (val == vertex) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda) {
+    set<int> ComNb = listOfComNb.at(index);
+    for (int vex : ComNb) {
+        if (hasSameValue(LArr, vex)) {
+            // cout << vex << " : ";
+            // for (auto i : LArr) {
+            //     cout << i << " ";
+            // }
+            // cout << endl;
+            continue;
+        }
+        LArr.push_back(vex);
+        if (index < listOfComNb.size() - 1) {
+            if (enumeration(listOfComNb, index + 1, LArr, lambda)) {
+                return true;
+            } else {
+                LArr.pop_back();
+            }
+        } else {
+            vector<MyTuple> lambda2;
+            for (int i = 0; i < lambda.size(); i++) {
+                MyTuple element = lambda.at(i);
+                int pathVLen = element.metaPath.vertex.size();
+                int midIndex = (pathVLen - 1) >> 1;
+
+                // generate l(Pj).
+                vector<int> LVertex = { element.metaPath.vertex.at(0) };
+                vector<int> LEdge;
+                for (int i = 1; i <= midIndex; i++) {
+                    LVertex.push_back(element.metaPath.vertex.at(i));
+                    LEdge.push_back(element.metaPath.edge.at(i - 1));
+                }
+                MetaPath LMetaPath(LVertex, LEdge);
+                if (LMetaPath.pathLen > 1) {
+                    MyTuple LTup = { element.vertex1, LArr[i], LMetaPath };
+                    // cout << element.vertex1 << "," << LArr[i] << " : " << LMetaPath.toString() << endl;
+                    lambda2.push_back(LTup);
+                }
+
+                // generate r(Pj).
+                vector<int> RVertex = { element.metaPath.vertex.at(pathVLen - 1) };
+                vector<int> REdge;
+                for (int i = pathVLen - 2; i >= midIndex; i--) {
+                    RVertex.push_back(element.metaPath.vertex.at(i));
+                    REdge.push_back(element.metaPath.edge.at(i));
+                }
+                MetaPath RMetaPath(RVertex, REdge);
+                if (RMetaPath.pathLen > 1) {
+                    MyTuple RTup = { element.vertex2, LArr[i], RMetaPath };
+                    // cout << element.vertex2 << "," << LArr[i] << " : " << RMetaPath.toString() << endl;
+                    lambda2.push_back(RTup);
+                }
+            }
+            if (lambda2.empty()) {
+                // cout << "find one" << endl;
+                return true;
+            } else {
+                return verifyExistence(lambda2);
+            }
+        }
+        // LArr.pop_back();
+    }
+    return false;
+}
+
+void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight) {
+    for (int vex : M_i) {
+        int targetVType = tup.metaPath.vertex.at(index);
+        int targetEType;
+        int targetEType2; // for the reverse edge.
+
+        if (!fromRight) {
+            targetEType = tup.metaPath.edge.at(index - 1);
+        } else {
+            targetEType = tup.metaPath.edge.at(index);
+        }
+        targetEType2 = this->edgeReverseMap[targetEType];
+        vector<int> nbArr = this->hinGraph.at(vex);
+
+        for (int j = 0; j < nbArr.size(); j += 2) {
+            int nbVertexID = nbArr[j];
+            int nbEdgeID = nbArr[j + 1];
+            if (targetVType == vertexType[nbVertexID] && (targetEType == edgeType[nbEdgeID] || targetEType2 == edgeType[nbEdgeID])) {
+                temp.insert(nbVertexID);
+            }
+        }
+    }
 }
