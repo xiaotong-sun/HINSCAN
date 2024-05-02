@@ -23,11 +23,11 @@ SCAN::SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<in
 }
 
 void SCAN::getCommonEpsNb(double eps) {
-    int homoGraphVertex = 0;
-    for (auto iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
-        homoGraphVertex += iter->second.size();
-    }
-    cout << "--- total homoGraph num: " << homoGraphVertex << endl;
+    // int homoGraphVertex = 0;
+    // for (auto iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+    //     homoGraphVertex += iter->second.size();
+    // }
+    // cout << "--- total homoGraph num: " << homoGraphVertex << endl;
 
     // cout << "similarity of vertex" << endl;
     for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
@@ -65,14 +65,14 @@ void SCAN::getCommonEpsNb(double eps) {
     }
 
     // 统计common-eps neighbor会比homograph少掉多少点
-    int epsNeighborVertex = 0;
+    // int epsNeighborVertex = 0;
 
-    for (auto iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
-        epsNeighborVertex += iter->second.size();
-    }
+    // for (auto iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
+    //     epsNeighborVertex += iter->second.size();
+    // }
 
-    cout << "--- total epsNeighbor num: " << epsNeighborVertex << endl;
-    cout << "--- pruned vertex number: " << homoGraphVertex - epsNeighborVertex << endl;
+    // cout << "--- total epsNeighbor num: " << epsNeighborVertex << endl;
+    // cout << "--- pruned vertex number: " << homoGraphVertex - epsNeighborVertex << endl;
 }
 
 void SCAN::getDisjointEpsNb(double eps) {

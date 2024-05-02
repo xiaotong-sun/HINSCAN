@@ -24,6 +24,12 @@
         "fstream": "cpp",
         "ctime": "cpp",
         "cmath": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "string_view": "cpp",
+        "ranges": "cpp"
     }
 }

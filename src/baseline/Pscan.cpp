@@ -177,7 +177,7 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
         for (ui j = pstart[i];j < pstart[i + 1];j++) if (similar_degree[edges[j]] < mu) {
             if (min_cn[j] >= 0) {
-                min_cn[j] = similar_check_OP(i, j, eps_a2, eps_b2, mode);
+                min_cn[j] = similar_check_OP(i, j, eps_a2, eps_b2);
                 if (reverse[reverse[j]] != j) printf("WA cluster_noncore\n");
                 min_cn[reverse[j]] = min_cn[j];
                 if (min_cn[j] == -1) {
@@ -296,7 +296,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
             if (min_cn[idx] != -1) {
                 int v = edges[idx];
 
-                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2, mode); // similar_chech_OP only return -1 or -2;
+                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2); // similar_chech_OP only return -1 or -2;
 
                 if (min_cn[idx] == -1) ++similar_degree[u];
                 else --effective_degree[u];
@@ -330,7 +330,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
                 continue;
             }
 
-            min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2, mode);
+            min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
 
             if (effective_degree[v] >= 0) { // if < 0 , means it is a core?
                 if (min_cn[idx] == -1) {
@@ -355,7 +355,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
 
-    getEpsNb();
+    // getEpsNb();
 }
 
 int Pscan::check_common_neighbor(int u, int v, int c) {
@@ -383,7 +383,7 @@ int Pscan::check_common_neighbor(int u, int v, int c) {
     return -2;
 }
 
-int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2, int mode) {
+int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2) {
     int v = edges[idx];
 
     if (min_cn[idx] == 0) {
@@ -534,27 +534,28 @@ unordered_map<int, set<int>> Pscan::getEpsNb() {
 }
 
 int Pscan::check_disjoint_neighbor(int u, int v, int c) {
-    set<int> neighbor_u;
-    set<int> neighbor_v;
+    vector<int> commonNB;
 
-    for (ui i = pstart[u]; i < pstart[u + 1]; i++) {
-        neighbor_u.insert(index2id[edges[i]]);
+    ui i = pstart[u], j = pstart[v];
+    while (i < pstart[u + 1] && j < pstart[v + 1]) {
+        if (edges[i] < edges[j]) {
+            ++i;
+        } else if (edges[i] > edges[j]) {
+            ++j;
+        } else {
+            commonNB.push_back(index2id[edges[i]]);
+            ++i;
+            ++j;
+        }
     }
 
-    for (ui i = pstart[v]; i < pstart[v + 1]; i++) {
-        neighbor_v.insert(index2id[edges[i]]);
-    }
-
-    set<int> commonNB;
-    set_intersection(neighbor_u.begin(), neighbor_u.end(), neighbor_v.begin(), neighbor_v.end(), inserter(commonNB, commonNB.begin()));
-
-    int cn = disjoinNb(commonNB, index2id[u], index2id[v], verifyTrueSet, verifyFlaseSet, c);
+    int cn = disjoinNb(commonNB, index2id[u], index2id[v], c);
 
     if (cn >= c) return -1;
     return -2;
 }
 
-int Pscan::disjoinNb(set<int>& commonNB, int vertexU, int vertexV, auto& verifyTrueSet, auto& verifyFalseSet, int c) {
+int Pscan::disjoinNb(vector<int>& commonNB, int vertexU, int vertexV, int c) {
     int cn = 2;
 
     int count = -1;
@@ -588,6 +589,7 @@ int Pscan::disjoinNb(set<int>& commonNB, int vertexU, int vertexV, auto& verifyT
 
 bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
     vector<set<int>> listOfComNb;
+    verifyTimes++;
 
     for (MyTuple tup : lambda) {
         int pathVLen = tup.metaPath.vertex.size();

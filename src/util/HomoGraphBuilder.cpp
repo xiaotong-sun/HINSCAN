@@ -234,7 +234,7 @@ unordered_map<int, set<int>> HomoGraphBuilder::build_optim2() { // step1: collec
 
 // A-P-T-P-A: Choose P as FlagType, left target is A, left path is A-P.
 void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& leftTargetSet, int flagIndex) {
-    totalVisitNodeNum ++;
+    totalVisitNodeNum++;
     if (flagIndex == 0) {
         leftTargetSet.insert(startID);
         return;
@@ -322,7 +322,7 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
     for (int startID : keepSet) {
         ++fl;
         if (fl % 500 == 0) {
-            cout << fl << endl;
+            cout << fl << "\n";
         }
 
         vector<unordered_set<int>> visitListForL(flagIndex + 1);
@@ -366,7 +366,7 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
 
 // A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.
 void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& rightTargetSet, int flagIndex) {
-    totalVisitNodeNum ++;
+    totalVisitNodeNum++;
     if (flagIndex == queryMPath.pathLen) {
         rightTargetSet.insert(startID);
         return;

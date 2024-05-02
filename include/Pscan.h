@@ -50,7 +50,7 @@ private:
     unordered_map<int, int>& edgeReverseMap;
     MetaPath& metaPath;
     set<set<int>> verifyTrueSet;
-    set<set<int>> verifyFlaseSet;
+    set<set<int>> verifyFalseSet;
     const int mode;
 
     ui* index2id;
@@ -76,6 +76,9 @@ private:
     vector<pair<int, int> > noncore_cluster;
 
 public:
+    int verifyTimes = 0;
+
+public:
     Pscan(unordered_map<int, set<int>>& homoGraph, vector<vector<int>>& hinGraph, vector<int>& vertexType, vector<int>& edgeType, unordered_map<int, int>& edgeReverseMap, MetaPath& metaPath, int mode);
     ~Pscan();
 
@@ -92,7 +95,7 @@ private:
     //return the first pos, s.t. array[pos] >= val (may return e)
     // int naive_similar_check(int u, int v, int eps_a2, int eps_b2);
     // int similar_check(int u, int v, int eps_a2, int eps_b2);
-    int similar_check_OP(int u, ui idx, int eps_a, int eps_b, int mode);
+    int similar_check_OP(int u, ui idx, int eps_a, int eps_b);
     int check_common_neighbor(int u, int v, int c);
     int check_disjoint_neighbor(int u, int v, int c);
     int compute_common_neighbor_lowerbound(int u, int v, int eps_a2, int eps_b2);
@@ -102,7 +105,7 @@ private:
     void my_union(int u, int v);
 
     void get_eps(const char* eps_s);
-    int disjoinNb(set<int>& commonNB, int vertexU, int vertexV, auto& verifyTrueSet, auto& verifyFalseSet, int c);
+    int disjoinNb(vector<int>& commonNB, int vertexU, int vertexV, int c);
     bool verifyExistence(vector<MyTuple>& lambda);
     bool hasSameValue(const vector<int>& arr, int vertex);
     bool enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda);
