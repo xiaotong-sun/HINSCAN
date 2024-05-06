@@ -358,6 +358,149 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     // getEpsNb();
 }
 
+void Pscan::pSCAN(const char* eps_s, int _miu, int* min_cn) {
+    get_eps(eps_s);
+    miu = _miu;
+
+    if (similar_degree == nullptr) similar_degree = new int[n];
+    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    // 我认为原代码这里存在一些问题，做如下改动
+    // memset(similar_degree, 0, sizeof(int) * n);
+
+    if (effective_degree == nullptr) effective_degree = new int[n];
+    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
+
+    if (pa == nullptr) pa = new int[n];
+    if (rank == nullptr) rank = new int[n];
+    for (ui i = 0;i < n;i++) {
+        pa[i] = i;
+        rank[i] = 0;
+    }
+
+    ui* edge_buf = new ui[n];
+    int* cores = new int[n];
+    int cores_n = 0;
+
+    prune_and_cross_link(eps_a2, eps_b2, miu, cores, cores_n);
+    //printf("\t*** Finished prune and cross link!\n");
+
+    int* bin_head = new int[n];
+    int* bin_next = new int[n];
+    for (ui i = 0;i < n;i++) bin_head[i] = -1;
+
+    // 下面这段有什么用？bin_head, bin_next是干什么的？
+    int max_ed = 0;
+    for (ui i = 0;i < n;i++) if (effective_degree[i] >= miu) {
+        int ed = effective_degree[i];
+        if (ed > max_ed) max_ed = ed;
+        bin_next[i] = bin_head[ed];
+        bin_head[ed] = i;
+    }
+
+    this->min_cn = min_cn;
+
+    while (true) {
+        int u = -1;
+        if (cores_n) u = cores[--cores_n];
+        else { // 这个else有什么用？
+            while (max_ed >= miu && u == -1) {
+                for (int x = bin_head[max_ed];x != -1;) {
+                    int tmp = bin_next[x];
+                    int ed = effective_degree[x];
+                    if (ed == max_ed) {
+                        u = x;
+                        bin_head[max_ed] = bin_next[x];
+                        break;
+                    } else if (ed >= miu) {
+                        bin_next[x] = bin_head[ed];
+                        bin_head[ed] = x;
+                    }
+                    x = tmp;
+                }
+                if (u == -1) {
+                    bin_head[max_ed] = -1;
+                    --max_ed;
+                }
+            }
+        }
+        if (u == -1) break;
+
+        int edge_buf_n = 0;
+        for (ui j = pstart[u];j < pstart[u + 1];j++) {
+            if (min_cn[j] == -2) continue;
+
+            if (similar_degree[u] < miu || find_root(u) != find_root(edges[j])) edge_buf[edge_buf_n++] = j;
+        }
+
+        int i = 0;
+        while (similar_degree[u] < miu && effective_degree[u] >= miu && i < edge_buf_n) {
+            ui idx = edge_buf[i];
+            if (min_cn[idx] != -1) {
+                int v = edges[idx];
+
+                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2); // similar_chech_OP only return -1 or -2;
+
+                if (min_cn[idx] == -1) ++similar_degree[u];
+                else --effective_degree[u];
+
+                if (effective_degree[v] >= 0) {
+                    if (min_cn[idx] == -1) {
+                        ++similar_degree[v];
+
+                        if (similar_degree[v] == miu) cores[cores_n++] = v;
+                    } else --effective_degree[v];
+                }
+            }
+
+            ++i;
+        }
+
+        effective_degree[u] = -1; // u is a core.
+
+        if (similar_degree[u] < miu) continue;
+
+        for (int j = 0;j < edge_buf_n;j++) {
+            ui idx = edge_buf[j];
+            if (min_cn[idx] == -1 && similar_degree[edges[idx]] >= miu) my_union(u, edges[idx]);
+        }
+
+        while (i < edge_buf_n) {
+            ui idx = edge_buf[i];
+            int v = edges[idx];
+            if (min_cn[idx] < 0 || similar_degree[v] < miu || find_root(u) == find_root(v)) {
+                ++i;
+                continue;
+            }
+
+            min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
+
+            if (effective_degree[v] >= 0) { // if < 0 , means it is a core?
+                if (min_cn[idx] == -1) {
+                    ++similar_degree[v];
+
+                    if (similar_degree[v] == miu) cores[cores_n++] = v;
+                } else --effective_degree[v];
+            }
+
+            if (min_cn[idx] == -1) my_union(u, v);
+
+            ++i;
+        }
+        //printf(")\n");
+    }
+    //printf("\t*** Finished clustering core vertices!\n");
+
+    delete[] edge_buf; edge_buf = nullptr;
+    delete[] cores; cores = nullptr;
+    delete[] bin_head; bin_head = nullptr;
+    delete[] bin_next; bin_next = nullptr;
+
+    cluster_noncore_vertices(eps_a2, eps_b2, miu);
+
+    // getEpsNb();
+}
+
 int Pscan::check_common_neighbor(int u, int v, int c) {
     int cn = 2;
 
@@ -726,4 +869,13 @@ void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool f
             }
         }
     }
+}
+
+int* Pscan::getMinCN() {
+    for (int i = 0; i < n; i++) {
+        if (min_cn[i] != -2) {
+            min_cn[i] = 0;
+        }
+    }
+    return this->min_cn;
 }

@@ -16,7 +16,7 @@ OBJS += $(TARGET_DIR)/main.o
 all: hinscan
 
 hinscan: $(OBJS)
-	$(CC) $(OBJS) -o hinscan_test
+	$(CC) $(OBJS) -o hinscan
 
 $(TARGET_DIR)/%.o: $(SRC_BASELINE)/%.cpp | $(TARGET_DIR)
 	$(CC) $(CFLAGS) $< -o $@

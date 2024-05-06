@@ -1,0 +1,35 @@
+---------------------------------------------------------------
+imdb1s:
+Time of disjoint pScan Clustering: 1,233,712(us)
+verifyTimes: 6436
+Time of optimized disjoint Scan Clustering: 1,357,182(us)
+verifyTimes: 7413
+Time of no_optimized disjoint Scan Clustering: 9,069,860(us)
+verifyTimes: 38013
+
+---------------------------------------------------------------
+pubmed1s:
+Time of disjoint pScan Clustering: 750,014(us)
+verifyTimes: 109957
+Time of optimized disjoint Scan Clustering: 1,301,210(us)
+verifyTimes: 128017
+Time of no_optimized disjoint Scan Clustering: 3,886,211(us)
+verifyTimes: 633279
+
+---------------------------------------------------------------
+tmdb1s:
+Time of disjoint pScan Clustering: 188,478(us)
+verifyTimes: 1517
+Time of optimized disjoint Scan Clustering: 1,036,608(us)
+verifyTimes: 1812
+Time of no_optimized disjoint Scan Clustering: 41,782,848(us)
+verifyTimes: 2452647
+
+---------------------------------------------------------------
+dblp1s:
+Time of disjoint pScan Clustering: 2,616,536(us)
+verifyTimes: 370757
+Time of optimized disjoint Scan Clustering: 4,959,582(us)
+verifyTimes: 459707
+Time of no_optimized disjoint Scan Clustering: 31,743,107(us)
+verifyTimes: 2797089
