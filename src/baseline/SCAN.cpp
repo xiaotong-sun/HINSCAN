@@ -319,9 +319,10 @@ void SCAN::getCluster(double eps, int mu, int mode) {
     // cout << "eps neighbor of each vertex" << endl;
     // for (unordered_map<int, set<int>>::iterator iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
     //     cout << iter->first << ": " << ends;
-    //     for (int val : iter->second) {
-    //         cout << val << " " << ends;
-    //     }
+    //     // for (int val : iter->second) {
+    //     //     cout << val << " " << ends;
+    //     // }
+    //     cout << iter->second.size();
     //     cout << endl;
     // }
     // cout << "=================" << endl;

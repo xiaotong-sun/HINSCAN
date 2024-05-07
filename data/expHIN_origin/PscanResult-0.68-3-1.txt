@@ -1,0 +1,8 @@
+c/n vertex_id cluster_id
+c 8 1
+c 7 1
+c 6 1
+c 4 5
+c 3 5
+c 2 5
+c 1 5

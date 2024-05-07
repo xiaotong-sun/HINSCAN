@@ -18,9 +18,9 @@ case $1 in
     pubmed1s)
         ./hinscan ./data/PubMed/ 0.82 4 1 "3 5 0 2 3" homoGraph1s.txt 0;;
     pubmed0l)
-        ./hinscan ./data/PubMed/ 0.94 3 0 "3 5 0 0 1 3 0 2 3" homoGraph0l.txt 0;;
+        ./hinscan ./data/PubMed/ 0.96 200 0 "3 5 0 0 1 3 0 2 3" homoGraph0l.txt 0;;
     pubmed1l)
-        ./hinscan ./data/PubMed/ 0.64 3 1 "3 5 0 0 1 3 0 2 3" homoGraph1l.txt 0;;
+        ./hinscan ./data/PubMed/ 0.96 200 1 "3 5 0 0 1 3 0 2 3" homoGraph1l.txt 0;;
     tmdb0s)
         ./hinscan ./data/tmdb/ 0.64 3 0 "0 0 1 1 0" homoGraph0s.txt 0;;
     tmdb1s)

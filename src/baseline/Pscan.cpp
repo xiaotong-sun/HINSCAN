@@ -197,12 +197,12 @@ void Pscan::output(const char* eps_s, const char* miu, string dir) {
 
     fprintf(fout, "c/n vertex_id cluster_id\n");
 
-    // for (ui i = 0; i < n; i ++) {
-    //     fprintf(fout, "%d %d\n", index2id.at(i), cid[pa[i]]);
-    // }
-    // fprintf(fout, "--------------------\n");
-
     int mu = atoi(miu);
+
+    // for (ui i = 0; i < n; i++) {
+    //     cout << index2id[i] << ": " << similar_degree[i] << "\n";
+    // }
+
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
         fprintf(fout, "c %d %d\n", index2id[i], cid[pa[i]]);
     }
@@ -358,7 +358,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     // getEpsNb();
 }
 
-void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* min_cn) {
+void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
     get_eps(eps_s);
     miu = _miu;
 
@@ -380,7 +380,7 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* min_cn) {
     int cores_n = 0;
 
     for (int i = 0; i < m; i++) {
-        this->min_cn[i] = min_cn[i];
+        min_cn[i] = minCN[i];
     }
 
     prune_and_cross_link_for_disjoint(eps_a2, eps_b2, miu, cores, cores_n);
