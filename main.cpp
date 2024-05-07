@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
 
 
     // // TODO: check whether the modify is correct!!
-    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, mode);
+    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
     myPscan.get_graph();
     long long mtime3 = getTime(start);
     myPscan.pSCAN(argv[2], mu);
@@ -90,9 +90,10 @@ int main(int argc, char* argv[]) {
     Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     myPscan2.get_graph();
     mtime3 = getTime(start);
-    myPscan2.pSCAN(argv[2], mu, myPscan.getMinCN());
+    myPscan2.pSCAN_disjoint(argv[2], mu, myPscan.getMinCN());
     mtime4 = getTime(start);
     cout << "Time of optimized disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
+    myPscan2.output(argv[2], argv[3], argv[1]);
     cout << "verifyTimes: " << myPscan2.verifyTimes << endl;
 
     Pscan myPscan3(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
@@ -104,23 +105,23 @@ int main(int argc, char* argv[]) {
     cout << "verifyTimes: " << myPscan3.verifyTimes << endl;
 
     // TODO: The disjoint situation needs to make improvement.
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    // long long mtime5 = getTime(start);
-    // myScan.getCluster(eps, mu, mode);
-    // long long mtime6 = getTime(start);
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    long long mtime5 = getTime(start);
+    myScan.getCluster(eps, mu, mode);
+    long long mtime6 = getTime(start);
 
-    // if (mode == 0) {
-    //     cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    // } else if (mode == 1) {
-    //     cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    // }
+    if (mode == 0) {
+        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    } else if (mode == 1) {
+        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    }
 
     // cout << "verifyTimes: " << myScan.verifyTimes << endl;
 
-    // cout << "=================" << endl;
-    // cout << "cluster result" << endl;
-    // for (const auto& it : myScan.clusterMap) {
-    //     cout << it.first << ":" << it.second << endl;
-    // }
+    cout << "=================" << endl;
+    cout << "cluster result" << endl;
+    for (const auto& it : myScan.clusterMap) {
+        cout << it.first << ":" << it.second << endl;
+    }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 }

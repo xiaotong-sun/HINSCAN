@@ -84,7 +84,7 @@ public:
 
     void get_graph();
     void pSCAN(const char* eps_s, int miu);
-    void pSCAN(const char* eps_s, int miu, int* min_cn);
+    void pSCAN_disjoint(const char* eps_s, int miu, int* minCN);
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
     void output(const char* eps_s, const char* miu, string dir);
@@ -102,6 +102,7 @@ private:
     int check_disjoint_neighbor(int u, int v, int c);
     int compute_common_neighbor_lowerbound(int u, int v, int eps_a2, int eps_b2);
     void prune_and_cross_link(int eps_a2, int eps_b2, int miu, int* cores, int& cores_e);
+    void prune_and_cross_link_for_disjoint(int eps_a2, int eps_b2, int miu, int* cores, int& cores_e);
 
     int find_root(int u);
     void my_union(int u, int v);

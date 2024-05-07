@@ -358,17 +358,14 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     // getEpsNb();
 }
 
-void Pscan::pSCAN(const char* eps_s, int _miu, int* min_cn) {
+void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* min_cn) {
     get_eps(eps_s);
     miu = _miu;
 
     if (similar_degree == nullptr) similar_degree = new int[n];
     for (ui i = 0; i < n; i++) similar_degree[i] = 1;
-    // 我认为原代码这里存在一些问题，做如下改动
-    // memset(similar_degree, 0, sizeof(int) * n);
 
     if (effective_degree == nullptr) effective_degree = new int[n];
-    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
     for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
 
     if (pa == nullptr) pa = new int[n];
@@ -382,7 +379,11 @@ void Pscan::pSCAN(const char* eps_s, int _miu, int* min_cn) {
     int* cores = new int[n];
     int cores_n = 0;
 
-    prune_and_cross_link(eps_a2, eps_b2, miu, cores, cores_n);
+    for (int i = 0; i < m; i++) {
+        this->min_cn[i] = min_cn[i];
+    }
+
+    prune_and_cross_link_for_disjoint(eps_a2, eps_b2, miu, cores, cores_n);
     //printf("\t*** Finished prune and cross link!\n");
 
     int* bin_head = new int[n];
@@ -397,8 +398,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu, int* min_cn) {
         bin_next[i] = bin_head[ed];
         bin_head[ed] = i;
     }
-
-    this->min_cn = min_cn;
 
     while (true) {
         int u = -1;
@@ -581,6 +580,49 @@ void Pscan::prune_and_cross_link(int eps_a2, int eps_b2, int miu, int* cores, in
 
                     if (similar_degree[i] == miu) cores[cores_e++] = i;
                     if (similar_degree[v] == miu) cores[cores_e++] = v;
+                } else min_cn[j] = c;
+            }
+
+            if (min_cn[j] != -2) {
+                ui r_id = binary_search(edges, pstart[v], pstart[v + 1], i);
+                reverse[j] = r_id;
+                reverse[r_id] = j;
+
+                min_cn[r_id] = min_cn[j];
+            }
+        }
+    }
+}
+
+void Pscan::prune_and_cross_link_for_disjoint(int eps_a2, int eps_b2, int miu, int* cores, int& cores_e) {
+    for (ui i = 0;i < n;i++) { //must be iterating from 0 to n-1
+        for (ui j = pstart[i];j < pstart[i + 1];j++) {
+            if (edges[j] < i) {
+                continue;
+            }
+
+            int v = edges[j];
+            int a = degree[i], b = degree[v];
+            if (a > b) swap(a, b);
+
+            if (min_cn[j] == -2) {
+                --effective_degree[i];
+                --effective_degree[v];
+            } else {
+                int c = compute_common_neighbor_lowerbound(a, b, eps_a2, eps_b2);
+
+                if (c <= 2) {
+                    min_cn[j] = -1;
+
+                    ++similar_degree[i];
+                    ++similar_degree[v];
+
+                    if (similar_degree[i] == miu) {
+                        cores[cores_e++] = i;
+                    }
+                    if (similar_degree[v] == miu) {
+                        cores[cores_e++] = v;
+                    }
                 } else min_cn[j] = c;
             }
 
@@ -872,7 +914,7 @@ void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool f
 }
 
 int* Pscan::getMinCN() {
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < m; i++) {
         if (min_cn[i] != -2) {
             min_cn[i] = 0;
         }
