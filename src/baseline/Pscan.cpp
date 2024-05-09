@@ -761,12 +761,15 @@ int Pscan::disjoinNb(vector<int>& commonNB, int vertexU, int vertexV, int c) {
         MyTuple tuple2 = { vertexU, vertexW, metaPath };
         MyTuple tuple3 = { vertexV, vertexW, metaPath };
         vector<MyTuple> lambda = { tuple1, tuple2, tuple3 };
+        long long time1 = getTime(start);
         if (verifyExistence(lambda)) {
             cn++;
             verifyTrueSet.insert({ vertexW, vertexU, vertexV });
         } else {
             verifyFalseSet.insert({ vertexW, vertexU, vertexV });
         }
+        long long time2 = getTime(start);
+        totalVerifyTime += time2 - time1;
     }
 
     return cn;
@@ -774,9 +777,11 @@ int Pscan::disjoinNb(vector<int>& commonNB, int vertexU, int vertexV, int c) {
 
 bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
     vector<set<int>> listOfComNb;
-    verifyTimes++;
+
+    long long time1 = getTime(start);
 
     for (MyTuple tup : lambda) {
+        long long time3 = getTime(start);
         int pathVLen = tup.metaPath.vertex.size();
         int midIndex = (pathVLen - 1) >> 1;
 
@@ -797,11 +802,21 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
             temp2.clear();
         }
 
+        long long time4 = getTime(start);
+        totalTime1 += time4 - time3;
+
         // get intersection
+        time3 = getTime(start);
         set<int> intersection;
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
         listOfComNb.push_back(intersection);
+
+        time4 = getTime(start);
+        totalTime2 += time4 - time3;
     }
+
+    long long time2 = getTime(start);
+    totalGetNbTime += time2 - time1;
 
     // sort the vector<set<int>> in ascending order according to the size of each set.
     auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
@@ -920,4 +935,15 @@ int* Pscan::getMinCN() {
         }
     }
     return this->min_cn;
+}
+
+void Pscan::showTime() {
+    cout << "Total GetNB time: " << totalGetNbTime << endl;
+    cout << "Total Enumer time: " << totalVerifyTime - totalGetNbTime << endl;
+    cout << "Total Time1: " << totalTime1 << endl;
+    cout << "Total Time2: " << totalTime2 << endl;
+}
+
+void Pscan::showVerifyTimes() {
+    cout << "verifyTimes: " << verifyTrueSet.size() + verifyFalseSet.size() << endl;
 }

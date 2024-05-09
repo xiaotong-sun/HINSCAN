@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
         cout << "Time of pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
     } else if (mode == 1) {
         cout << "Time of disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
-        cout << "verifyTimes: " << myPscan.verifyTimes << endl;
+        myPscan.showVerifyTimes();
     }
     // myPscan.output(argv[2], argv[3], argv[1]);
 
@@ -93,8 +93,9 @@ int main(int argc, char* argv[]) {
     myPscan2.pSCAN_disjoint(argv[2], mu, myPscan.getMinCN());
     mtime4 = getTime(start);
     cout << "Time of optimized disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
+    myPscan2.showTime();
     // myPscan2.output(argv[2], argv[3], argv[1]);
-    cout << "verifyTimes: " << myPscan2.verifyTimes << endl;
+    myPscan2.showVerifyTimes();
 
     Pscan myPscan3(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     myPscan3.get_graph();
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]) {
     mtime4 = getTime(start);
     cout << "Time of no optimized disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
     // myPscan3.output(argv[2], argv[3], argv[1]);
-    cout << "verifyTimes: " << myPscan3.verifyTimes << endl;
+    myPscan3.showVerifyTimes();
 
     // TODO: The disjoint situation needs to make improvement.
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);

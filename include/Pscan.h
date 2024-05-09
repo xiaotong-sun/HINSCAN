@@ -24,6 +24,7 @@
 #include <set>
 #include <unordered_map>
 #include "MetaPath.h"
+#include "Utility.h"
 
 typedef unsigned int ui;
 
@@ -37,6 +38,12 @@ using namespace std;
 
 class Pscan {
 private:
+    struct timeval start;
+    long long totalGetNbTime = 0;
+    long long totalVerifyTime = 0;
+    long long totalTime1 = 0;
+    long long totalTime2 = 0;
+
     struct MyTuple {
         int vertex1;
         int vertex2;
@@ -76,9 +83,6 @@ private:
     vector<pair<int, int> > noncore_cluster;
 
 public:
-    int verifyTimes = 0;
-
-public:
     Pscan(unordered_map<int, set<int>>& homoGraph, vector<vector<int>>& hinGraph, vector<int>& vertexType, vector<int>& edgeType, unordered_map<int, int>& edgeReverseMap, MetaPath& metaPath, int mode);
     ~Pscan();
 
@@ -90,6 +94,8 @@ public:
     void output(const char* eps_s, const char* miu, string dir);
     unordered_map<int, set<int>> getEpsNb();
     int* getMinCN();
+    void showTime();
+    void showVerifyTimes();
 
 private:
     FILE* open_file(const char* file_name, const char* mode);
