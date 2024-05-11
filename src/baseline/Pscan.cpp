@@ -7,7 +7,7 @@
 
 #include "Pscan.h"
 
-Pscan::Pscan(unordered_map<int, set<int>>& homoGraph, vector<vector<int>>& hinGraph, vector<int>& vertexType, vector<int>& edgeType, unordered_map<int, int>& edgeReverseMap, MetaPath& metaPath, int mode) : homoGraph(homoGraph), hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), edgeReverseMap(edgeReverseMap), metaPath(metaPath), mode(mode) {
+Pscan::Pscan(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath, int mode) : homoGraph(homoGraph), hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), edgeReverseMap(edgeReverseMap), metaPath(metaPath), mode(mode) {
     n = m = 0;
     eps_a2 = eps_b2 = miu = 0;
     index2id = nullptr;
@@ -222,13 +222,13 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     miu = _miu;
 
     if (similar_degree == nullptr) similar_degree = new int[n];
-    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    // for (ui i = 0; i < n; i++) similar_degree[i] = 1;
     // 我认为原代码这里存在一些问题，做如下改动
-    // memset(similar_degree, 0, sizeof(int) * n);
+    memset(similar_degree, 0, sizeof(int) * n);
 
     if (effective_degree == nullptr) effective_degree = new int[n];
-    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
-    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
+    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
 
     if (pa == nullptr) pa = new int[n];
     if (rank == nullptr) rank = new int[n];
@@ -242,7 +242,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     int cores_n = 0;
 
     prune_and_cross_link(eps_a2, eps_b2, miu, cores, cores_n);
-    //printf("\t*** Finished prune and cross link!\n");
+    // printf("\t*** Finished prune and cross link!\n");
 
     int* bin_head = new int[n];
     int* bin_next = new int[n];
@@ -363,10 +363,12 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
     miu = _miu;
 
     if (similar_degree == nullptr) similar_degree = new int[n];
-    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    // for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    memset(similar_degree, 0, sizeof(int) * n);
 
     if (effective_degree == nullptr) effective_degree = new int[n];
-    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
+    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
+    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
 
     if (pa == nullptr) pa = new int[n];
     if (rank == nullptr) rank = new int[n];
@@ -853,6 +855,12 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
         LArr.push_back(vex);
         if (index < listOfComNb.size() - 1) {
             if (enumeration(listOfComNb, index + 1, LArr, lambda)) {
+                // cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+                // cout << "listOfComNb size = " << listOfComNb.size() << endl;
+                // for (auto& item : listOfComNb) {
+                //     cout << "set size = " << item.size() << endl;
+                // }
+                // cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
                 return true;
             } else {
                 LArr.pop_back();
@@ -901,6 +909,16 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
         }
         // LArr.pop_back();
     }
+
+    if (listOfComNb.size() == 6) {
+        cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+        cout << "listOfComNb size = " << listOfComNb.size() << endl;
+        for (auto& item : listOfComNb) {
+            cout << "set size = " << item.size() << endl;
+        }
+        cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+    }
+
     return false;
 }
 
@@ -915,7 +933,7 @@ void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool f
         } else {
             targetEType = tup.metaPath.edge.at(index);
         }
-        targetEType2 = this->edgeReverseMap[targetEType];
+        targetEType2 = this->edgeReverseMap.at(targetEType);
         vector<int> nbArr = this->hinGraph.at(vex);
 
         for (int j = 0; j < nbArr.size(); j += 2) {
@@ -945,5 +963,9 @@ void Pscan::showTime() {
 }
 
 void Pscan::showVerifyTimes() {
+    cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "verifyTrueSet size: " << verifyTrueSet.size() << endl;
+    cout << "verifyFalseSet size: " << verifyFalseSet.size() << endl;
     cout << "verifyTimes: " << verifyTrueSet.size() + verifyFalseSet.size() << endl;
+    cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 }

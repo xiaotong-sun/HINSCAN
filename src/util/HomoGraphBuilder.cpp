@@ -9,13 +9,7 @@
 #include "HomoGraphBuilder.h"
 
 HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
-    const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap) {
-    this->graph = graph;
-    this->vertexType = vertexType;
-    this->edgeType = edgeType;
-    this->queryMPath = queryMPath;
-    this->edgeReverseMap = edgeReverseMap;
-
+    const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap) : graph(graph), vertexType(vertexType), edgeType(edgeType), queryMPath(queryMPath), edgeReverseMap(edgeReverseMap) {
     this->totalVisitNodeNum = 0;
 }
 
@@ -242,7 +236,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
 
     int targetVType = queryMPath.vertex[index - 1];
     int targetEType = queryMPath.edge[index - 1]; // note the edgetype should be reverse.
-    targetEType = edgeReverseMap[targetEType];
+    targetEType = edgeReverseMap.at(targetEType);
 
     vector<int> nbArr = graph[curID];
     for (int i = 0; i < nbArr.size(); i += 2) {

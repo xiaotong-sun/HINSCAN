@@ -36,4 +36,4 @@ unordered_map<int, int> estimateRight(vector<vector<int>>& graph, vector<int>& v
 
 void writeClusterResultToFile(string filePath, const unordered_map<int, int>& clusterMap);
 
-long long getTime(struct timeval &start);
+long long getTime(struct timeval& start);

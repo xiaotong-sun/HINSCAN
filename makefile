@@ -36,3 +36,4 @@ $(TARGET_DIR):
 clean:
 #	rd /s /q .obj
 	rm -rf *o .obj
+	rm hinscan

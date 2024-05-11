@@ -119,7 +119,7 @@ void writeClusterResultToFile(string filePath, const unordered_map<int, int>& cl
     cout << "Finish writing Cluster-Result to " + filePath << endl;
 }
 
-long long getTime(struct timeval &start) {
+long long getTime(struct timeval& start) {
     struct timeval curtime;
     gettimeofday(&curtime, nullptr);
     long long mtime, seconds, useconds;

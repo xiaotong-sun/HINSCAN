@@ -17,11 +17,11 @@ using namespace std;
 
 class HomoGraphBuilder {
 private:
-    vector<vector<int>> graph; // data graph, including vertex IDs, edge IDs, and their link relationships.
-    vector<int> vertexType; // vertex -> type
-    vector<int> edgeType; // edge -> type
-    MetaPath queryMPath; // the query meta-path
-    unordered_map<int, int> edgeReverseMap; // edge <-> edge
+    const vector<vector<int>> graph; // data graph, including vertex IDs, edge IDs, and their link relationships.
+    const vector<int> vertexType; // vertex -> type
+    const vector<int> edgeType; // edge -> type
+    const MetaPath queryMPath; // the query meta-path
+    const unordered_map<int, int> edgeReverseMap; // edge <-> edge
     int totalVisitNodeNum; // used to count the total number of visit node.
 
 public:

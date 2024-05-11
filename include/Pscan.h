@@ -50,12 +50,12 @@ private:
         MetaPath metaPath;
     };
 
-    unordered_map<int, set<int>>& homoGraph;
-    vector<vector<int>>& hinGraph;
-    vector<int>& vertexType;
-    vector<int>& edgeType;
-    unordered_map<int, int>& edgeReverseMap;
-    MetaPath& metaPath;
+    const unordered_map<int, set<int>>& homoGraph;
+    const vector<vector<int>>& hinGraph;
+    const vector<int>& vertexType;
+    const vector<int>& edgeType;
+    const unordered_map<int, int>& edgeReverseMap;
+    const MetaPath& metaPath;
     set<set<int>> verifyTrueSet;
     set<set<int>> verifyFalseSet;
     const int mode;
@@ -83,7 +83,7 @@ private:
     vector<pair<int, int> > noncore_cluster;
 
 public:
-    Pscan(unordered_map<int, set<int>>& homoGraph, vector<vector<int>>& hinGraph, vector<int>& vertexType, vector<int>& edgeType, unordered_map<int, int>& edgeReverseMap, MetaPath& metaPath, int mode);
+    Pscan(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath, int mode);
     ~Pscan();
 
     void get_graph();
