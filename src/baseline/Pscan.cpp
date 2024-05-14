@@ -884,16 +884,6 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
                 return verifyExistence(lambda2);
             }
         }
-        // LArr.pop_back();
-    }
-
-    if (listOfComNb.size() == 6) {
-        cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
-        cout << "listOfComNb size = " << listOfComNb.size() << endl;
-        for (auto& item : listOfComNb) {
-            cout << "set size = " << item.size() << endl;
-        }
-        cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
     }
 
     return false;
