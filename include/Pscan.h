@@ -92,7 +92,6 @@ public:
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
     void output(const char* eps_s, const char* miu, string dir);
-    unordered_map<int, set<int>> getEpsNb();
     int* getMinCN();
     void showTime();
     void showVerifyTimes();

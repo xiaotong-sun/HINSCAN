@@ -47,19 +47,19 @@ int main(int argc, char* argv[]) {
     // cout << "count = " << count << endl;
 
     unordered_map<int, set<int>> pnbMap;
-    // HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
+    HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
     long long mtime1 = getTime(start);
     // map<int, set<int>> pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    // homoGraph.build_forTest(atoi(argv[7]), pnbMap);
+    homoGraph.build_forTest(atoi(argv[7]), pnbMap);
 
     long long mtime2 = getTime(start);
 
     cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
 
     // writeToFile(homoGraphFile, pnbMap);
-    pnbMap = readFromFile(homoGraphFile);
+    // pnbMap = readFromFile(homoGraphFile);
 
     // cout << "=================" << endl;
     // cout << "neighbor of each vertex (HomoGraph)" << endl;
@@ -106,7 +106,6 @@ int main(int argc, char* argv[]) {
     // myPscan3.output(argv[2], argv[3], argv[1]);
     myPscan3.showVerifyTimes();
 
-    // TODO: The disjoint situation needs to make improvement.
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // long long mtime5 = getTime(start);
     // myScan.getCluster(eps, mu, 1);

@@ -112,7 +112,7 @@ void Pscan::get_graph() {
     i = 0;
     for (auto& item : homoGraph) {
         // printf("index = %d \t degree = %d\n", i, degree[i]);
-        set<int> neighborTemp; // this set is used to make neighbor nodge in increasing order.
+        set<int> neighborTemp; // this set is used to make neighbor node in increasing order.
 
         for (auto& elem : item.second) {
             if (item.first == elem) {
@@ -222,13 +222,13 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     miu = _miu;
 
     if (similar_degree == nullptr) similar_degree = new int[n];
-    // for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
     // 我认为原代码这里存在一些问题，做如下改动
-    memset(similar_degree, 0, sizeof(int) * n);
+    // memset(similar_degree, 0, sizeof(int) * n);
 
     if (effective_degree == nullptr) effective_degree = new int[n];
-    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
-    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
+    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
 
     if (pa == nullptr) pa = new int[n];
     if (rank == nullptr) rank = new int[n];
@@ -244,9 +244,9 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     prune_and_cross_link(eps_a2, eps_b2, miu, cores, cores_n);
     // printf("\t*** Finished prune and cross link!\n");
 
-    int* bin_head = new int[n];
+    int* bin_head = new int[n + 1];
     int* bin_next = new int[n];
-    for (ui i = 0;i < n;i++) bin_head[i] = -1;
+    for (ui i = 0;i < n + 1;i++) bin_head[i] = -1;
 
     // 下面这段有什么用？bin_head, bin_next是干什么的？
     int max_ed = 0;
@@ -354,8 +354,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     delete[] bin_next; bin_next = nullptr;
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
-
-    // getEpsNb();
 }
 
 void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
@@ -363,12 +361,10 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
     miu = _miu;
 
     if (similar_degree == nullptr) similar_degree = new int[n];
-    // for (ui i = 0; i < n; i++) similar_degree[i] = 1;
-    memset(similar_degree, 0, sizeof(int) * n);
+    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
 
     if (effective_degree == nullptr) effective_degree = new int[n];
-    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
-    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    for (ui i = 0;i < n;i++) effective_degree[i] = degree[i];
 
     if (pa == nullptr) pa = new int[n];
     if (rank == nullptr) rank = new int[n];
@@ -388,9 +384,9 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
     prune_and_cross_link_for_disjoint(eps_a2, eps_b2, miu, cores, cores_n);
     //printf("\t*** Finished prune and cross link!\n");
 
-    int* bin_head = new int[n];
+    int* bin_head = new int[n + 1];
     int* bin_next = new int[n];
-    for (ui i = 0;i < n;i++) bin_head[i] = -1;
+    for (ui i = 0;i < n + 1;i++) bin_head[i] = -1;
 
     // 下面这段有什么用？bin_head, bin_next是干什么的？
     int max_ed = 0;
@@ -701,25 +697,6 @@ FILE* Pscan::open_file(const char* file_name, const char* mode) {
     return f;
 }
 
-unordered_map<int, set<int>> Pscan::getEpsNb() {
-    unordered_map<int, set<int>> epsNb;
-    for (ui i = 0; i < n; i++) {
-        ui id = index2id[i];
-        cout << id << ": ";
-        set<int> temp;
-
-        for (ui j = pstart[i]; j < pstart[i + 1]; j++) {
-            if (min_cn[j] != -2) {
-                temp.insert(index2id[edges[j]]);
-                cout << index2id[edges[j]] << " ";
-            }
-        }
-        cout << endl;
-        epsNb[id] = temp;
-    }
-    return epsNb;
-}
-
 int Pscan::check_disjoint_neighbor(int u, int v, int c) {
     vector<int> commonNB;
 
@@ -963,9 +940,9 @@ void Pscan::showTime() {
 }
 
 void Pscan::showVerifyTimes() {
-    cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "------------------------------" << endl;
     cout << "verifyTrueSet size: " << verifyTrueSet.size() << endl;
     cout << "verifyFalseSet size: " << verifyFalseSet.size() << endl;
     cout << "verifyTimes: " << verifyTrueSet.size() + verifyFalseSet.size() << endl;
-    cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+    cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
 }
