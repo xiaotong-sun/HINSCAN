@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     string clusterResultFile = Path + "/ClusterResult-" + argv[2] + "-" + argv[3] + "-" + argv[4] + ".txt";
 
     DataReader dr(graphFile, vertexFile, edgeFile, reverseMapFile);
-    vector<vector<int>> graph = dr.readGraph();
+    map<int, vector<int>> graph = dr.readGraph();
     vector<int> vertexType = dr.readVertexType();
     vector<int> edgeType = dr.readEdgeType();
     unordered_map<int, int> edgeReverseMap = dr.readReverseMap();
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     // cout << "=================" << endl;
 
 
-    // // TODO: check whether the modify is correct!!
+    // TODO: check whether the modify is correct!!
     Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
     myPscan.get_graph();
     long long mtime3 = getTime(start);
@@ -106,23 +106,23 @@ int main(int argc, char* argv[]) {
     // myPscan3.output(argv[2], argv[3], argv[1]);
     myPscan3.showVerifyTimes();
 
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    // long long mtime5 = getTime(start);
-    // myScan.getCluster(eps, mu, 1);
-    // long long mtime6 = getTime(start);
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    long long mtime5 = getTime(start);
+    myScan.getCluster(eps, mu, mode);
+    long long mtime6 = getTime(start);
 
-    // if (mode == 0) {
-    //     cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    // } else if (mode == 1) {
-    //     cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    //     cout << "verifyTimes: " << myScan.verifyTimes << endl;
-    // }
+    if (mode == 0) {
+        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    } else if (mode == 1) {
+        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+        cout << "verifyTimes: " << myScan.verifyTimes << endl;
+    }
 
 
-    // cout << "=================" << endl;
-    // cout << "cluster result" << endl;
-    // for (const auto& it : myScan.clusterMap) {
-    //     cout << it.first << ":" << it.second << endl;
-    // }
+    cout << "=================" << endl;
+    cout << "cluster result" << endl;
+    for (const auto& it : myScan.clusterMap) {
+        cout << it.first << ":" << it.second << endl;
+    }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 }

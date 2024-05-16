@@ -7,7 +7,7 @@
 
 #include "Pscan.h"
 
-Pscan::Pscan(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath, int mode) : homoGraph(homoGraph), hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), edgeReverseMap(edgeReverseMap), metaPath(metaPath), mode(mode) {
+Pscan::Pscan(const unordered_map<int, set<int>>& homoGraph, const map<int, vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath, int mode) : homoGraph(homoGraph), hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), edgeReverseMap(edgeReverseMap), metaPath(metaPath), mode(mode) {
     n = m = 0;
     eps_a2 = eps_b2 = miu = 0;
     index2id = nullptr;
@@ -788,6 +788,19 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
         time3 = getTime(start);
         set<int> intersection;
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
+        if (intersection.size() == 0) {
+            cout << "Mx_i size: " << Mx_i.size() << endl;
+            for (int i : Mx_i) {
+                cout << i << " ";
+            }
+            cout << endl;
+            for (int i : My_i) {
+                cout << i << " ";
+            }
+            cout << endl;
+            cout << "My_i size: " << My_i.size() << endl;
+            cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
+        }
         listOfComNb.push_back(intersection);
 
         time4 = getTime(start);
@@ -798,10 +811,10 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
     totalGetNbTime += time2 - time1;
 
     // sort the vector<set<int>> in ascending order according to the size of each set.
-    auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
-        return set1.size() < set2.size();
-        };
-    sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
+    // auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
+    //     return set1.size() < set2.size();
+    //     };
+    // sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
 
     vector<int> LArr; // record the different vertex. i.e. different instance.
 
@@ -822,11 +835,6 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
     set<int> ComNb = listOfComNb.at(index);
     for (int vex : ComNb) {
         if (hasSameValue(LArr, vex)) {
-            // cout << vex << " : ";
-            // for (auto i : LArr) {
-            //     cout << i << " ";
-            // }
-            // cout << endl;
             continue;
         }
         LArr.push_back(vex);
@@ -852,9 +860,9 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
                 // generate l(Pj).
                 vector<int> LVertex = { element.metaPath.vertex.at(0) };
                 vector<int> LEdge;
-                for (int i = 1; i <= midIndex; i++) {
-                    LVertex.push_back(element.metaPath.vertex.at(i));
-                    LEdge.push_back(element.metaPath.edge.at(i - 1));
+                for (int j = 1; j <= midIndex; j++) {
+                    LVertex.push_back(element.metaPath.vertex.at(j));
+                    LEdge.push_back(element.metaPath.edge.at(j - 1));
                 }
                 MetaPath LMetaPath(LVertex, LEdge);
                 if (LMetaPath.pathLen > 1) {
@@ -866,9 +874,9 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
                 // generate r(Pj).
                 vector<int> RVertex = { element.metaPath.vertex.at(pathVLen - 1) };
                 vector<int> REdge;
-                for (int i = pathVLen - 2; i >= midIndex; i--) {
-                    RVertex.push_back(element.metaPath.vertex.at(i));
-                    REdge.push_back(element.metaPath.edge.at(i));
+                for (int j = pathVLen - 2; j >= midIndex; j--) {
+                    RVertex.push_back(element.metaPath.vertex.at(j));
+                    REdge.push_back(element.metaPath.edge.at(j));
                 }
                 MetaPath RMetaPath(RVertex, REdge);
                 if (RMetaPath.pathLen > 1) {
@@ -885,6 +893,15 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
             }
         }
     }
+
+    // if (listOfComNb.size() == 6) {
+    //     cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+    //     cout << "listOfComNb size = " << listOfComNb.size() << endl;
+    //     for (auto& item : listOfComNb) {
+    //         cout << "set size = " << item.size() << endl;
+    //     }
+    //     cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
+    // }
 
     return false;
 }

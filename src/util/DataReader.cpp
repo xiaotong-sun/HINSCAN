@@ -27,7 +27,7 @@ DataReader::DataReader(string graphFile, string vertexFile, string edgeFile, str
     fileStream.close();
 }
 
-vector<vector<int>> DataReader::readGraph() {
+map<int, vector<int>> DataReader::readGraph() {
     ifstream fileStream(graphFile);
 
     if (!fileStream.is_open()) {
@@ -35,7 +35,7 @@ vector<vector<int>> DataReader::readGraph() {
         exit(EXIT_FAILURE);
     }
 
-    vector<vector<int>> graph(vertexNum);
+    map<int, vector<int>> graph;
     string line;
 
     while (getline(fileStream, line)) {

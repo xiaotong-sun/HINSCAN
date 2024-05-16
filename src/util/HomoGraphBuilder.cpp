@@ -8,7 +8,7 @@
 
 #include "HomoGraphBuilder.h"
 
-HomoGraphBuilder::HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
+HomoGraphBuilder::HomoGraphBuilder(const map<int, vector<int>>& graph, const vector<int>& vertexType,
     const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap) : graph(graph), vertexType(vertexType), edgeType(edgeType), queryMPath(queryMPath), edgeReverseMap(edgeReverseMap) {
     this->totalVisitNodeNum = 0;
 }
@@ -53,7 +53,7 @@ void HomoGraphBuilder::findAllNeighbors(int startID, int curID, int index, vecto
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 
-    vector<int> nbArr = graph[curID];
+    vector<int> nbArr = graph.at(curID);
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
@@ -126,7 +126,7 @@ void HomoGraphBuilder::findTargetFromMidType(int startID, int curID, int index, 
     int targetEType = queryMPath.edge[index];
     int mid = queryMPath.pathLen / 2;
 
-    vector<int> nbArr = graph[curID];
+    vector<int> nbArr = graph.at(curID);
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
@@ -238,7 +238,7 @@ void HomoGraphBuilder::findLeftTarget(int startID, int curID, int index, vector<
     int targetEType = queryMPath.edge[index - 1]; // note the edgetype should be reverse.
     targetEType = edgeReverseMap.at(targetEType);
 
-    vector<int> nbArr = graph[curID];
+    vector<int> nbArr = graph.at(curID);
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
@@ -261,7 +261,7 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 
-    vector<int> nbArr = graph[curID];
+    vector<int> nbArr = graph.at(curID);
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];
@@ -369,7 +369,7 @@ void HomoGraphBuilder::findRightTarget_test(int startID, int curID, int index, v
     int targetVType = queryMPath.vertex[index + 1];
     int targetEType = queryMPath.edge[index];
 
-    vector<int> nbArr = graph[curID];
+    vector<int> nbArr = graph.at(curID);
     for (int i = 0; i < nbArr.size(); i += 2) {
         int nbVertexID = nbArr[i];
         int nbEdgeID = nbArr[i + 1];

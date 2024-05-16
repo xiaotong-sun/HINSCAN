@@ -12,12 +12,13 @@
 #include <iostream>
 #include <unordered_set>
 #include <Utility.h>
+#include <map>
 
 using namespace std;
 
 class HomoGraphBuilder {
 private:
-    const vector<vector<int>> graph; // data graph, including vertex IDs, edge IDs, and their link relationships.
+    const map<int, vector<int>> graph; // data graph, including vertex IDs, edge IDs, and their link relationships.
     const vector<int> vertexType; // vertex -> type
     const vector<int> edgeType; // edge -> type
     const MetaPath queryMPath; // the query meta-path
@@ -25,7 +26,7 @@ private:
     int totalVisitNodeNum; // used to count the total number of visit node.
 
 public:
-    HomoGraphBuilder(const vector<vector<int>>& graph, const vector<int>& vertexType,
+    HomoGraphBuilder(const map<int, vector<int>>& graph, const vector<int>& vertexType,
         const vector<int>& edgeType, const MetaPath& queryMPath, const unordered_map<int, int>& edgeReverseMap);
 
     unordered_map<int, set<int>> build(); // Common build without optimize. Just do search for each vertex.

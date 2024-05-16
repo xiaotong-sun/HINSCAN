@@ -14,6 +14,7 @@
 #include <set>
 #include <queue>
 #include "MetaPath.h"
+#include <map>
 
 using namespace std;
 
@@ -29,7 +30,7 @@ public:
     unordered_map<int, set<int>> homoGraph;
 
     // store the HIN graph.
-    vector<vector<int>> hinGraph;
+    map<int, vector<int>> hinGraph;
 
     // store the type of each vertex.
     vector<int> vertexType;
@@ -51,7 +52,7 @@ public:
 
     int verifyTimes = 0;
 
-    SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
+    SCAN(const unordered_map<int, set<int>>& homoGraph, const map<int, vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
 
     // get cluster, hub, outlier. CommonNb: mode=0; DisjointNb: mode=1;
     void getCluster(double eps, int mu, int mode);

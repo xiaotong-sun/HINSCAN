@@ -25,6 +25,7 @@
 #include <unordered_map>
 #include "MetaPath.h"
 #include "Utility.h"
+#include <map>
 
 typedef unsigned int ui;
 
@@ -51,7 +52,7 @@ private:
     };
 
     const unordered_map<int, set<int>>& homoGraph;
-    const vector<vector<int>>& hinGraph;
+    const map<int, vector<int>>& hinGraph;
     const vector<int>& vertexType;
     const vector<int>& edgeType;
     const unordered_map<int, int>& edgeReverseMap;
@@ -83,7 +84,7 @@ private:
     vector<pair<int, int> > noncore_cluster;
 
 public:
-    Pscan(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath, int mode);
+    Pscan(const unordered_map<int, set<int>>& homoGraph, const map<int, vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath, int mode);
     ~Pscan();
 
     void get_graph();

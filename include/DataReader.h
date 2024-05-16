@@ -11,6 +11,7 @@
 #include <vector>
 #include <sstream>
 #include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ private:
 public:
     DataReader(string graphFile, string vertexFile, string edgeFile, string reverseMapFile);
 
-    vector<vector<int>> readGraph(); // return the graph edge information
+    map<int, vector<int>> readGraph(); // return the graph edge information
 
     vector<int> readVertexType(); // return the type of each vertex
 

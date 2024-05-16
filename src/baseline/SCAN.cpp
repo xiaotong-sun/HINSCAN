@@ -7,7 +7,7 @@
 
 #include "SCAN.h"
 
-SCAN::SCAN(const unordered_map<int, set<int>>& homoGraph, const vector<vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath) {
+SCAN::SCAN(const unordered_map<int, set<int>>& homoGraph, const map<int, vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath) {
     // XXX: whether this data can be changed to const? or create another class?
     this->homoGraph = homoGraph;
     this->hinGraph = hinGraph;
@@ -186,6 +186,21 @@ bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
         // get intersection
         set<int> intersection;
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
+
+        // if (intersection.size() == 0) {
+        //     cout << "Mx_i size: " << Mx_i.size() << endl;
+        //     for (int i : Mx_i) {
+        //         cout << i << " ";
+        //     }
+        //     cout << endl;
+        //     for (int i : My_i) {
+        //         cout << i << " ";
+        //     }
+        //     cout << endl;
+        //     cout << "My_i size: " << My_i.size() << endl;
+        //     cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
+        // }
+
         listOfComNb.push_back(intersection);
     }
 
@@ -270,7 +285,6 @@ bool SCAN::enumeration(const vector<set<int>>& listOfComNb, int index, vector<in
                 return verifyExistence(lambda2);
             }
         }
-        // LArr.pop_back();
     }
     return false;
 }
