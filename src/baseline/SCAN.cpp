@@ -188,16 +188,19 @@ bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
 
         // if (intersection.size() == 0) {
+
         //     cout << "Mx_i size: " << Mx_i.size() << endl;
         //     for (int i : Mx_i) {
         //         cout << i << " ";
         //     }
         //     cout << endl;
+
+        //     cout << "My_i size: " << My_i.size() << endl;
         //     for (int i : My_i) {
         //         cout << i << " ";
         //     }
         //     cout << endl;
-        //     cout << "My_i size: " << My_i.size() << endl;
+
         //     cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
         // }
 

@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
     unordered_map<int, set<int>> pnbMap;
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
     long long mtime1 = getTime(start);
-    // map<int, set<int>> pnbMap = homoGraph.build();
+    // pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
     homoGraph.build_forTest(atoi(argv[7]), pnbMap);
@@ -106,23 +106,23 @@ int main(int argc, char* argv[]) {
     // myPscan3.output(argv[2], argv[3], argv[1]);
     myPscan3.showVerifyTimes();
 
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    long long mtime5 = getTime(start);
-    myScan.getCluster(eps, mu, mode);
-    long long mtime6 = getTime(start);
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // long long mtime5 = getTime(start);
+    // myScan.getCluster(eps, mu, mode);
+    // long long mtime6 = getTime(start);
 
-    if (mode == 0) {
-        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    } else if (mode == 1) {
-        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-        cout << "verifyTimes: " << myScan.verifyTimes << endl;
-    }
+    // if (mode == 0) {
+    //     cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    // } else if (mode == 1) {
+    //     cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    //     cout << "verifyTimes: " << myScan.verifyTimes << endl;
+    // }
 
 
-    cout << "=================" << endl;
-    cout << "cluster result" << endl;
-    for (const auto& it : myScan.clusterMap) {
-        cout << it.first << ":" << it.second << endl;
-    }
+    // cout << "=================" << endl;
+    // cout << "cluster result" << endl;
+    // for (const auto& it : myScan.clusterMap) {
+    //     cout << it.first << ":" << it.second << endl;
+    // }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 }

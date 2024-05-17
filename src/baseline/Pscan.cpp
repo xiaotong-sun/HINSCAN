@@ -484,7 +484,6 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
 
             ++i;
         }
-        //printf(")\n");
     }
     //printf("\t*** Finished clustering core vertices!\n");
 
@@ -788,19 +787,7 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
         time3 = getTime(start);
         set<int> intersection;
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
-        if (intersection.size() == 0) {
-            cout << "Mx_i size: " << Mx_i.size() << endl;
-            for (int i : Mx_i) {
-                cout << i << " ";
-            }
-            cout << endl;
-            for (int i : My_i) {
-                cout << i << " ";
-            }
-            cout << endl;
-            cout << "My_i size: " << My_i.size() << endl;
-            cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
-        }
+
         listOfComNb.push_back(intersection);
 
         time4 = getTime(start);
@@ -840,12 +827,6 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
         LArr.push_back(vex);
         if (index < listOfComNb.size() - 1) {
             if (enumeration(listOfComNb, index + 1, LArr, lambda)) {
-                // cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
-                // cout << "listOfComNb size = " << listOfComNb.size() << endl;
-                // for (auto& item : listOfComNb) {
-                //     cout << "set size = " << item.size() << endl;
-                // }
-                // cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
                 return true;
             } else {
                 LArr.pop_back();
@@ -889,19 +870,15 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
                 // cout << "find one" << endl;
                 return true;
             } else {
-                return verifyExistence(lambda2);
+                if (verifyExistence(lambda2)) {
+                    return true;
+                } else {
+                    LArr.pop_back();
+                    return false;
+                }
             }
         }
     }
-
-    // if (listOfComNb.size() == 6) {
-    //     cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
-    //     cout << "listOfComNb size = " << listOfComNb.size() << endl;
-    //     for (auto& item : listOfComNb) {
-    //         cout << "set size = " << item.size() << endl;
-    //     }
-    //     cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl;
-    // }
 
     return false;
 }
