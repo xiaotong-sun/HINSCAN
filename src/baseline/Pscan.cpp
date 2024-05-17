@@ -199,10 +199,6 @@ void Pscan::output(const char* eps_s, const char* miu, string dir) {
 
     int mu = atoi(miu);
 
-    // for (ui i = 0; i < n; i++) {
-    //     cout << index2id[i] << ": " << similar_degree[i] << "\n";
-    // }
-
     for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
         fprintf(fout, "c %d %d\n", index2id[i], cid[pa[i]]);
     }
@@ -248,7 +244,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     int* bin_next = new int[n];
     for (ui i = 0;i < n + 1;i++) bin_head[i] = -1;
 
-    // 下面这段有什么用？bin_head, bin_next是干什么的？
     int max_ed = 0;
     for (ui i = 0;i < n;i++) if (effective_degree[i] >= miu) {
         int ed = effective_degree[i];
@@ -788,6 +783,23 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
         set<int> intersection;
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
 
+        if (intersection.size() == 0) {
+
+            cout << "Mx_i size: " << Mx_i.size() << endl;
+            for (int i : Mx_i) {
+                cout << i << " ";
+            }
+            cout << endl;
+
+            cout << "My_i size: " << My_i.size() << endl;
+            for (int i : My_i) {
+                cout << i << " ";
+            }
+            cout << endl;
+
+            cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
+        }
+
         listOfComNb.push_back(intersection);
 
         time4 = getTime(start);
@@ -798,14 +810,24 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
     totalGetNbTime += time2 - time1;
 
     // sort the vector<set<int>> in ascending order according to the size of each set.
-    // auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
-    //     return set1.size() < set2.size();
-    //     };
-    // sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
+    map<set<int>, int> listOfComNb2Lambda;
+    for (int i = 0; i < listOfComNb.size(); i++) {
+        listOfComNb2Lambda[listOfComNb[i]] = i;
+    }
+
+    auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
+        return set1.size() < set2.size();
+        };
+    sort(listOfComNb.begin(), listOfComNb.end(), compareSetSize);
 
     vector<int> LArr; // record the different vertex. i.e. different instance.
 
     // enumeration and verify.
+    vector<MyTuple> lambda2;
+    for (int i = 0; i < listOfComNb.size(); i++) {
+        lambda2.push_back(lambda[listOfComNb2Lambda.at(listOfComNb[i])]);
+    }
+    lambda = lambda2;
     return enumeration(listOfComNb, 0, LArr, lambda);
 }
 
