@@ -315,7 +315,7 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
 
     for (int startID : keepSet) {
         ++fl;
-        if (fl % 500 == 0) {
+        if (fl % 5000 == 0) {
             cout << fl << "\n";
         }
 

@@ -78,10 +78,6 @@ void SCAN::getCommonEpsNb(double eps) {
 }
 
 void SCAN::getDisjointEpsNb(double eps) {
-    // Two sets bellow are used to record the u, v, w that has been verified.
-    set<set<int>> verifyTrueSet;
-    set<set<int>> verifyFalseSet;
-
     // cout << "similarity of vertex" << endl;
     for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
         int vertex = iter->first;
@@ -418,3 +414,10 @@ bool SCAN::isSameCluster(int vertex) {
     return true;
 }
 
+void SCAN::showVerifyTimes() {
+    cout << "------------------------------" << endl;
+    cout << "verifyTrueSet size: " << verifyTrueSet.size() << endl;
+    cout << "verifyFalseSet size: " << verifyFalseSet.size() << endl;
+    cout << "verifyTimes: " << verifyTrueSet.size() + verifyFalseSet.size() << endl;
+    cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+}

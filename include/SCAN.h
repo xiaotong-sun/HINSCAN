@@ -50,12 +50,18 @@ public:
     // record the eps-Neighborhood for each vertex.
     unordered_map<int, set<int>> epsNbs;
 
+    // Two sets bellow are used to record the u, v, w that has been verified.
+    set<set<int>> verifyTrueSet;
+    set<set<int>> verifyFalseSet;
+
     int verifyTimes = 0;
 
     SCAN(const unordered_map<int, set<int>>& homoGraph, const map<int, vector<int>>& hinGraph, const vector<int> vertexType, const vector<int>& edgeType, const unordered_map<int, int>& edgeReverseMap, const MetaPath& metaPath);
 
     // get cluster, hub, outlier. CommonNb: mode=0; DisjointNb: mode=1;
     void getCluster(double eps, int mu, int mode);
+
+    void showVerifyTimes();
 
 private:
     // check whether all vertices in Neighbor(v) belong to the same cluster or not.

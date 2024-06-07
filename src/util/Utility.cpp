@@ -128,3 +128,16 @@ long long getTime(struct timeval& start) {
     mtime = seconds * 1000000 + useconds;
     return mtime;
 }
+
+void getVertexNum(const vector<int>& vertexType) {
+    unordered_map<int, int> vertexNum;
+    for (int type : vertexType) {
+        vertexNum[type]++;
+    }
+
+    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    for (auto& item : vertexNum) {
+        cout << item.first << ": " << item.second << "\n";
+    }
+    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+}

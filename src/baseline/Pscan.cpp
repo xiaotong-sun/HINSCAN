@@ -783,22 +783,22 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
         set<int> intersection;
         set_intersection(Mx_i.begin(), Mx_i.end(), My_i.begin(), My_i.end(), inserter(intersection, intersection.begin()));
 
-        if (intersection.size() == 0) {
+        // if (intersection.size() == 0) {
 
-            cout << "Mx_i size: " << Mx_i.size() << endl;
-            for (int i : Mx_i) {
-                cout << i << " ";
-            }
-            cout << endl;
+        //     cout << "Mx_i size: " << Mx_i.size() << endl;
+        //     for (int i : Mx_i) {
+        //         cout << i << " ";
+        //     }
+        //     cout << endl;
 
-            cout << "My_i size: " << My_i.size() << endl;
-            for (int i : My_i) {
-                cout << i << " ";
-            }
-            cout << endl;
+        //     cout << "My_i size: " << My_i.size() << endl;
+        //     for (int i : My_i) {
+        //         cout << i << " ";
+        //     }
+        //     cout << endl;
 
-            cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
-        }
+        //     cout << "v1: " << tup.vertex1 << "\tv2: " << tup.vertex2 << endl;
+        // }
 
         listOfComNb.push_back(intersection);
 
@@ -919,12 +919,18 @@ void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool f
         targetEType2 = this->edgeReverseMap.at(targetEType);
         vector<int> nbArr = this->hinGraph.at(vex);
 
+        // int count = 0;
         for (int j = 0; j < nbArr.size(); j += 2) {
             int nbVertexID = nbArr[j];
             int nbEdgeID = nbArr[j + 1];
             if (targetVType == vertexType[nbVertexID] && (targetEType == edgeType[nbEdgeID] || targetEType2 == edgeType[nbEdgeID])) {
                 temp.insert(nbVertexID);
+                // count++;
             }
+
+            // if (count == 30) {
+            //     break;
+            // }
         }
     }
 }
@@ -939,10 +945,10 @@ int* Pscan::getMinCN() {
 }
 
 void Pscan::showTime() {
-    cout << "Total GetNB time: " << totalGetNbTime << endl;
+    cout << "Total GetNB&Intersection time: " << totalGetNbTime << endl;
     cout << "Total Enumer time: " << totalVerifyTime - totalGetNbTime << endl;
-    cout << "Total Time1: " << totalTime1 << endl;
-    cout << "Total Time2: " << totalTime2 << endl;
+    cout << "Total Time1 (GetNB): " << totalTime1 << endl;
+    cout << "Total Time2 (Get Intersection): " << totalTime2 << endl;
 }
 
 void Pscan::showVerifyTimes() {
