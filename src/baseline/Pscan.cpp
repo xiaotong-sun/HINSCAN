@@ -761,18 +761,57 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
         // get M(x_i)
         set<int> Mx_i = { tup.vertex1 };
         set<int> temp2;
-        for (int i = 1; i <= midIndex; i++) {
-            getNB(Mx_i, temp2, tup, i, false);
-            Mx_i = temp2;
-            temp2.clear();
+
+        if (pathVLen == 5) {
+            if (twoHopNB.contains(tup.vertex1)) {
+                Mx_i = twoHopNB.at(tup.vertex1);
+            } else {
+                for (int i = 1; i <= midIndex; i++) {
+                    getNB(Mx_i, temp2, tup, i, false);
+                    Mx_i = temp2;
+                    temp2.clear();
+                }
+                twoHopNB[tup.vertex1] = Mx_i;
+            }
+        } else {
+            if (oneHopNB.contains(tup.vertex1)) {
+                Mx_i = oneHopNB.at(tup.vertex1);
+            } else {
+                for (int i = 1; i <= midIndex; i++) {
+                    getNB(Mx_i, temp2, tup, i, false);
+                    Mx_i = temp2;
+                    temp2.clear();
+                }
+                // oneHopNB[tup.vertex1] = Mx_i;
+            }
         }
+
 
         // get M(y_i)
         set<int> My_i = { tup.vertex2 };
-        for (int i = pathVLen - 2; i >= midIndex; i--) {
-            getNB(My_i, temp2, tup, i, true);
-            My_i = temp2;
-            temp2.clear();
+
+        if (pathVLen == 5) {
+            if (twoHopNB.contains(tup.vertex2)) {
+                My_i = twoHopNB.at(tup.vertex2);
+            } else {
+                for (int i = pathVLen - 2; i >= midIndex; i--) {
+                    getNB(My_i, temp2, tup, i, true);
+                    My_i = temp2;
+                    temp2.clear();
+                }
+                twoHopNB[tup.vertex2] = My_i;
+            }
+        } else {
+            if (oneHopNB.contains(tup.vertex2)) {
+                My_i = oneHopNB.at(tup.vertex2);
+            } else {
+                for (int i = pathVLen - 2; i >= midIndex; i--) {
+                    getNB(My_i, temp2, tup, i, true);
+                    My_i = temp2;
+                    temp2.clear();
+                }
+                // oneHopNB[tup.vertex2] = My_i;
+            }
         }
 
         long long time4 = getTime(start);
@@ -907,30 +946,39 @@ bool Pscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<i
 
 void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight) {
     for (int vex : M_i) {
-        int targetVType = tup.metaPath.vertex.at(index);
-        int targetEType;
-        int targetEType2; // for the reverse edge.
-
-        if (!fromRight) {
-            targetEType = tup.metaPath.edge.at(index - 1);
+        if (oneHopNB.contains(vex)) {
+            set<int> nb = oneHopNB.at(vex);
+            temp.insert(nb.begin(), nb.end());
         } else {
-            targetEType = tup.metaPath.edge.at(index);
-        }
-        targetEType2 = this->edgeReverseMap.at(targetEType);
-        vector<int> nbArr = this->hinGraph.at(vex);
+            // 统计一个点，会被重复获取多少次neighbor
+            getNBTimes[vex]++;
 
-        // int count = 0;
-        for (int j = 0; j < nbArr.size(); j += 2) {
-            int nbVertexID = nbArr[j];
-            int nbEdgeID = nbArr[j + 1];
-            if (targetVType == vertexType[nbVertexID] && (targetEType == edgeType[nbEdgeID] || targetEType2 == edgeType[nbEdgeID])) {
-                temp.insert(nbVertexID);
-                // count++;
+            int targetVType = tup.metaPath.vertex.at(index);
+            int targetEType;
+            int targetEType2; // for the reverse edge.
+
+            if (!fromRight) {
+                targetEType = tup.metaPath.edge.at(index - 1);
+            } else {
+                targetEType = tup.metaPath.edge.at(index);
             }
+            targetEType2 = this->edgeReverseMap.at(targetEType);
+            vector<int> nbArr = this->hinGraph.at(vex);
 
-            // if (count == 30) {
-            //     break;
-            // }
+            // int count = 0;
+            for (int j = 0; j < nbArr.size(); j += 2) {
+                int nbVertexID = nbArr[j];
+                int nbEdgeID = nbArr[j + 1];
+                if (targetVType == vertexType[nbVertexID] && (targetEType == edgeType[nbEdgeID] || targetEType2 == edgeType[nbEdgeID])) {
+                    oneHopNB[vex].insert(nbVertexID);
+                    temp.insert(nbVertexID);
+                    // count++;
+                }
+
+                // if (count == 1) {
+                //     break;
+                // }
+            }
         }
     }
 }
@@ -957,4 +1005,16 @@ void Pscan::showVerifyTimes() {
     cout << "verifyFalseSet size: " << verifyFalseSet.size() << endl;
     cout << "verifyTimes: " << verifyTrueSet.size() + verifyFalseSet.size() << endl;
     cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+}
+
+void Pscan::showGetNBTimes() {
+    int count = 0;
+    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    for (auto& item : getNBTimes) {
+        count += item.second;
+        // cout << item.first << ": " << item.second << endl;
+    }
+    cout << "Num of vertex need to get NB: " << getNBTimes.size() << endl;
+    cout << "Num of duplicated operation: " << count - getNBTimes.size() << endl;
+    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }

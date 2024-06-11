@@ -94,6 +94,7 @@ int main(int argc, char* argv[]) {
     // myPscan2.output(argv[2], argv[3], argv[1]);
     myPscan2.output("myPscan2", argv[3], argv[1]);
     myPscan2.showVerifyTimes();
+    myPscan2.showGetNBTimes();
 
     Pscan myPscan3(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     myPscan3.get_graph();
@@ -104,18 +105,19 @@ int main(int argc, char* argv[]) {
     // myPscan3.output(argv[2], argv[3], argv[1]);
     myPscan3.output("myPscan3", argv[3], argv[1]);
     myPscan3.showVerifyTimes();
+    myPscan3.showGetNBTimes();
 
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    long long mtime5 = getTime(start);
-    myScan.getCluster(eps, mu, mode);
-    long long mtime6 = getTime(start);
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // long long mtime5 = getTime(start);
+    // myScan.getCluster(eps, mu, mode);
+    // long long mtime6 = getTime(start);
 
-    if (mode == 0) {
-        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    } else if (mode == 1) {
-        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-        myScan.showVerifyTimes();
-    }
+    // if (mode == 0) {
+    //     cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    // } else if (mode == 1) {
+    //     cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    //     myScan.showVerifyTimes();
+    // }
 
 
     // cout << "=================" << endl;

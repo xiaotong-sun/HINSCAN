@@ -61,6 +61,10 @@ private:
     set<set<int>> verifyFalseSet;
     const int mode;
 
+    unordered_map<int, int> getNBTimes;
+    unordered_map<int, set<int>> oneHopNB; // save the 1-hop neighbor of a vertex
+    unordered_map<int, set<int>> twoHopNB; // save the 2-hop neighbor of a vertex
+
     ui* index2id;
     unordered_map<int, int> id2index;
 
@@ -96,6 +100,7 @@ public:
     int* getMinCN();
     void showTime();
     void showVerifyTimes();
+    void showGetNBTimes();
 
 private:
     FILE* open_file(const char* file_name, const char* mode);
