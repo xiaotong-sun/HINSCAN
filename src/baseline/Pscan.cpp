@@ -782,7 +782,7 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
                     Mx_i = temp2;
                     temp2.clear();
                 }
-                // oneHopNB[tup.vertex1] = Mx_i;
+                oneHopNB[tup.vertex1] = Mx_i;
             }
         }
 
@@ -810,7 +810,7 @@ bool Pscan::verifyExistence(vector<MyTuple>& lambda) {
                     My_i = temp2;
                     temp2.clear();
                 }
-                // oneHopNB[tup.vertex2] = My_i;
+                oneHopNB[tup.vertex2] = My_i;
             }
         }
 
@@ -950,7 +950,6 @@ void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool f
             set<int> nb = oneHopNB.at(vex);
             temp.insert(nb.begin(), nb.end());
         } else {
-            // 统计一个点，会被重复获取多少次neighbor
             getNBTimes[vex]++;
 
             int targetVType = tup.metaPath.vertex.at(index);
@@ -970,7 +969,6 @@ void Pscan::getNB(set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool f
                 int nbVertexID = nbArr[j];
                 int nbEdgeID = nbArr[j + 1];
                 if (targetVType == vertexType[nbVertexID] && (targetEType == edgeType[nbEdgeID] || targetEType2 == edgeType[nbEdgeID])) {
-                    oneHopNB[vex].insert(nbVertexID);
                     temp.insert(nbVertexID);
                     // count++;
                 }
