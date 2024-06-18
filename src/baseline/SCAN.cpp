@@ -204,6 +204,11 @@ bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
     }
 
     // sort the vector<set<int>> in ascending order according to the size of each set.
+    map<set<int>, int> listOfComNb2Lambda;
+    for (int i = 0; i < listOfComNb.size(); i++) {
+        listOfComNb2Lambda[listOfComNb[i]] = i;
+    }
+
     auto compareSetSize = [](const set<int>& set1, const set<int>& set2) {
         return set1.size() < set2.size();
         };
@@ -212,6 +217,11 @@ bool SCAN::verifyExistence(vector<MyTuple>& lambda) {
     vector<int> LArr; // record the different vertex. i.e. different instance.
 
     // enumeration and verify.
+    vector<MyTuple> lambda2;
+    for (int i = 0; i < listOfComNb.size(); i++) {
+        lambda2.push_back(lambda[listOfComNb2Lambda.at(listOfComNb[i])]);
+    }
+    lambda = lambda2;
     return enumeration(listOfComNb, 0, LArr, lambda);
 }
 
