@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
     long long mtime4 = getTime(start);
     cout << "Time of pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
     // myPscan.output(argv[2], argv[3], argv[1]);
+    myPscan.showMessage();
 
     Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     myPscan2.get_graph();
@@ -92,9 +93,10 @@ int main(int argc, char* argv[]) {
     cout << "Time of optimized disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
     myPscan2.showTime();
     // myPscan2.output(argv[2], argv[3], argv[1]);
-    myPscan2.output("myPscan2", argv[3], argv[1]);
+    // myPscan2.output("myPscan2", argv[3], argv[1]);
     myPscan2.showVerifyTimes();
     myPscan2.showGetNBTimes();
+    myPscan2.showMessage();
 
     Pscan myPscan3(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     myPscan3.get_graph();
@@ -103,9 +105,10 @@ int main(int argc, char* argv[]) {
     mtime4 = getTime(start);
     cout << "Time of no optimized disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
     // myPscan3.output(argv[2], argv[3], argv[1]);
-    myPscan3.output("myPscan3", argv[3], argv[1]);
+    // myPscan3.output("myPscan3", argv[3], argv[1]);
     myPscan3.showVerifyTimes();
     myPscan3.showGetNBTimes();
+    myPscan3.showMessage();
 
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // long long mtime5 = getTime(start);

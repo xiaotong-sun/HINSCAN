@@ -84,6 +84,7 @@ private:
     int* degree;
     int* similar_degree; //number of adjacent edges with similarity no less than epsilon
     int* effective_degree; //number of adjacent edges not pruned by similarity
+    int* effective_degree_copy;
 
     vector<pair<int, int> > noncore_cluster;
 
@@ -94,6 +95,7 @@ public:
     void get_graph();
     void pSCAN(const char* eps_s, int miu);
     void pSCAN_disjoint(const char* eps_s, int miu, int* minCN);
+    void pSCAN_disjoint2();
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
     void output(const char* eps_s, const char* miu, string dir);
@@ -101,6 +103,7 @@ public:
     void showTime();
     void showVerifyTimes();
     void showGetNBTimes();
+    void showMessage();
 
 private:
     FILE* open_file(const char* file_name, const char* mode);
