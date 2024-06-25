@@ -59,7 +59,7 @@ private:
     const MetaPath& metaPath;
     set<set<int>> verifyTrueSet;
     set<set<int>> verifyFalseSet;
-    const int mode;
+    int mode;
 
     unordered_map<int, int> getNBTimes;
     unordered_map<int, set<int>> oneHopNB; // save the 1-hop neighbor of a vertex
@@ -112,6 +112,7 @@ private:
     // int naive_similar_check(int u, int v, int eps_a2, int eps_b2);
     // int similar_check(int u, int v, int eps_a2, int eps_b2);
     int similar_check_OP(int u, ui idx, int eps_a, int eps_b);
+    int similar_check_OP_disjoint(int u, ui idx, int eps_a, int eps_b);
     int check_common_neighbor(int u, int v, int c);
     int check_disjoint_neighbor(int u, int v, int c);
     int compute_common_neighbor_lowerbound(int u, int v, int eps_a2, int eps_b2);

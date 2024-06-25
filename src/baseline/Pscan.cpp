@@ -224,7 +224,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
 
     if (similar_degree == nullptr) similar_degree = new int[n];
     for (ui i = 0; i < n; i++) similar_degree[i] = 1;
-    // 我认为原代码这里存在一些问题，做如下改动
+    // there are some bugs in origin-code, so I do some changes.
     // memset(similar_degree, 0, sizeof(int) * n);
 
     if (effective_degree == nullptr) effective_degree = new int[n];
@@ -305,15 +305,17 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
 
                 min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2); // similar_chech_OP only return -1 or -2;
 
-                if (min_cn[idx] == -1) ++similar_degree[u];
-                else {
+                if (min_cn[idx] == -1) {
+                    ++similar_degree[u];
+                    ++similar_degree[v];
+                } else {
                     --effective_degree[u];
                     --effective_degree_copy[u];
                 }
 
                 if (effective_degree[v] >= 0) {
                     if (min_cn[idx] == -1) {
-                        ++similar_degree[v];
+                        // ++similar_degree[v];
 
                         if (similar_degree[v] == miu) cores[cores_n++] = v;
                     } else {
@@ -346,9 +348,14 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
 
             min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
 
+            if (min_cn[idx] == -1) {
+                ++similar_degree[edges[reverse[idx]]];
+                ++similar_degree[v];
+            }
+
             if (effective_degree[v] >= 0) {
                 if (min_cn[idx] == -1) {
-                    ++similar_degree[v];
+                    // ++similar_degree[v];
 
                     if (similar_degree[v] == miu) cores[cores_n++] = v;
                 } else {
@@ -371,6 +378,10 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     delete[] bin_next; bin_next = nullptr;
 
     cluster_noncore_vertices(eps_a2, eps_b2, miu);
+
+    // showMessage();
+
+    pSCAN_disjoint2();
 }
 
 void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
@@ -528,6 +539,7 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
 }
 
 void Pscan::pSCAN_disjoint2() {
+    this->mode = 1;
     if (pa != nullptr) {
         delete[] pa;
         pa = new int[n];
@@ -563,8 +575,7 @@ void Pscan::pSCAN_disjoint2() {
         for (ui j = pstart[u];j < pstart[u + 1];j++) {
             if (min_cn[j] == -2) continue;
 
-            if (find_root(u) != find_root(edges[j])) edge_buf[edge_buf_n++] = j;
-            // if (similar_degree[u] < miu || find_root(u) != find_root(edges[j])) edge_buf[edge_buf_n++] = j;
+            edge_buf[edge_buf_n++] = j;
         }
 
         // ReCheckCore(u)
@@ -575,19 +586,26 @@ void Pscan::pSCAN_disjoint2() {
             if (min_cn[idx] == -1) {
                 int v = edges[idx];
 
-                int min_cn_ = similar_check_OP(u, idx, eps_a2, eps_b2);
+                int min_cn_ = similar_check_OP_disjoint(u, idx, eps_a2, eps_b2);
                 if (min_cn_ == -2) {
                     --similar_degree[u];
                     --similar_degree[v];
                     --effective_degree[u];
                     --effective_degree[v];
-                    min_cn[idx] = min_cn[reverse[idx]] = min_cn_;
+                    if (similar_degree[u] == 0) {
+                        ++similar_degree[u];
+                    }
+                    if (similar_degree[v] == 0) {
+                        ++similar_degree[v];
+                    }
                 }
+                min_cn[idx] = min_cn[reverse[idx]] = min_cn_;
+
             } else if (min_cn[idx] >= 0) {
                 int v = edges[idx];
 
                 int min_cn_ = similar_check_OP(u, idx, eps_a2, eps_b2);
-                if (min_cn_ = -1) {
+                if (min_cn_ == -1) {
                     ++similar_degree[u];
                     ++similar_degree[v];
                 } else {
@@ -617,12 +635,9 @@ void Pscan::pSCAN_disjoint2() {
         for (ui j = pstart[u]; j < pstart[u + 1]; j++) {
             if (min_cn[j] == -2) continue;
 
-            if (find_root(u) != find_root(edges[j])) edge_buf[edge_buf_n++] = j;
-        }
-
-        for (int j = 0; j < edge_buf_n; j++) {
-            ui idx = edge_buf[j];
-            if (min_cn[idx] == -1 && similar_degree[edges[idx]] >= miu) my_union(u, edges[idx]);
+            if (find_root(u) != find_root(edges[j])) {
+                if (min_cn[j] == -1 && similar_degree[edges[j]] >= miu) my_union(u, edges[j]);
+            }
         }
     }
     //printf("\t*** Finished re-clustering core vertices!\n");
@@ -675,6 +690,17 @@ int Pscan::similar_check_OP(int u, ui idx, int eps_a2, int eps_b2) {
     }
 
     return check_disjoint_neighbor(u, v, min_cn[idx]);
+}
+
+int Pscan::similar_check_OP_disjoint(int u, ui idx, int eps_a2, int eps_b2) {
+    int v = edges[idx];
+
+    int du = degree[u], dv = degree[v];
+    int c = compute_common_neighbor_lowerbound(du, dv, eps_a2, eps_b2);
+
+    if (c <= 2) return -1;
+
+    return check_disjoint_neighbor(u, v, c);
 }
 
 int Pscan::compute_common_neighbor_lowerbound(int du, int dv, int eps_a2, int eps_b2) {
@@ -1174,5 +1200,13 @@ void Pscan::showMessage() {
         cout << min_cn[i] << " ";
     }
     cout << endl;
+    cout << "min_cn & node\n";
+    for (ui i = 0; i < n; i++) {
+        cout << index2id[i] << ": ";
+        for (ui j = pstart[i]; j < pstart[i + 1]; j++) {
+            cout << index2id[edges[j]] << "::" << min_cn[j] << " ";
+        }
+        cout << endl;
+    }
     cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }
