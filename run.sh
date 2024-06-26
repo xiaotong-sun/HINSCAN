@@ -26,7 +26,7 @@ case $1 in
     tmdb1s)
         ./executable/hinscan ./data/tmdb/ 0.51 2 1 "0 0 1 1 0" homoGraph1s.txt 1;;
     tmdb0l)
-        ./executable/hinscan ./data/tmdb/ 0.64 3 0 "1 1 0 2 2 3 0 0 1" homoGraph0l.txt 2;;
+        ./executable/hinscan ./data/tmdb/ 0.96 400 0 "1 1 0 2 2 3 0 0 1" homoGraph0l.txt 2;;
     tmdb1l)
         ./executable/hinscan ./data/tmdb/ 0.64 3 1 "1 1 0 2 2 3 0 0 1" homoGraph1l.txt 2;;
     dblp0s)

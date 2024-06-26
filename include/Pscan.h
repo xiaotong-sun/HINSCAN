@@ -98,6 +98,7 @@ public:
     void pSCAN_disjoint2();
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
+    void cluster_noncore_vertices_disjoint(int eps_a2, int eps_b2, int mu);
     void output(const char* eps_s, const char* miu, string dir);
     int* getMinCN();
     void showTime();

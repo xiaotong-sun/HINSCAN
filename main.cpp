@@ -7,6 +7,13 @@
 
 using namespace std;
 
+// static const auto io_sync_off = []() {
+//     ios::sync_with_stdio(false);
+//     cin.tie(nullptr);
+//     cout.tie(nullptr);
+//     return nullptr;
+//     }();
+
 /*
     [0]:exe, [1]:data-dir, [2]:similarity-threshold, [3]:density-threshold
     [4]:cluster-mode, [5]:meta-path, [6]:output-file, [7]:flag-index
@@ -85,6 +92,8 @@ int main(int argc, char* argv[]) {
     cout << "Time of pScan Clustering: " << useTime << "(us)" << endl;
     // myPscan.output(argv[2], argv[3], argv[1]);
     myPscan.output("myPscan1", argv[3], argv[1]);
+    myPscan.showVerifyTimes();
+    myPscan.showGetNBTimes();
     // myPscan.showMessage();
 
     // Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
