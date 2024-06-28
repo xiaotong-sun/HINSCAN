@@ -199,7 +199,7 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
     }
 }
 
-void Pscan::cluster_noncore_vertices_disjoint(int eps_a2, int eps_b2, int mu) {
+void Pscan::cluster_noncore_vertices_disjoint(int eps_a2, int eps_b2, int mu, int* verify_flag) {
     if (cid == nullptr) cid = new int[n];
     for (ui i = 0;i < n;i++) cid[i] = n;
 
@@ -221,7 +221,12 @@ void Pscan::cluster_noncore_vertices_disjoint(int eps_a2, int eps_b2, int mu) {
                     ++similar_degree[edges[j]];
                     noncore_cluster.push_back(make_pair(cid[pa[i]], edges[j]));
                 }
+                verify_flag[j] = verify_flag[reverse[j]] = 1;
             } else if (min_cn[j] == -1) {
+                if (verify_flag[j] == 1) {
+                    noncore_cluster.push_back(make_pair(cid[pa[i]], edges[j]));
+                    continue;
+                }
                 int min_cn_ = similar_check_OP_disjoint(i, j, eps_a2, eps_b2);
                 if (reverse[reverse[j]] != j) printf("WA cluster_noncore\n");
                 if (min_cn_ == -1) {
@@ -229,6 +234,7 @@ void Pscan::cluster_noncore_vertices_disjoint(int eps_a2, int eps_b2, int mu) {
                 } else {
                     --similar_degree[i];
                     --similar_degree[edges[j]];
+                    min_cn[j] = min_cn[reverse[j]] = min_cn_;
                 }
             }
         }
@@ -596,6 +602,7 @@ void Pscan::pSCAN_disjoint2() {
         }
     }
 
+    int cores_n_copy = cores_n;
     while (cores_n > 0) {
         int u = cores[--cores_n];
 
@@ -651,11 +658,15 @@ void Pscan::pSCAN_disjoint2() {
     }
 
     // ReClusterCore(u)
-    for (ui i = 0; i < n; i++) {
-        if (similar_degree[i] >= miu) {
-            cores[cores_n++] = i;
+    int fast = 0, slow = 0;
+    while (fast < cores_n_copy) {
+        if (similar_degree[cores[fast]] >= miu) {
+            cores[slow++] = cores[fast++];
+        } else {
+            fast++;
         }
     }
+    cores_n = slow;
 
     while (cores_n > 0) {
         int u = cores[--cores_n];
@@ -675,7 +686,7 @@ void Pscan::pSCAN_disjoint2() {
     delete[] edge_buf; edge_buf = nullptr;
     delete[] cores; cores = nullptr;
 
-    cluster_noncore_vertices_disjoint(eps_a2, eps_b2, miu);
+    cluster_noncore_vertices_disjoint(eps_a2, eps_b2, miu, verify_flag);
 }
 
 int Pscan::check_common_neighbor(int u, int v, int c) {
