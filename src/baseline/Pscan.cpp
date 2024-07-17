@@ -615,7 +615,7 @@ void Pscan::pSCAN_disjoint2() {
 
         // ReCheckCore(u)
         int i = 0;
-        while (effective_degree[u] >= miu && (similar_degree[u] + edge_buf_n - i) >= miu && (similar_degree[u] - edge_buf_n + i) < miu && i < edge_buf_n) {
+        while (effective_degree[u] >= miu && (similar_degree[u] + edge_buf_n - i) >= miu && (similar_degree[u] - edge_buf_n + i) < miu && (effective_degree[u] - edge_buf_n + i) < miu && i < edge_buf_n) {
             ui idx = edge_buf[i];
             // if u is similar to idx in the previous stage.
             if (min_cn[idx] == -1) {
