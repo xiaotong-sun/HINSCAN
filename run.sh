@@ -34,9 +34,9 @@ case $1 in
     dblp1s)
         "./executable/${2:-hinscan}" ./data/dblp70w/ 0.72 4 1 "1 3 0 0 1" homoGraph1s.txt 1;;
     dblp0l)
-        "./executable/${2:-hinscan}" ./data/dblp70w/ 0.98 500 0 "1 3 0 2 3 5 0 0 1" homoGraph0l.txt 2;;
+        "./executable/${2:-hinscan}" ./data/dblp70w/ 0.98 500 0 "1 3 0 1 2 4 0 0 1" homoGraph0l.txt 2;;
     dblp1l)
-        "./executable/${2:-hinscan}" ./data/dblp70w/ 0.64 3 1 "1 3 0 2 3 5 0 0 1" homoGraph1l.txt 2;;
+        "./executable/${2:-hinscan}" ./data/dblp70w/ 0.64 3 1 "1 3 0 1 2 4 0 0 1" homoGraph1l.txt 2;;
     fortest0s)
         "./executable/${2:-hinscan}" ./data/ForTest/ 0.5 2 0 "0 0 1 3 0" homoGraph_short.txt 0;;
     fortest0l)

@@ -33,7 +33,7 @@ unordered_map<int, set<int>> HomoGraphBuilder::build() {
 
     for (int startID : keepSet) {
         ++fl;
-        if (fl % 500 == 0) {
+        if (fl % 5000 == 0) {
             cout << fl << endl;
         }
 
@@ -283,10 +283,10 @@ void HomoGraphBuilder::findRightTarget(int startID, int curID, int index, vector
 */
 void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>& pnbMap) {
     // DELETE: To evaluate the time.
-    struct timeval start;
-    gettimeofday(&start, nullptr);
-    long long timeStart = getTime(start);
-    long long getKeepsetTime = 0, totalJionTime = 0, totalSearchTime = 0;
+    // struct timeval start;
+    // gettimeofday(&start, nullptr);
+    // long long timeStart = getTime(start);
+    // long long getKeepsetTime = 0, totalJionTime = 0, totalSearchTime = 0;
 
     // step1: collect vertices of the same type with vertex of flagIndex.
     set<int> keepSet;
@@ -295,7 +295,7 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
     int FlagType = queryMPath.vertex[flagIndex];
     int StartType = queryMPath.vertex[0];
 
-    long long time1 = getTime(start);
+    // long long time1 = getTime(start);
     for (int i = 0; i < vertexType.size(); i++) {
         if (vertexType[i] == FlagType) {
             keepSet.insert(i);
@@ -304,14 +304,14 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
             pnbMap[i].insert(i);
         }
     }
-    long long time2 = getTime(start);
-    getKeepsetTime = time2 - time1;
+    // long long time2 = getTime(start);
+    // getKeepsetTime = time2 - time1;
 
     // step2: find target vertices that connected to the target vertex.
     cout << "keepSet.size = " << keepSet.size() << endl;
     int fl = 0;
 
-    int totalJoin = 0, usefulJoin = 0;
+    // int totalJoin = 0, usefulJoin = 0;
 
     for (int startID : keepSet) {
         ++fl;
@@ -324,38 +324,38 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
         set<int> leftTargetSet;
         set<int> rightTargetSet;
 
-        long long time3 = getTime(start);
+        // long long time3 = getTime(start);
         findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet, flagIndex);
         findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
-        long long time4 = getTime(start);
-        totalSearchTime += time4 - time3;
+        // long long time4 = getTime(start);
+        // totalSearchTime += time4 - time3;
 
-        totalJoin += leftTargetSet.size() * rightTargetSet.size();
+        // totalJoin += leftTargetSet.size() * rightTargetSet.size();
 
-        // FIXME step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+        // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
 
-        long long time5 = getTime(start);
+        // long long time5 = getTime(start);
         for (auto& elem1 : leftTargetSet) {
             int originSize = pnbMap[elem1].size();
             pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
-            usefulJoin += pnbMap[elem1].size() - originSize;
+            // usefulJoin += pnbMap[elem1].size() - originSize;
         }
-        long long time6 = getTime(start);
-        totalJionTime += time6 - time5;
+        // long long time6 = getTime(start);
+        // totalJionTime += time6 - time5;
     }
 
-    long long timeEnd = getTime(start);
+    // long long timeEnd = getTime(start);
 
-    cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-    cout << "total join:\t" << totalJoin << endl;
-    cout << "useful join:\t" << usefulJoin << endl;
-    cout << "useless join:\t" << totalJoin - usefulJoin << endl;
-    cout << "getKeepset time:\t" << getKeepsetTime << "(us)" << endl;
-    cout << "total search time:\t" << totalSearchTime << "(us)" << endl;
-    cout << "total join time:\t" << totalJionTime << "(us)" << endl;
-    cout << "total build time:\t" << timeEnd - timeStart << "(us)" << endl;
-    cout << "total visit node num:\t" << totalVisitNodeNum << endl;
-    cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+    // cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+    // cout << "total join:\t" << totalJoin << endl;
+    // cout << "useful join:\t" << usefulJoin << endl;
+    // cout << "useless join:\t" << totalJoin - usefulJoin << endl;
+    // cout << "getKeepset time:\t" << getKeepsetTime << "(us)" << endl;
+    // cout << "total search time:\t" << totalSearchTime << "(us)" << endl;
+    // cout << "total join time:\t" << totalJionTime << "(us)" << endl;
+    // cout << "total build time:\t" << timeEnd - timeStart << "(us)" << endl;
+    // cout << "total visit node num:\t" << totalVisitNodeNum << endl;
+    // cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
 }
 
 // A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.

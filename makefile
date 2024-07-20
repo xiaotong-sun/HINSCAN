@@ -1,5 +1,6 @@
 CC = clang++
 CFLAGS = -c -O3 -std=c++23 -g -I include
+EXENAME = hinscan
 # CFLAGS = -c -std=c++23 -g -I include
 
 SRC_BASELINE = src/baseline
@@ -16,7 +17,7 @@ OBJS += $(TARGET_DIR)/main.o
 all: hinscan
 
 hinscan: $(OBJS)
-	$(CC) $(OBJS) -o ./executable/hinscan
+	$(CC) $(OBJS) -o ./exp/$(EXENAME)
 
 $(TARGET_DIR)/%.o: $(SRC_BASELINE)/%.cpp | $(TARGET_DIR)
 	$(CC) $(CFLAGS) $< -o $@
@@ -36,4 +37,5 @@ $(TARGET_DIR):
 clean:
 #	rd /s /q .obj
 	rm -rf *o .obj
-	rm ./executable/hinscan
+#	rm ./executable/hinscan
+	rm ./exp/$(EXENAME)

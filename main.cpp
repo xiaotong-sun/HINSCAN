@@ -56,19 +56,20 @@ int main(int argc, char* argv[]) {
     getVertexNum(vertexType);
 
     unordered_map<int, set<int>> pnbMap;
-    HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
-    long long mtime1 = getTime(start);
+    // HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
+    // long long mtime1 = getTime(start);
     // pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    homoGraph.build_forTest(atoi(argv[7]), pnbMap);
+    // homoGraph.build_forTest(atoi(argv[7]), pnbMap);
 
-    long long mtime2 = getTime(start);
+    // long long mtime2 = getTime(start);
+    // long long buildTime = mtime2 - mtime1;
 
-    cout << "Time of HomoGraph build without IO: " << (mtime2 - mtime1) << "(us)" << endl;
+    // cout << "Time of HomoGraph build without IO: " << buildTime << "(us)" << endl;
 
     // writeToFile(homoGraphFile, pnbMap);
-    // pnbMap = readFromFile(homoGraphFile);
+    pnbMap = readFromFile(homoGraphFile);
 
     // cout << "=================" << endl;
     // cout << "neighbor of each vertex (HomoGraph)" << endl;
@@ -83,18 +84,19 @@ int main(int argc, char* argv[]) {
 
 
     // TODO: check whether the modify is correct!!
-    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
-    myPscan.get_graph();
-    long long mtime3 = getTime(start);
-    myPscan.pSCAN(argv[2], mu);
-    long long mtime4 = getTime(start);
-    long long useTime = mtime4 - mtime3;
-    cout << "Time of pScan Clustering: " << useTime << "(us)" << endl;
+    // Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
+    // myPscan.get_graph();
+    // long long mtime3 = getTime(start);
+    // myPscan.pSCAN(argv[2], mu);
+    // long long mtime4 = getTime(start);
+    // long long useTime = mtime4 - mtime3;
+    // cout << "Time of pScan Clustering: " << useTime << "(us)" << endl;
     // myPscan.output(argv[2], argv[3], argv[1]);
-    myPscan.output("myPscan1", argv[3], argv[1]);
-    myPscan.showTime();
-    myPscan.showVerifyTimes();
-    myPscan.showGetNBTimes();
+    // myPscan.output("myPscan1", argv[3], argv[1]);
+    // myPscan.showTime();
+    // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
+    // myPscan.showVerifyTimes();
+    // myPscan.showGetNBTimes();
     // myPscan.showMessage();
 
     // Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
@@ -122,17 +124,17 @@ int main(int argc, char* argv[]) {
     // myPscan3.showGetNBTimes();
     // myPscan3.showMessage();
 
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    // long long mtime5 = getTime(start);
-    // myScan.getCluster(eps, mu, mode);
-    // long long mtime6 = getTime(start);
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    long long mtime5 = getTime(start);
+    myScan.getCluster(eps, mu, mode);
+    long long mtime6 = getTime(start);
 
-    // if (mode == 0) {
-    //     cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    // } else if (mode == 1) {
-    //     cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    //     myScan.showVerifyTimes();
-    // }
+    if (mode == 0) {
+        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    } else if (mode == 1) {
+        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+        // myScan.showVerifyTimes();
+    }
 
 
     // cout << "=================" << endl;

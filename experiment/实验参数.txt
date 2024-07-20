@@ -1,0 +1,67 @@
+2. Joint 优化和未优化，路径长度为2或4，在5个数据集上的时间 （本质上就是构图时间的比较）
+    IMDB：
+        路径长度2 未优化：./exp/exp2_NoOpt ./data/imdb/ 0.75 3 0 "1 1 0 0 1" homoGraph11001.txt 0
+        路径长度2 优 化：./exp/exp2_Opt ./data/imdb/ 0.75 3 0 "1 1 0 0 1" homoGraph11001.txt 0
+        路径长度4 未优化：./exp/exp2_NoOpt ./data/imdb/ 0.85 14 0 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 0
+        路径长度4 优 化：./exp/exp2_Opt ./data/imdb/ 0.85 14 0 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 2
+    
+    PubMed:
+        路径长度2 未优化: ./exp/exp2_NoOpt ./data/PubMed/ 0.51 2 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度2 优 化: ./exp/exp2_Opt ./data/PubMed/ 0.51 2 0 "2 4 0 1 2" homoGraph24012.txt 1
+        路径长度4 未优化: ./exp/exp2_NoOpt ./data/PubMed/ 0.75 15 0 "2 4 0 0 1 3 0 1 2" homoGraph240013012.txt 0
+        路径长度4 优 化: ./exp/exp2_Opt ./data/PubMed/ 0.75 15 0 "2 4 0 0 1 3 0 1 2" homoGraph240013012.txt 1
+
+    TMDB:
+        路径长度2 未优化: ./exp/exp2_NoOpt ./data/tmdb/ 0.51 2 0 "0 8 5 9 0" homoGraph08590.txt 0
+        路径长度2 优 化: ./exp/exp2_Opt ./data/tmdb/ 0.51 2 0 "0 8 5 9 0" homoGraph08590.txt 1
+        路径长度4 未优化: ./exp/exp2_NoOpt ./data/tmdb/ 0.75 15 0 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 0
+        路径长度4 优 化: ./exp/exp2_Opt ./data/tmdb/ 0.75 15 0 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 2
+
+    DBLP70w:
+        路径长度2 未优化: ./exp/exp2_NoOpt ./data/dblp70w/ 0.75 4 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度2 优 化: ./exp/exp2_Opt ./data/dblp70w/ 0.75 4 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度4 未优化: ./exp/exp2_NoOpt ./data/dblp70w/ 0.85 15 0 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 0
+        路径长度4 优 化: ./exp/exp2_Opt ./data/dblp70w/ 0.85 15 0 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 2
+        
+    DBLP200w:
+        路径长度2 未优化: ./exp/exp2_NoOpt ./data/dblp200w/ 0.80 8 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度2 优 化: ./exp/exp2_Opt ./data/dblp200w/ 0.80 8 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度4 未优化: ./exp/exp2_NoOpt ./data/dblp200w/ 0.90 25 0 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 0
+        路径长度4 优 化: ./exp/exp2_Opt ./data/dblp200w/ 0.90 25 0 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 2
+
+===============================================================================================================
+
+3. Disjoint 优化和未优化，路径长度为2或4，在5个数据集上的时间，（不考虑构图时间，只考虑SCAN时间，因为这部分主要对SCAN部分进行了优化）
+    IMDB：
+        路径长度2 未优化：./exp/exp3_NoOpt ./data/imdb/ 0.75 3 1 "1 1 0 0 1" homoGraph11001.txt 0
+        路径长度2 优 化：./exp/exp3_Opt ./data/imdb/ 0.75 3 0 "1 1 0 0 1" homoGraph11001.txt 0
+        路径长度4 未优化：./exp/exp3_NoOpt ./data/imdb/ 0.85 14 1 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 0
+        路径长度4 优 化：./exp/exp3_Opt ./data/imdb/ 0.85 14 0 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 2
+    
+    PubMed:
+        路径长度2 未优化: ./exp/exp3_NoOpt ./data/PubMed/ 0.71 2 1 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度2 优 化: ./exp/exp3_Opt ./data/PubMed/ 0.71 2 0 "2 4 0 1 2" homoGraph24012.txt 1
+        路径长度4 未优化: ./exp/exp3_NoOpt ./data/PubMed/ 0.96 200 1 "2 4 0 0 1 3 0 1 2" homoGraph240013012.txt 0
+        路径长度4 优 化: ./exp/exp3_Opt ./data/PubMed/ 0.96 200 0 "2 4 0 0 1 3 0 1 2" homoGraph240013012.txt 1
+
+    TMDB:
+        路径长度2 未优化: ./exp/exp3_NoOpt ./data/tmdb/ 0.71 2 1 "0 8 5 9 0" homoGraph08590.txt 0
+        路径长度2 优 化: ./exp/exp3_Opt ./data/tmdb/ 0.71 2 0 "0 8 5 9 0" homoGraph08590.txt 1
+        路径长度4 未优化: ./exp/exp3_NoOpt ./data/tmdb/ 0.96 400 1 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 0
+        路径长度4 优 化: ./exp/exp3_Opt ./data/tmdb/ 0.96 400 0 "1 1 0 2 2 3 0 0 1" homoGraph110223001.txt 2
+
+    DBLP70w:
+        路径长度2 未优化: ./exp/exp3_NoOpt ./data/dblp70w/ 0.85 4 1 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度2 优 化: ./exp/exp3_Opt ./data/dblp70w/ 0.85 4 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度4 未优化: ./exp/exp3_NoOpt ./data/dblp70w/ 0.98 600 1 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 0
+        路径长度4 优 化: ./exp/exp3_Opt ./data/dblp70w/ 0.98 600 0 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 2
+        
+    DBLP200w:
+        路径长度2 未优化: ./exp/exp3_NoOpt ./data/dblp200w/ 0.87 8 1 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度2 优 化: ./exp/exp3_Opt ./data/dblp200w/ 0.87 8 0 "2 4 0 1 2" homoGraph24012.txt 0
+        路径长度4 未优化: ./exp/exp3_NoOpt ./data/dblp200w/ 0.98 700 1 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 0
+        路径长度4 优 化: ./exp/exp3_Opt ./data/dblp200w/ 0.98 700 0 "1 3 0 1 2 4 0 0 1" homoGraph130124001.txt 2
+
+===============================================================================================================
+
+4. Joint 改变epsilon，在5个数据集上，比较路径为2和4的时间

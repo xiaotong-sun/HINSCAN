@@ -578,6 +578,7 @@ void Pscan::pSCAN_disjoint(const char* eps_s, int _miu, int* minCN) {
 }
 
 void Pscan::pSCAN_disjoint2() {
+    cout << "#@#@# disjoint situation #@#@#" << "\n";
     this->mode = 1;
 
     for (ui i = 0;i < n;i++) {
