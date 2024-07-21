@@ -94,10 +94,12 @@ public:
 
     void get_graph();
     void pSCAN(const char* eps_s, int miu);
+    void pSCAN2(const char* eps_s, int miu);
     void pSCAN_disjoint(const char* eps_s, int miu, int* minCN);
     void pSCAN_disjoint2();
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
     void cluster_noncore_vertices(int eps_a2, int eps_b2, int mu);
+    void cluster_noncore_vertices2(int eps_a2, int eps_b2, int mu);
     void cluster_noncore_vertices_disjoint(int eps_a2, int eps_b2, int mu, int* verify_flag);
     void output(const char* eps_s, const char* miu, string dir);
     int* getMinCN();

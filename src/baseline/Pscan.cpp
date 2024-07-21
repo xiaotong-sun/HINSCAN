@@ -188,6 +188,34 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
                 if (min_cn[j] == -1) {
                     ++similar_degree[i];
                     ++similar_degree[edges[j]];
+                }
+            }
+
+            if (min_cn[j] == -1) noncore_cluster.push_back(make_pair(cid[pa[i]], edges[j]));
+        }
+    }
+}
+
+void Pscan::cluster_noncore_vertices2(int eps_a2, int eps_b2, int mu) {
+    if (cid == nullptr) cid = new int[n];
+    for (ui i = 0;i < n;i++) cid[i] = n;
+
+    for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
+        int x = find_root(i);
+        if (i < cid[x]) cid[x] = i;
+    }
+
+    noncore_cluster.clear();
+    noncore_cluster.reserve(n);
+    for (ui i = 0;i < n;i++) if (similar_degree[i] >= mu) {
+        for (ui j = pstart[i];j < pstart[i + 1];j++) if (similar_degree[edges[j]] < mu) {
+            if (min_cn[j] >= 0) {
+                min_cn[j] = similar_check_OP(i, j, eps_a2, eps_b2);
+                if (reverse[reverse[j]] != j) printf("WA cluster_noncore\n");
+                min_cn[reverse[j]] = min_cn[j];
+                if (min_cn[j] == -1) {
+                    ++similar_degree[i];
+                    ++similar_degree[edges[j]];
                 } else {
                     --effective_degree_copy[i];
                     --effective_degree_copy[edges[j]];
@@ -264,6 +292,151 @@ void Pscan::output(const char* eps_s, const char* miu, string dir) {
 }
 
 void Pscan::pSCAN(const char* eps_s, int _miu) {
+    get_eps(eps_s);
+    miu = _miu;
+
+    if (similar_degree == nullptr) similar_degree = new int[n];
+    for (ui i = 0; i < n; i++) similar_degree[i] = 1;
+    // there are some bugs in origin-code, so I do some changes.
+    // memset(similar_degree, 0, sizeof(int) * n);
+
+    if (effective_degree == nullptr) effective_degree = new int[n];
+    // for (ui i = 0;i < n;i++) effective_degree[i] = degree[i] - 1;
+    for (ui i = 0; i < n; i++) effective_degree[i] = degree[i];
+
+    if (effective_degree_copy == nullptr) effective_degree_copy = new int[n];
+
+    if (pa == nullptr) pa = new int[n];
+    if (rank == nullptr) rank = new int[n];
+    for (ui i = 0;i < n;i++) {
+        pa[i] = i;
+        rank[i] = 0;
+    }
+
+    ui* edge_buf = new ui[n];
+    int* cores = new int[n];
+    int cores_n = 0;
+
+    prune_and_cross_link(eps_a2, eps_b2, miu, cores, cores_n);
+    // printf("\t*** Finished prune and cross link!\n");
+
+    int* bin_head = new int[n + 1];
+    int* bin_next = new int[n];
+    for (ui i = 0;i < n + 1;i++) bin_head[i] = -1;
+
+    int max_ed = 0;
+    for (ui i = 0;i < n;i++) if (effective_degree[i] >= miu) {
+        int ed = effective_degree[i];
+        if (ed > max_ed) max_ed = ed;
+        bin_next[i] = bin_head[ed];
+        bin_head[ed] = i;
+    }
+
+    while (true) {
+        int u = -1;
+        if (cores_n) u = cores[--cores_n];
+        else {
+            while (max_ed >= miu && u == -1) {
+                for (int x = bin_head[max_ed];x != -1;) {
+                    int tmp = bin_next[x];
+                    int ed = effective_degree[x];
+                    if (ed == max_ed) {
+                        u = x;
+                        bin_head[max_ed] = bin_next[x];
+                        break;
+                    } else if (ed >= miu) {
+                        bin_next[x] = bin_head[ed];
+                        bin_head[ed] = x;
+                    }
+                    x = tmp;
+                }
+                if (u == -1) {
+                    bin_head[max_ed] = -1;
+                    --max_ed;
+                }
+            }
+        }
+        if (u == -1) break;
+
+        int edge_buf_n = 0;
+        for (ui j = pstart[u];j < pstart[u + 1];j++) {
+            if (min_cn[j] == -2) continue;
+
+            if (similar_degree[u] < miu || find_root(u) != find_root(edges[j])) edge_buf[edge_buf_n++] = j;
+        }
+
+        // CheckCore(u)
+        int i = 0;
+        while (similar_degree[u] < miu && effective_degree[u] >= miu && i < edge_buf_n) {
+            ui idx = edge_buf[i];
+            if (min_cn[idx] != -1) {
+                int v = edges[idx];
+
+                min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2); // similar_chech_OP only return -1 or -2;
+
+                if (min_cn[idx] == -1) {
+                    ++similar_degree[u];
+                } else {
+                    --effective_degree[u];
+                }
+
+                if (effective_degree[v] >= 0) {
+                    if (min_cn[idx] == -1) {
+                        ++similar_degree[v];
+                        if (similar_degree[v] == miu) cores[cores_n++] = v;
+                    } else --effective_degree[v];
+                }
+            }
+
+            ++i;
+        }
+
+        effective_degree[u] = -1;
+
+        if (similar_degree[u] < miu) continue;
+
+        for (int j = 0;j < edge_buf_n;j++) {
+            ui idx = edge_buf[j];
+            if (min_cn[idx] == -1 && similar_degree[edges[idx]] >= miu) my_union(u, edges[idx]);
+        }
+
+        // ClusterCore(u)
+        while (i < edge_buf_n) {
+            ui idx = edge_buf[i];
+            int v = edges[idx];
+
+            if (min_cn[idx] < 0 || similar_degree[v] < miu || find_root(u) == find_root(v)) {
+                ++i;
+                continue;
+            }
+
+            min_cn[idx] = min_cn[reverse[idx]] = similar_check_OP(u, idx, eps_a2, eps_b2);
+
+            if (effective_degree[v] >= 0) {
+                if (min_cn[idx] == -1) {
+                    ++similar_degree[v];
+
+                    if (similar_degree[v] == miu) cores[cores_n++] = v;
+                } else --effective_degree[v];
+            }
+
+            if (min_cn[idx] == -1) my_union(u, v);
+
+            ++i;
+        }
+        //printf(")\n");
+    }
+    //printf("\t*** Finished clustering core vertices!\n");
+
+    delete[] edge_buf; edge_buf = nullptr;
+    delete[] cores; cores = nullptr;
+    delete[] bin_head; bin_head = nullptr;
+    delete[] bin_next; bin_next = nullptr;
+
+    cluster_noncore_vertices(eps_a2, eps_b2, miu);
+}
+
+void Pscan::pSCAN2(const char* eps_s, int _miu) {
     get_eps(eps_s);
     miu = _miu;
 
@@ -381,7 +554,6 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
         while (i < edge_buf_n) {
             ui idx = edge_buf[i];
             int v = edges[idx];
-            int u = edges[reverse[idx]];
             if (min_cn[idx] < 0 || similar_degree[v] < miu || find_root(u) == find_root(v)) {
                 ++i;
                 continue;
@@ -416,7 +588,7 @@ void Pscan::pSCAN(const char* eps_s, int _miu) {
     delete[] bin_head; bin_head = nullptr;
     delete[] bin_next; bin_next = nullptr;
 
-    cluster_noncore_vertices(eps_a2, eps_b2, miu);
+    cluster_noncore_vertices2(eps_a2, eps_b2, miu);
 
     // showMessage();
 

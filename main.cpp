@@ -70,6 +70,7 @@ int main(int argc, char* argv[]) {
 
     // writeToFile(homoGraphFile, pnbMap);
     pnbMap = readFromFile(homoGraphFile);
+    cout << "Finish Reading" << endl;
 
     // cout << "=================" << endl;
     // cout << "neighbor of each vertex (HomoGraph)" << endl;
@@ -84,13 +85,13 @@ int main(int argc, char* argv[]) {
 
 
     // TODO: check whether the modify is correct!!
-    // Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
-    // myPscan.get_graph();
-    // long long mtime3 = getTime(start);
-    // myPscan.pSCAN(argv[2], mu);
-    // long long mtime4 = getTime(start);
-    // long long useTime = mtime4 - mtime3;
-    // cout << "Time of pScan Clustering: " << useTime << "(us)" << endl;
+    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
+    myPscan.get_graph();
+    long long mtime3 = getTime(start);
+    myPscan.pSCAN2(argv[2], mu);
+    long long mtime4 = getTime(start);
+    long long useTime = mtime4 - mtime3;
+    cout << "Time of pScan Clustering: " << useTime << "(us)" << endl;
     // myPscan.output(argv[2], argv[3], argv[1]);
     // myPscan.output("myPscan1", argv[3], argv[1]);
     // myPscan.showTime();
@@ -124,17 +125,17 @@ int main(int argc, char* argv[]) {
     // myPscan3.showGetNBTimes();
     // myPscan3.showMessage();
 
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    long long mtime5 = getTime(start);
-    myScan.getCluster(eps, mu, mode);
-    long long mtime6 = getTime(start);
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // long long mtime5 = getTime(start);
+    // myScan.getCluster(eps, mu, mode);
+    // long long mtime6 = getTime(start);
 
-    if (mode == 0) {
-        cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-    } else if (mode == 1) {
-        cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
-        // myScan.showVerifyTimes();
-    }
+    // if (mode == 0) {
+    //     cout << "Time of basic Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    // } else if (mode == 1) {
+    //     cout << "Time of disjoint Scan Clustering: " << (mtime6 - mtime5) << "(us)" << endl;
+    //     // myScan.showVerifyTimes();
+    // }
 
 
     // cout << "=================" << endl;
