@@ -24,4 +24,4 @@ args: eps = 0.64, mu = 3, mode = 0/1.
 // <Author -> Paper -> Topic -> Paper -> Author>
 // 0 - 0 - 1 - 2 - 2 - 3 - 1 - 1 - 0
 
-./executable/hinscan ./data/Case_Paper/ 0.64 3 1 "0 0 1 1 0" homo.txt 1
+./executable/hinscan ./data/Case_Paper/ 0.64 3 1 "0 0 1 1 0" homo.txt 1 5

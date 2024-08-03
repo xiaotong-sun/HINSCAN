@@ -194,6 +194,11 @@ void Pscan::cluster_noncore_vertices(int eps_a2, int eps_b2, int mu) {
             if (min_cn[j] == -1) noncore_cluster.push_back(make_pair(cid[pa[i]], edges[j]));
         }
     }
+
+    for (int i = 0; i < n; i++) {
+        cout << index2id[i] << ": lb=" << similar_degree[i] << " ub=" << effective_degree[i] << endl;
+    }
+
 }
 
 void Pscan::cluster_noncore_vertices2(int eps_a2, int eps_b2, int mu) {
@@ -224,6 +229,9 @@ void Pscan::cluster_noncore_vertices2(int eps_a2, int eps_b2, int mu) {
 
             if (min_cn[j] == -1) noncore_cluster.push_back(make_pair(cid[pa[i]], edges[j]));
         }
+    }
+    for (int i = 0; i < n; i++) {
+        cout << index2id[i] << ": lb=" << similar_degree[i] << " ub=" << effective_degree_copy[i] << endl;
     }
 }
 
