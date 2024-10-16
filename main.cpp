@@ -58,64 +58,73 @@ int main(int argc, char* argv[]) {
 
 
     /* === bellow is used for scalability test === */
-    SmallGraph sGraph(graph, vertexType, edgeType);
-    int sc = atoi(argv[8]);
-    if (sc >= 1 && sc <= 4) {
-        cout << "Scalability = " << (sc / 5.0) << endl;
-        sGraph.getSmallGraph(sc, 5);
-    } else {
-        cout << "Scalability = 1" << endl;
-        sGraph.setBigGraph();
-    }
+    // SmallGraph sGraph(graph, vertexType, edgeType);
+    // int sc = atoi(argv[8]);
+    // if (sc >= 1 && sc <= 4) {
+    //     cout << "Scalability = " << (sc / 5.0) << endl;
+    //     sGraph.getSmallGraph(sc, 5);
+    // } else {
+    //     cout << "Scalability = 1" << endl;
+    //     sGraph.setBigGraph();
+    // }
     // getVertexNum(sGraph.smallGraphVertexType);
 
     unordered_map<int, set<int>> pnbMap;
-    HomoGraphBuilder homoGraph(sGraph.smallGraph, sGraph.smallGraphVertexType, sGraph.smallGraphEdgeType, metaPath, edgeReverseMap);
-    // HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
-    long long mtime1 = getTime(start);
+    // HomoGraphBuilder homoGraph(sGraph.smallGraph, sGraph.smallGraphVertexType, sGraph.smallGraphEdgeType, metaPath, edgeReverseMap);
+    HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
+    // long long mtime1 = getTime(start);
     // pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
     homoGraph.build_forTest(atoi(argv[7]), pnbMap);
 
-    long long mtime2 = getTime(start);
-    long long buildTime = mtime2 - mtime1;
+    // long long mtime2 = getTime(start);
+    // long long buildTime = mtime2 - mtime1;
 
-    cout << "Time of HomoGraph build without IO: " << buildTime << "(us)" << endl;
+    // cout << "Time of HomoGraph build without IO: " << buildTime << "(us)" << endl;
 
     // writeToFile(homoGraphFile, pnbMap);
     // pnbMap = readFromFile(homoGraphFile);
     // cout << "Finish Reading" << endl;
 
-    cout << "=================" << endl;
-    cout << "neighbor of each vertex (HomoGraph)" << endl;
-    for (const auto& iter : pnbMap) {
-        cout << iter.first << ": ";
-        for (auto& j : iter.second) {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-    cout << "=================" << endl;
+    // cout << "=================" << endl;
+    // cout << "neighbor of each vertex (HomoGraph)" << endl;
+    // for (const auto& iter : pnbMap) {
+    //     cout << iter.first << ": ";
+    //     for (auto& j : iter.second) {
+    //         cout << j << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "=================" << endl;
 
-
-    // TODO: check whether the modify is correct!!
     Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
     myPscan.get_graph();
     cout << "Begin pSCAN" << endl;
     long long mtime3 = getTime(start);
-    myPscan.pSCAN2(argv[2], mu);
+    myPscan.pSCAN(argv[2], mu);
     long long mtime4 = getTime(start);
     long long useTime = mtime4 - mtime3;
-    cout << "Time of pScan Clustering: " << useTime << "(us)" << endl;
+    cout << "Time of joint pScan Clustering: " << useTime << "(us)" << endl;
     myPscan.output(argv[2], argv[3], argv[1]);
+
+    // Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
+    // myPscan.get_graph();
+    // cout << "Begin pSCAN" << endl;
+    // long long mtime3 = getTime(start);
+    // myPscan.pSCAN2(argv[2], mu);
+    // long long mtime4 = getTime(start);
+    // long long useTime = mtime4 - mtime3;
+    // cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
+    // myPscan.output(argv[2], argv[3], argv[1]);
     // myPscan.output("myPscan1", argv[3], argv[1]);
     // myPscan.showTime();
-    cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
+    // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
     // myPscan.showVerifyTimes();
     // myPscan.showGetNBTimes();
     // myPscan.showMessage();
 
+    // ######## below is useless ########
     // Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     // myPscan2.get_graph();
     // mtime3 = getTime(start);
@@ -140,6 +149,7 @@ int main(int argc, char* argv[]) {
     // myPscan3.showVerifyTimes();
     // myPscan3.showGetNBTimes();
     // myPscan3.showMessage();
+    // ######## above is useless ########
 
     // mode = 1;
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
