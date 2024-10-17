@@ -5,6 +5,7 @@
 #include "Utility.h"
 #include "Pscan.h"
 #include "SmallGraph.h"
+#include "EffecitveTest.h"
 
 using namespace std;
 
@@ -98,25 +99,27 @@ int main(int argc, char* argv[]) {
     // }
     // cout << "=================" << endl;
 
-    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
-    myPscan.get_graph();
-    cout << "Begin pSCAN" << endl;
-    long long mtime3 = getTime(start);
-    myPscan.pSCAN(argv[2], mu);
-    long long mtime4 = getTime(start);
-    long long useTime = mtime4 - mtime3;
-    cout << "Time of joint pScan Clustering: " << useTime << "(us)" << endl;
-    myPscan.output(argv[2], argv[3], argv[1]);
-
     // Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
     // myPscan.get_graph();
     // cout << "Begin pSCAN" << endl;
     // long long mtime3 = getTime(start);
-    // myPscan.pSCAN2(argv[2], mu);
+    // myPscan.pSCAN(argv[2], mu);
     // long long mtime4 = getTime(start);
     // long long useTime = mtime4 - mtime3;
-    // cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
+    // cout << "Time of joint pScan Clustering: " << useTime << "(us)" << endl;
+    // // myPscan.output(argv[2], argv[3], argv[1]);
+    // unordered_map<int, set<int>> communities = myPscan.getCluster();
+
+    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
+    myPscan.get_graph();
+    cout << "Begin pSCAN" << endl;
+    long long mtime3 = getTime(start);
+    myPscan.pSCAN2(argv[2], mu);
+    long long mtime4 = getTime(start);
+    long long useTime = mtime4 - mtime3;
+    cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
     // myPscan.output(argv[2], argv[3], argv[1]);
+    unordered_map<int, set<int>> communities = myPscan.getCluster();
     // myPscan.output("myPscan1", argv[3], argv[1]);
     // myPscan.showTime();
     // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
@@ -125,6 +128,7 @@ int main(int argc, char* argv[]) {
     // myPscan.showMessage();
 
     // ######## below is useless ########
+
     // Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
     // myPscan2.get_graph();
     // mtime3 = getTime(start);
@@ -149,6 +153,7 @@ int main(int argc, char* argv[]) {
     // myPscan3.showVerifyTimes();
     // myPscan3.showGetNBTimes();
     // myPscan3.showMessage();
+
     // ######## above is useless ########
 
     // mode = 1;
@@ -174,4 +179,8 @@ int main(int argc, char* argv[]) {
     //     cout << it.first << ":" << it.second << endl;
     // }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
+
+    /******* EffectiveTest *******/
+    EffectiveTest efTest(graph, vertexType, edgeType, metaPath, communities);
+    efTest.process();
 }

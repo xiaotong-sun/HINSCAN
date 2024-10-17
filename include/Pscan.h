@@ -107,6 +107,7 @@ public:
     void showVerifyTimes();
     void showGetNBTimes();
     void showMessage();
+    unordered_map<int, set<int>> getCluster();
 
 private:
     FILE* open_file(const char* file_name, const char* mode);

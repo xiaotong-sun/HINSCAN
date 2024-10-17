@@ -1432,3 +1432,23 @@ void Pscan::showMessage() {
     }
     cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }
+
+unordered_map<int, set<int>> Pscan::getCluster()
+{
+    unordered_map<int, set<int>> clusters;
+    for (ui i = 0;i < n;i++) if (similar_degree[i] >= miu) {
+        if (!clusters.contains(cid[pa[i]])) {
+            set<int> cluster;
+            clusters[cid[pa[i]]] = cluster;
+        }
+        clusters[cid[pa[i]]].insert(index2id[i]);
+    }
+
+    sort(noncore_cluster.begin(), noncore_cluster.end());
+    noncore_cluster.erase(unique(noncore_cluster.begin(), noncore_cluster.end()), noncore_cluster.end());
+    for (ui i = 0;i < noncore_cluster.size();i++) {
+        clusters[noncore_cluster[i].first].insert(index2id[noncore_cluster[i].second]);
+    }
+
+    return clusters;
+}
