@@ -15,11 +15,54 @@ SCAN::SCAN(const unordered_map<int, set<int>>& homoGraph, const map<int, vector<
     this->edgeType = edgeType;
     this->edgeReverseMap = edgeReverseMap;
     this->metaPath = metaPath;
-    unordered_map<int, int> clusterMap; // set all vertex unclassified at the beginning.
+    map<int, int> clusterMap; // set all vertex unclassified at the beginning.
     for (const auto& it : homoGraph) {
         clusterMap[it.first] = 0;
     }
     this->clusterMap = clusterMap;
+}
+
+void SCAN::getCommonEpsNbUsingPathsim(double eps) {
+    int homoGraphVertex = 0;
+    for (auto iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+        homoGraphVertex += iter->second.size() - 1;
+    }
+    cout << "--- total homoGraph neighbor num: " << homoGraphVertex << endl;
+    cout << "--- average degree: " << (1.0 * homoGraphVertex / homoGraph.size()) << endl;
+
+    // cout << "similarity of vertex" << endl;
+    for (unordered_map<int, set<int>>::iterator iter = homoGraph.begin(); iter != homoGraph.end(); iter++) {
+        int vertex = iter->first;
+        set<int> neighbor_v = iter->second;
+
+        for (int nb : neighbor_v) {
+            if (nb < vertex) { // because these vertices have been considered in Line 51.
+                continue;
+            } else if (nb == vertex) {
+                this->epsNbs[vertex].insert(nb);
+                continue;
+            }
+
+            // calculate the basic p-structural similarity
+            double similarity = ((double)psimMap.at(vertex).at(nb) + (double)psimMap.at(vertex).at(nb)) / ((double)psimMap.at(vertex).at(vertex) + (double)psimMap.at(nb).at(nb));
+            // cout << vertex << "-" << nb << " : " << similarity << endl;
+            if (similarity >= eps) {
+                this->epsNbs[vertex].insert(nb);
+                this->epsNbs[nb].insert(vertex);
+            }
+        }
+    }
+
+    // 统计common-eps neighbor会比homograph少掉多少点
+    int epsNeighborVertex = 0;
+
+    for (auto iter = epsNbs.begin(); iter != epsNbs.end(); iter++) {
+        epsNeighborVertex += iter->second.size() - 1;
+    }
+
+    cout << "--- total epsNeighbor num: " << epsNeighborVertex << endl;
+    cout << "--- pruned vertex number: " << homoGraphVertex - epsNeighborVertex << endl;
+    cout << "--- target vertex num: " << homoGraph.size() << endl;
 }
 
 void SCAN::getCommonEpsNb(double eps) {
@@ -332,8 +375,12 @@ bool SCAN::isCore(double eps, int mu, int vertex) {
 }
 
 void SCAN::getCluster(double eps, int mu, int mode) {
+    EffectiveTest effTest(hinGraph, vertexType, edgeType, metaPath);
+    this->psimMap = effTest.getpsimMap();
+
     if (mode == 0) {
-        getCommonEpsNb(eps);
+        // getCommonEpsNb(eps);
+        getCommonEpsNbUsingPathsim(eps);
     } else if (mode == 1) {
         getDisjointEpsNb(eps);
     }
@@ -430,4 +477,22 @@ void SCAN::showVerifyTimes() {
     cout << "verifyFalseSet size: " << verifyFalseSet.size() << endl;
     cout << "verifyTimes: " << verifyTrueSet.size() + verifyFalseSet.size() << endl;
     cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+}
+
+unordered_map<int, set<int>> SCAN::getCommunities() {
+    unordered_map<int, set<int>> clusters;
+    for (auto& iter : clusterMap) {
+        int vid = iter.first;
+        int cid = iter.second;
+        if (cid < 1) {
+            continue;
+        }
+        if (!clusters.contains(cid)) {
+            set<int> cluser;
+            clusters[cid] = cluser;
+        }
+        clusters[cid].insert(vid);
+    }
+
+    return clusters;
 }

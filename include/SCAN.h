@@ -15,6 +15,7 @@
 #include <queue>
 #include "MetaPath.h"
 #include <map>
+#include "EffecitveTest.h"
 
 using namespace std;
 
@@ -44,8 +45,11 @@ public:
     // store the meta-path.
     MetaPath metaPath;
 
+    // store the pathsimMap
+    unordered_map<int, unordered_map<int, int>> psimMap;
+
     // record the clusterID of each vertex. unclassified=0, non-memeber=-1, cluster>=1, hub=-2, outlier=-3.
-    unordered_map<int, int> clusterMap;
+    map<int, int> clusterMap;
 
     // record the eps-Neighborhood for each vertex.
     unordered_map<int, set<int>> epsNbs;
@@ -63,12 +67,16 @@ public:
 
     void showVerifyTimes();
 
+    unordered_map<int, set<int>> getCommunities();
+
 private:
     // check whether all vertices in Neighbor(v) belong to the same cluster or not.
     bool isSameCluster(int vertex);
 
     // get eps-Neighborhood (common p-neighbor).
     void getCommonEpsNb(double eps);
+
+    void getCommonEpsNbUsingPathsim(double eps);
 
     // get eps-Neighborhood (disjoint common p-neighbor).
     void getDisjointEpsNb(double eps);

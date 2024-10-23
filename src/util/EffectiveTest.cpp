@@ -7,10 +7,21 @@
 
 #include "EffecitveTest.h"
 
+EffectiveTest::EffectiveTest(const map<int, vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const MetaPath& metaPath) : hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), metaPath(metaPath) {
+    set<int> keepSet;
+    for (int i = 0; i < vertexType.size(); i++) {
+        if (vertexType[i] == metaPath.vertex.at(0)) {
+            keepSet.insert(i);
+        }
+    }
+
+    psimMap = batchBuildForPathSim(keepSet);
+}
+
 EffectiveTest::EffectiveTest(const map<int, vector<int>>& hinGraph, const vector<int>& vertexType, const vector<int>& edgeType, const MetaPath& metaPath, const unordered_map<int, set<int>>& communities) : hinGraph(hinGraph), vertexType(vertexType), edgeType(edgeType), metaPath(metaPath), communities(communities) {
     set<int> keepSet;
-    for (auto& iter : communities) {
-        for (int i : iter.second) {
+    for (int i = 0; i < vertexType.size(); i++) {
+        if (vertexType[i] == metaPath.vertex.at(0)) {
             keepSet.insert(i);
         }
     }
@@ -21,8 +32,13 @@ EffectiveTest::EffectiveTest(const map<int, vector<int>>& hinGraph, const vector
 void EffectiveTest::process() {
     pathcountTest();
     pathsimTest();
-    pathsimTest2();
+    pcrwTest();
     densityTest();
+    avgVertexNumTest();
+}
+
+unordered_map<int, unordered_map<int, int>> EffectiveTest::getpsimMap() {
+    return this->psimMap;
 }
 
 void EffectiveTest::pathsimTest() {
@@ -34,13 +50,41 @@ void EffectiveTest::pathsimTest() {
     cout << "pathSim = " << pathsimSum / count << endl;
 }
 
-void EffectiveTest::pathsimTest2() {
+void EffectiveTest::pcrwTest() {
     int count = communities.size();
-    double pathsimSum = 0;
+    double avgPCRW = 0;
+    double pcrwSum = 0;
     for (auto& iter : communities) {
-        pathsimSum += avgPathSim2(iter.second);
+        set<int> communitySet = iter.second;
+        for (int vid : communitySet) {
+            unordered_map<int, int> nbMap = psimMap.at(vid);
+            int allPath = 0;
+            for (auto& iter : nbMap) {
+                int nbVid = iter.first;
+                allPath += psimMap.at(vid).at(nbVid);
+            }
+
+            for (auto& iter : nbMap) {
+                int nbVid = iter.first;
+                if (!communitySet.contains(nbVid)) continue;
+                if (nbVid <= vid) continue;
+                pcrwSum += (double)psimMap.at(vid).at(nbVid) / (allPath * communitySet.size());
+            }
+        }
     }
-    cout << "pathSim2 = " << pathsimSum / count << endl;
+
+    avgPCRW = (double)pcrwSum / count;
+    cout << "avgPCRW = " << avgPCRW << endl;
+}
+
+void EffectiveTest::avgVertexNumTest() {
+    int count = communities.size();
+    int totalVertex = 0;
+    for (auto& iter : communities) {
+        totalVertex += iter.second.size();
+    }
+
+    cout << "avgCommunitySize = " << (double)totalVertex / count << endl;
 }
 
 void EffectiveTest::pathcountTest() {
@@ -144,25 +188,6 @@ double EffectiveTest::avgPathSim(set<int> communitySet)
 
     }
     eNum = (double)communitySet.size() * (double)(communitySet.size() - 1) / 2;
-    cSim = cSim / eNum;
-    return cSim;
-}
-
-double EffectiveTest::avgPathSim2(set<int> communitySet)
-{
-    double eNum = 0;
-    double cSim = 0;
-    for (int vid : communitySet) {
-        unordered_map<int, int> nbMap = psimMap.at(vid);
-        for (auto& iter : nbMap) {
-            int nbVid = iter.first;
-            if (!communitySet.contains(nbVid)) continue;
-            if (nbVid <= vid) continue;
-            cSim += ((double)psimMap.at(vid).at(nbVid) + (double)psimMap.at(vid).at(nbVid)) / ((double)psimMap.at(vid).at(vid) + (double)psimMap.at(nbVid).at(nbVid));
-        }
-
-    }
-    eNum = communitySet.size();
     cSim = cSim / eNum;
     return cSim;
 }

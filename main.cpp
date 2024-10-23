@@ -110,16 +110,16 @@ int main(int argc, char* argv[]) {
     // // myPscan.output(argv[2], argv[3], argv[1]);
     // unordered_map<int, set<int>> communities = myPscan.getCluster();
 
-    Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
-    myPscan.get_graph();
-    cout << "Begin pSCAN" << endl;
-    long long mtime3 = getTime(start);
-    myPscan.pSCAN2(argv[2], mu);
-    long long mtime4 = getTime(start);
-    long long useTime = mtime4 - mtime3;
-    cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
-    // myPscan.output(argv[2], argv[3], argv[1]);
-    unordered_map<int, set<int>> communities = myPscan.getCluster();
+    // Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
+    // myPscan.get_graph();
+    // cout << "Begin pSCAN" << endl;
+    // long long mtime3 = getTime(start);
+    // myPscan.pSCAN2(argv[2], mu);
+    // long long mtime4 = getTime(start);
+    // long long useTime = mtime4 - mtime3;
+    // cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
+    // // myPscan.output(argv[2], argv[3], argv[1]);
+    // unordered_map<int, set<int>> communities = myPscan.getCluster();
     // myPscan.output("myPscan1", argv[3], argv[1]);
     // myPscan.showTime();
     // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
@@ -156,11 +156,12 @@ int main(int argc, char* argv[]) {
 
     // ######## above is useless ########
 
-    // mode = 1;
-    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    // cout << "Begin Scan" << endl;
+    // mode = 0;
+    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    cout << "Begin Scan" << endl;
     // long long mtime5 = getTime(start);
-    // myScan.getCluster(eps, mu, mode);
+    myScan.getCluster(eps, mu, mode);
+    unordered_map<int, set<int>> communities = myScan.getCommunities();
     // long long mtime6 = getTime(start);
     // long long useTime = mtime6 - mtime5;
 
@@ -173,11 +174,11 @@ int main(int argc, char* argv[]) {
     // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
 
 
-    // cout << "=================" << endl;
-    // cout << "cluster result" << endl;
-    // for (const auto& it : myScan.clusterMap) {
-    //     cout << it.first << ":" << it.second << endl;
-    // }
+    cout << "=================" << endl;
+    cout << "cluster result" << endl;
+    for (const auto& it : myScan.clusterMap) {
+        cout << it.first << ":" << it.second << endl;
+    }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 
     /******* EffectiveTest *******/
