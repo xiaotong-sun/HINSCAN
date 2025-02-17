@@ -13,6 +13,9 @@
 #include <unordered_set>
 #include <Utility.h>
 #include <map>
+#include <omp.h>
+#include <atomic>
+#include <tbb/concurrent_hash_map.h>
 
 using namespace std;
 
@@ -33,6 +36,7 @@ public:
     unordered_map<int, set<int>> build_optim1(); // A-P-T-P-A, Search from T(mid type) for half of the metaPath.
     unordered_map<int, set<int>> build_optim2(); // A-P-T-P-A, Search from P for half of the metaPath.
     void build_forTest(int flagIndex, unordered_map<int, set<int>>& pnbMap); // A-P & P-T-P-A || A-P-T & T-P-A.
+    void build_parallel(int flagIndex, tbb::concurrent_hash_map<int, set<int>>& pnbMap); // use OpenMP for parallel.
 
 private:
     void findAllNeighbors(int startID, int curID, int index, vector<unordered_set<int>>& visitList, set<int>& pnbSet);

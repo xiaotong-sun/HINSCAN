@@ -290,7 +290,6 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
 
     // step1: collect vertices of the same type with vertex of flagIndex.
     set<int> keepSet;
-    // unordered_map<int, set<int>> pnbMap;
 
     int FlagType = queryMPath.vertex[flagIndex];
     int StartType = queryMPath.vertex[0];
@@ -312,8 +311,10 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
     int fl = 0;
 
     // int totalJoin = 0, usefulJoin = 0;
+    vector<int> keepVec(keepSet.begin(), keepSet.end());
 
-    for (int startID : keepSet) {
+    for (int i = 0; i < keepVec.size(); ++i) {
+        int startID = keepVec[i];
         ++fl;
         if (fl % 5000 == 0) {
             cout << fl << "\n";
@@ -356,6 +357,67 @@ void HomoGraphBuilder::build_forTest(int flagIndex, unordered_map<int, set<int>>
     // cout << "total build time:\t" << timeEnd - timeStart << "(us)" << endl;
     // cout << "total visit node num:\t" << totalVisitNodeNum << endl;
     // cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+}
+
+void HomoGraphBuilder::build_parallel(int flagIndex, tbb::concurrent_hash_map<int, set<int>>& pnbMap) {
+    // step1: collect vertices of the same type with vertex of flagIndex.
+    set<int> keepSet;
+
+    int FlagType = queryMPath.vertex[flagIndex];
+    int StartType = queryMPath.vertex[0];
+
+    for (int i = 0; i < vertexType.size(); i++) {
+        if (vertexType[i] == FlagType) {
+            keepSet.insert(i);
+        }
+        if (vertexType[i] == StartType) {
+            tbb::concurrent_hash_map<int, set<int>>::accessor acc;
+            pnbMap.insert(acc, i);
+            acc->second.insert(i);
+        }
+    }
+
+    // step2: find target vertices that connected to the target vertex.
+    cout << "keepSet.size = " << keepSet.size() << endl;
+    atomic<int> fl{ 0 };
+
+    vector<int> keepVec(keepSet.begin(), keepSet.end());
+
+    cout << "begin parallel process" << endl;
+
+#pragma omp parallel for schedule(dynamic)
+    for (int i = 0; i < keepVec.size(); ++i) {
+        int startID = keepVec[i];
+
+        int current_fl = fl.fetch_add(1) + 1;
+        if (current_fl % 5000 == 0) {
+#pragma omp critical
+            cout << current_fl << endl;
+        }
+
+        vector<unordered_set<int>> visitListForL(flagIndex + 1);
+        vector<unordered_set<int>> visitListForR(queryMPath.pathLen - flagIndex + 1);
+        set<int> leftTargetSet;
+        set<int> rightTargetSet;
+
+        findLeftTarget(startID, startID, flagIndex, visitListForL, leftTargetSet, flagIndex);
+        findRightTarget_test(startID, startID, flagIndex, visitListForR, rightTargetSet, flagIndex);
+
+        // step3: generate pnbMap by union the leftTargetSet and rightTargetSet one by one.
+
+        for (const auto& elem1 : leftTargetSet) {
+            tbb::concurrent_hash_map<int, set<int>>::accessor acc;
+            pnbMap.insert(acc, elem1);
+            acc->second.insert(rightTargetSet.begin(), rightTargetSet.end());
+        }
+
+        // #pragma omp critical
+        //         {
+        //             for (const auto& elem1 : leftTargetSet) {
+        //                 pnbMap[elem1].insert(rightTargetSet.begin(), rightTargetSet.end());
+        //             }
+        //         }
+    }
 }
 
 // A-P-T-P-A: Choose P as FlagType, right target(for test) is A, right path is P-T-P-A.

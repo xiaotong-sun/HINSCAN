@@ -1,5 +1,5 @@
-CC = clang++
-CFLAGS = -c -O3 -std=c++23 -g -I include
+CC = g++
+CFLAGS = -c -O3 -std=c++23 -g -I include -fopenmp -ltbb
 EXENAME = hinscan
 # CFLAGS = -c -std=c++23 -g -I include
 
@@ -17,7 +17,7 @@ OBJS += $(TARGET_DIR)/main.o
 all: hinscan
 
 hinscan: $(OBJS)
-	$(CC) $(OBJS) -o ./exp/$(EXENAME)
+	$(CC) $(OBJS) -fopenmp -ltbb -o ./exp/$(EXENAME)
 
 $(TARGET_DIR)/%.o: $(SRC_BASELINE)/%.cpp | $(TARGET_DIR)
 	$(CC) $(CFLAGS) $< -o $@

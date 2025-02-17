@@ -73,18 +73,27 @@ int main(int argc, char* argv[]) {
     unordered_map<int, set<int>> pnbMap;
     // HomoGraphBuilder homoGraph(sGraph.smallGraph, sGraph.smallGraphVertexType, sGraph.smallGraphEdgeType, metaPath, edgeReverseMap);
     HomoGraphBuilder homoGraph(graph, vertexType, edgeType, metaPath, edgeReverseMap);
-    // long long mtime1 = getTime(start);
+    long long mtime1 = getTime(start);
     // pnbMap = homoGraph.build();
     // map<int, set<int>> pnbMap = homoGraph.build_optim1();
     // map<int, set<int>> pnbMap = homoGraph.build_optim2();
-    homoGraph.build_forTest(atoi(argv[7]), pnbMap);
+    // homoGraph.build_forTest(atoi(argv[7]), pnbMap);
 
-    // long long mtime2 = getTime(start);
-    // long long buildTime = mtime2 - mtime1;
+    tbb::concurrent_hash_map<int, set<int>> concurrentPnbMap;
+    homoGraph.build_parallel(atoi(argv[7]), concurrentPnbMap);
 
-    // cout << "Time of HomoGraph build without IO: " << buildTime << "(us)" << endl;
+    long long mtime2 = getTime(start);
+    long long buildTime = mtime2 - mtime1;
 
-    // writeToFile(homoGraphFile, pnbMap);
+    cout << "Time of HomoGraph build without IO: " << buildTime << "(us)" << endl;
+
+    pnbMap.reserve(concurrentPnbMap.size());
+    tbb::concurrent_hash_map<int, set<int>>::const_iterator it;
+    for (it = concurrentPnbMap.begin(); it != concurrentPnbMap.end(); ++it) {
+        pnbMap[it->first] = it->second;
+    }
+
+    writeToFile(homoGraphFile, pnbMap);
     // pnbMap = readFromFile(homoGraphFile);
     // cout << "Finish Reading" << endl;
 
@@ -157,11 +166,11 @@ int main(int argc, char* argv[]) {
     // ######## above is useless ########
 
     // mode = 0;
-    SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
-    cout << "Begin Scan" << endl;
+    // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
+    // cout << "Begin Scan" << endl;
     // long long mtime5 = getTime(start);
-    myScan.getCluster(eps, mu, mode);
-    unordered_map<int, set<int>> communities = myScan.getCommunities();
+    // myScan.getCluster(eps, mu, mode);
+    // unordered_map<int, set<int>> communities = myScan.getCommunities();
     // long long mtime6 = getTime(start);
     // long long useTime = mtime6 - mtime5;
 
@@ -174,14 +183,14 @@ int main(int argc, char* argv[]) {
     // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
 
 
-    cout << "=================" << endl;
-    cout << "cluster result" << endl;
-    for (const auto& it : myScan.clusterMap) {
-        cout << it.first << ":" << it.second << endl;
-    }
+    // cout << "=================" << endl;
+    // cout << "cluster result" << endl;
+    // for (const auto& it : myScan.clusterMap) {
+    //     cout << it.first << ":" << it.second << endl;
+    // }
     // writeClusterResultToFile(clusterResultFile, myScan.clusterMap);
 
     /******* EffectiveTest *******/
-    EffectiveTest efTest(graph, vertexType, edgeType, metaPath, communities);
-    efTest.process();
+    // EffectiveTest efTest(graph, vertexType, edgeType, metaPath, communities);
+    // efTest.process();
 }
