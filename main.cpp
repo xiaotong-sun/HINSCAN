@@ -108,6 +108,8 @@ int main(int argc, char* argv[]) {
     // }
     // cout << "=================" << endl;
 
+    // ***** pSCAN *****
+
     // Pscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
     // myPscan.get_graph();
     // cout << "Begin pSCAN" << endl;
@@ -136,35 +138,6 @@ int main(int argc, char* argv[]) {
     // myPscan.showGetNBTimes();
     // myPscan.showMessage();
 
-    // ######## below is useless ########
-
-    // Pscan myPscan2(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
-    // myPscan2.get_graph();
-    // mtime3 = getTime(start);
-    // myPscan2.pSCAN_disjoint(argv[2], mu, myPscan.getMinCN());
-    // mtime4 = getTime(start);
-    // cout << "Time of optimized disjoint pScan Clustering: " << useTime + (mtime4 - mtime3) << "(us)" << endl;
-    // myPscan2.showTime();
-    // myPscan2.output(argv[2], argv[3], argv[1]);
-    // myPscan2.output("myPscan2", argv[3], argv[1]);
-    // myPscan2.showVerifyTimes();
-    // myPscan2.showGetNBTimes();
-    // myPscan2.showMessage();
-
-    // Pscan myPscan3(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 1);
-    // myPscan3.get_graph();
-    // mtime3 = getTime(start);
-    // myPscan3.pSCAN(argv[2], mu);
-    // mtime4 = getTime(start);
-    // cout << "Time of no optimized disjoint pScan Clustering: " << (mtime4 - mtime3) << "(us)" << endl;
-    // myPscan3.output(argv[2], argv[3], argv[1]);
-    // myPscan3.output("myPscan3", argv[3], argv[1]);
-    // myPscan3.showVerifyTimes();
-    // myPscan3.showGetNBTimes();
-    // myPscan3.showMessage();
-
-    // ######## above is useless ########
-
     // mode = 0;
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
     // cout << "Begin Scan" << endl;
@@ -173,6 +146,8 @@ int main(int argc, char* argv[]) {
     // unordered_map<int, set<int>> communities = myScan.getCommunities();
     // long long mtime6 = getTime(start);
     // long long useTime = mtime6 - mtime5;
+
+    // ***** SCAN ******
 
     // if (mode == 0) {
     //     cout << "Time of basic Scan Clustering: " << useTime << "(us)" << endl;

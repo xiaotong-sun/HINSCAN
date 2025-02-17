@@ -93,8 +93,8 @@ public:
     ~Pscan();
 
     void get_graph();
-    void pSCAN(const char* eps_s, int miu);
-    void pSCAN2(const char* eps_s, int miu);
+    void pSCAN(const char* eps_s, int miu); // joint situation
+    void pSCAN2(const char* eps_s, int miu); // pSCAN2 + pSCAN_disjoint2 = disjoint situation
     void pSCAN_disjoint(const char* eps_s, int miu, int* minCN);
     void pSCAN_disjoint2();
     //eps_s and miu are the parameters (epsilon, miu) for the SCAN algorithm
