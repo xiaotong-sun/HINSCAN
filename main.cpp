@@ -4,6 +4,7 @@
 #include "SCAN.h"
 #include "Utility.h"
 #include "Pscan.h"
+#include "PPscan.h"
 #include "SmallGraph.h"
 #include "EffecitveTest.h"
 
@@ -93,7 +94,7 @@ int main(int argc, char* argv[]) {
         pnbMap[it->first] = it->second;
     }
 
-    writeToFile(homoGraphFile, pnbMap);
+    // writeToFile(homoGraphFile, pnbMap);
     // pnbMap = readFromFile(homoGraphFile);
     // cout << "Finish Reading" << endl;
 
@@ -131,12 +132,27 @@ int main(int argc, char* argv[]) {
     // cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
     // // myPscan.output(argv[2], argv[3], argv[1]);
     // unordered_map<int, set<int>> communities = myPscan.getCluster();
-    // myPscan.output("myPscan1", argv[3], argv[1]);
+    // // myPscan.output("myPscan1", argv[3], argv[1]);
     // myPscan.showTime();
     // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
-    // myPscan.showVerifyTimes();
-    // myPscan.showGetNBTimes();
-    // myPscan.showMessage();
+    // // myPscan.showVerifyTimes();
+    // // myPscan.showGetNBTimes();
+    // // myPscan.showMessage();
+
+    PPscan myPscan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath, 0);
+    myPscan.get_graph();
+    cout << "Begin Parallel PSCAN" << endl;
+    long long mtime3 = getTime(start);
+    myPscan.pSCAN3(argv[2], mu);
+    long long mtime4 = getTime(start);
+    long long useTime = mtime4 - mtime3;
+    cout << "Time of disjoint pScan Clustering: " << useTime << "(us)" << endl;
+    unordered_map<int, set<int>> communities = myPscan.getCluster();
+    // myPscan.output("myPscan3", argv[3], argv[1]);
+    myPscan.showTime();
+    cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
+
+    // ***** SCAN ******
 
     // mode = 0;
     // SCAN myScan(pnbMap, graph, vertexType, edgeType, edgeReverseMap, metaPath);
@@ -147,8 +163,6 @@ int main(int argc, char* argv[]) {
     // long long mtime6 = getTime(start);
     // long long useTime = mtime6 - mtime5;
 
-    // ***** SCAN ******
-
     // if (mode == 0) {
     //     cout << "Time of basic Scan Clustering: " << useTime << "(us)" << endl;
     // } else if (mode == 1) {
@@ -156,7 +170,6 @@ int main(int argc, char* argv[]) {
     //     // myScan.showVerifyTimes();
     // }
     // cout << "TOTAL TIME: " << useTime + buildTime << "(us)" << endl;
-
 
     // cout << "=================" << endl;
     // cout << "cluster result" << endl;
