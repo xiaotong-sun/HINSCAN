@@ -795,7 +795,7 @@ bool PPscan::verifyExistence(vector<MyTuple>& lambda) {
 
         // get M(x_i)
         set<int> Mx_i = { tup.vertex1 };
-        set<int> temp2;
+        tbb::concurrent_set<int> temp2;
 
         if (pathVLen == 5) {
             if (twoHopNB.contains(tup.vertex1)) {
@@ -804,7 +804,8 @@ bool PPscan::verifyExistence(vector<MyTuple>& lambda) {
                 for (int i = 1; i <= midIndex; i++) {
                     getNB(Mx_i, temp2, tup, i, false);
 
-                    Mx_i = temp2;
+                    Mx_i.clear();
+                    Mx_i.insert(temp2.begin(), temp2.end());
                     temp2.clear();
                 }
                 twoHopNB[tup.vertex1] = Mx_i;
@@ -815,7 +816,8 @@ bool PPscan::verifyExistence(vector<MyTuple>& lambda) {
             } else {
                 for (int i = 1; i <= midIndex; i++) {
                     getNB(Mx_i, temp2, tup, i, false);
-                    Mx_i = temp2;
+                    Mx_i.clear();
+                    Mx_i.insert(temp2.begin(), temp2.end());
                     temp2.clear();
                 }
                 oneHopNB[tup.vertex1] = Mx_i;
@@ -832,7 +834,8 @@ bool PPscan::verifyExistence(vector<MyTuple>& lambda) {
             } else {
                 for (int i = pathVLen - 2; i >= midIndex; i--) {
                     getNB(My_i, temp2, tup, i, true);
-                    My_i = temp2;
+                    My_i.clear();
+                    My_i.insert(temp2.begin(), temp2.end());
                     temp2.clear();
                 }
                 twoHopNB[tup.vertex2] = My_i;
@@ -843,7 +846,8 @@ bool PPscan::verifyExistence(vector<MyTuple>& lambda) {
             } else {
                 for (int i = pathVLen - 2; i >= midIndex; i--) {
                     getNB(My_i, temp2, tup, i, true);
-                    My_i = temp2;
+                    My_i.clear();
+                    My_i.insert(temp2.begin(), temp2.end());
                     temp2.clear();
                 }
                 oneHopNB[tup.vertex2] = My_i;
@@ -964,8 +968,12 @@ bool PPscan::enumeration(const vector<set<int>>& listOfComNb, int index, vector<
     return false;
 }
 
-void PPscan::getNB(const set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight) {
-    for (int vex : M_i) {
+void PPscan::getNB(const set<int>& M_i, tbb::concurrent_set<int>& temp, MyTuple& tup, int index, bool fromRight) {
+    vector<int> M_i_(M_i.begin(), M_i.end());
+
+#pragma omp parallel for
+    for (int i = 0; i < M_i_.size(); i++) {
+        int vex = M_i_[i];
         if (oneHopNB.contains(vex)) {
             set<int> nb = oneHopNB.at(vex);
             temp.insert(nb.begin(), nb.end());

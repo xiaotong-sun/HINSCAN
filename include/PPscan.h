@@ -126,5 +126,5 @@ private:
     bool verifyExistence(vector<MyTuple>& lambda);
     bool hasSameValue(const vector<int>& arr, int vertex);
     bool enumeration(const vector<set<int>>& listOfComNb, int index, vector<int>& LArr, vector<MyTuple>& lambda);
-    void getNB(const set<int>& M_i, set<int>& temp, MyTuple& tup, int index, bool fromRight);
+    void getNB(const set<int>& M_i, tbb::concurrent_set<int>& temp, MyTuple& tup, int index, bool fromRight);
 };
